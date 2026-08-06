@@ -1,0 +1,18 @@
+# Dependencias (se instalan con "npm install")
+node_modules/
+
+# Datos generados por la app (contienen credenciales/datos de clientes)
+config.json
+armados.json
+catalogo.json
+clientes_cache.json
+temp_etiquetas/
+
+# Build / empaquetado
+dist/
+bin/
+*.exe
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
