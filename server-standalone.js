@@ -6,6 +6,12 @@ const { URL } = require('url');
 const { exec, spawn } = require('child_process');
 const XLSX = require('xlsx');
 
+// La versión sale de package.json (pkg lo empaqueta junto con el resto). El
+// front la usa para marcar con un punto verde cuando hay novedades sin leer:
+// al subir la versión acá, agregar la entrada en la solapa "Novedades" de
+// public/index.html.
+const { version: APP_VERSION } = require('./package.json');
+
 // --- Persistencia en disco (escritura atómica + respaldo) ---
 // La PC del depósito se puede apagar de golpe. Un writeFileSync interrumpido
 // deja el JSON cortado a la mitad, y si además arrancáramos con lista vacía,
@@ -1187,7 +1193,7 @@ const server = http.createServer(async (req, res) => {
       const hayUsuarios = leerUsuarios().length > 0;
       const token = req.headers['x-session-token'];
       const usuario = token ? usuarioDeSesion(token) : null;
-      return sendJSON(res, 200, { hayUsuarios, autenticado: !!usuario, usuario });
+      return sendJSON(res, 200, { hayUsuarios, autenticado: !!usuario, usuario, version: APP_VERSION });
     }
 
     if (pathname === '/api/auth/registrar-primero' && req.method === 'POST') {

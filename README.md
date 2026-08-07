@@ -36,6 +36,19 @@ npm run build
 - `products.json` — catálogo EAN/DUN por defecto (se puede actualizar desde la app)
 - `assets/logo_suprabond.png` — logo usado en las etiquetas
 
+## Tutorial y novedades
+La app tiene una pantalla propia de **Tutorial y novedades**, dentro de
+`public/index.html` (`#pantalla-ayuda`). El tutorial está escrito para la gente
+del depósito, sin tecnicismos.
+
+Al publicar una versión nueva:
+
+1. Subir `version` en `package.json` — el servidor la expone en
+   `/api/auth/estado` y el front la usa para el punto verde de "novedades sin
+   leer" (se guarda en el `localStorage` del navegador de cada persona).
+2. Agregar la entrada correspondiente en la solapa **Novedades**, contando el
+   cambio desde el punto de vista de quien usa la app, no del código.
+
 ## Archivos que NO se versionan (ver .gitignore)
 La app genera estos archivos junto al ejecutable en tiempo de ejecución,
 y contienen datos sensibles (credenciales, usuarios, datos de clientes):

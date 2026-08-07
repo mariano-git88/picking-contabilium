@@ -239,6 +239,63 @@
     font-size: 13px;
     color: #ff6b6b;
   }
+
+  /* --- Tutorial y novedades --- */
+  .ayuda-nav { display: flex; gap: 8px; }
+  .ayuda-nav button.activo { background: var(--accent); color: #fff; }
+  .ayuda { font-size: 14px; line-height: 1.65; max-width: 780px; }
+  .ayuda h3 {
+    font-size: 15px;
+    margin: 28px 0 8px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  .ayuda h3:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+  .ayuda p { margin: 0 0 10px; }
+  .ayuda ul, .ayuda ol { margin: 0 0 10px; padding-left: 22px; }
+  .ayuda li { margin-bottom: 6px; }
+  .ayuda code {
+    background: #0f1115;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 12px;
+  }
+  .ayuda .dato {
+    background: rgba(79, 140, 255, 0.08);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin: 0 0 12px;
+  }
+  .ayuda .ojo {
+    background: rgba(229, 169, 75, 0.1);
+    border-left: 3px solid var(--warn);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin: 0 0 12px;
+  }
+  .novedad { margin-bottom: 26px; }
+  .novedad-titulo { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+  .novedad-version { font-size: 15px; font-weight: 600; }
+  .novedad-fecha { font-size: 12px; color: var(--muted); }
+  .novedad-actual {
+    font-size: 11px;
+    background: var(--ok);
+    color: #0f1115;
+    border-radius: 999px;
+    padding: 1px 8px;
+    font-weight: 600;
+  }
+  .punto-nuevo {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ok);
+    margin-left: 5px;
+    vertical-align: middle;
+  }
 </style>
 </head>
 <body>
@@ -300,6 +357,7 @@
       </div>
     </div>
     <button class="secondary btn-chico" id="btnAbrirConsultaArmados" style="display:none; align-self:center">Consultar pedidos armados</button>
+    <button class="secondary btn-chico" id="btnAbrirAyuda" style="display:none; align-self:center">Tutorial y novedades<span class="punto-nuevo" id="punto-novedades" style="display:none"></span></button>
     <div class="catalogo-widget" id="impresora-widget" style="display:none">
       <div class="fila">
         <span>Impresora Zebra</span>
@@ -432,6 +490,206 @@
   </div>
 </div>
 
+<div id="pantalla-ayuda" style="display:none">
+  <div class="card">
+    <div class="toolbar">
+      <div class="ayuda-nav">
+        <button class="secondary" id="btnTabTutorial">Tutorial</button>
+        <button class="secondary" id="btnTabNovedades">Novedades</button>
+      </div>
+      <button class="secondary" id="btnVolverPrincipalAyuda">← Volver</button>
+    </div>
+
+    <div class="ayuda" id="ayuda-tutorial">
+
+      <h3>¿Qué hace esta app?</h3>
+      <p>
+        Reemplaza el papel del depósito. Trae de Contabilium los pedidos que
+        están pendientes, te deja controlar la mercadería escaneando el código
+        de barra de cada producto, y cuando el pedido está completo imprime las
+        etiquetas de despacho en la Zebra.
+      </p>
+      <p>Todo lo que armás queda registrado: qué pedido, cuántos bultos, quién lo armó y a qué hora.</p>
+
+      <h3>Entrar</h3>
+      <p>
+        Con tu usuario y contraseña. Cada persona del depósito tiene el suyo,
+        así el historial dice quién armó cada pedido. Si necesitás una cuenta,
+        pedísela a alguien que ya tenga la suya: se crean desde el botón
+        <b>Usuarios</b>, arriba a la derecha.
+      </p>
+
+      <h3>Paso 1 — Traer los pedidos</h3>
+      <p>
+        Elegí el rango de fechas y tocá <b>Actualizar</b>. Aparecen los pedidos
+        que en Contabilium están <b>pendientes</b>. Los que ya se facturaron no
+        aparecen, aunque estén dentro de las fechas.
+      </p>
+      <p>
+        La primera vez del día puede tardar un rato: la app tiene que ir a
+        buscar el detalle de cada pedido.
+      </p>
+
+      <h3>Paso 2 — Controlar la mercadería</h3>
+      <p>Hacé click en un pedido para abrirlo. Vas a ver todos los productos con la cantidad que hay que preparar.</p>
+      <p>
+        Poné el cursor en el recuadro de escaneo y pasá el lector por cada
+        producto. Podés escanear tanto el código de la unidad (EAN) como el de
+        la caja cerrada (DUN): si escaneás una caja, la app suma de una todas
+        las unidades que trae.
+      </p>
+      <ul>
+        <li>La línea se pone <b>verde</b> cuando llegaste a la cantidad pedida.</li>
+        <li>Se pone <b>amarilla</b> si escaneaste de más.</li>
+        <li>El botón <b>Reiniciar</b> borra el conteo de ese pedido y empezás de nuevo.</li>
+      </ul>
+      <div class="ojo">
+        <b>Si escaneaste de más</b>, la app no te deja confirmar el armado hasta
+        que corrijas. Es a propósito: si se despacha de más, la diferencia
+        aparece después en el inventario y nadie sabe de dónde salió.
+      </div>
+      <div class="ojo">
+        <b>Si un código no lo reconoce</b>, es que ese producto no está en el
+        catálogo EAN/DUN. Avisá para que se actualice el catálogo (ver más
+        abajo). Mientras tanto, ese producto hay que contarlo a mano.
+      </div>
+
+      <h3>Paso 3 — Confirmar los bultos</h3>
+      <p>
+        Cuando todas las líneas están completas, la app te pregunta en cuántos
+        bultos va el pedido. Escribí el número y tocá <b>Confirmar armado</b>.
+      </p>
+      <p>
+        En ese momento la app vuelve a consultar el pedido en Contabilium. Si
+        mientras lo armabas alguien lo canceló o lo facturó, te avisa y no lo
+        deja confirmar — actualizá el listado y fijate qué pasó.
+      </p>
+
+      <h3>Paso 4 — Imprimir las etiquetas</h3>
+      <p>
+        Tocá <b>Imprimir etiquetas</b>. Sale una etiqueta por bulto, numeradas
+        (1/3, 2/3, 3/3), con los datos del cliente y el número de la orden.
+      </p>
+      <p>
+        Van derecho a la Zebra, sin ventana de impresión. Para eso el nombre de
+        la impresora tiene que estar cargado arriba a la derecha, <b>igual
+        igual</b> a como figura en Windows (Panel de control → Dispositivos e
+        impresoras). Una letra distinta y no imprime.
+      </p>
+      <div class="ojo">
+        Si la etiqueta sale con <b>"Cliente no identificado"</b>, es que la app
+        no pudo traer los datos de ese cliente de Contabilium. Avisá antes de
+        despachar: la etiqueta va sin dirección.
+      </div>
+
+      <h3>Consultar lo que se armó</h3>
+      <p>
+        Con el botón <b>Consultar pedidos armados</b>, arriba a la derecha.
+        Podés buscar por número de orden o por fechas, y bajar todo en Excel.
+      </p>
+      <p>
+        El Excel trae quién armó cada pedido y a qué hora, quién imprimió las
+        etiquetas, y una columna <b>Orden verificada</b> que dice si la app
+        pudo confirmar el pedido contra Contabilium en el momento del armado.
+        Si dice <b>No</b>, ese pedido se armó con Contabilium caído y conviene
+        revisarlo.
+      </p>
+
+      <h3>El catálogo EAN/DUN</h3>
+      <p>
+        Es la tabla que relaciona cada producto con su código de barra y cuántas
+        unidades trae la caja. Se actualiza desde <b>Subir tabla</b>, arriba a
+        la derecha, con un Excel o CSV que tenga las columnas
+        <code>SKU</code>, <code>Nombre</code>, <code>EAN</code>,
+        <code>DUN</code> y <code>Factor</code>.
+      </p>
+      <p>Hay que actualizarlo cada vez que entra un producto nuevo, o los códigos de ese producto no se van a reconocer al escanear.</p>
+
+      <h3>Si algo no anda</h3>
+      <ul>
+        <li><b>No trae ningún pedido:</b> revisá el rango de fechas. Acordate que solo muestra los pendientes.</li>
+        <li><b>Dice que no puede contactar a Contabilium:</b> puede estar caído. La app reintenta sola un par de veces; si sigue, esperá un rato.</li>
+        <li><b>No imprime:</b> revisá el nombre exacto de la impresora, y que la Zebra esté prendida y con papel.</li>
+        <li><b>Se cerró la ventana negra:</b> esa ventana es la app. Si se cierra, se apaga todo. Volvé a abrir el programa.</li>
+      </ul>
+      <div class="dato">
+        Ante cualquier duda que no esté acá, escribile a Mariano.
+      </div>
+    </div>
+
+    <div class="ayuda" id="ayuda-novedades" style="display:none">
+
+      <div class="novedad">
+        <div class="novedad-titulo">
+          <span class="novedad-version">Versión 1.1</span>
+          <span class="novedad-fecha">7 de agosto de 2026</span>
+          <span class="novedad-actual">Esta versión</span>
+        </div>
+        <p>Repaso a fondo antes de sumarle la facturación. Casi todo es para que no se pierda ni se ensucie información.</p>
+        <ul>
+          <li>
+            <b>El historial de pedidos armados ya no se puede perder.</b> Si se
+            cortaba la luz justo cuando la app estaba guardando, el archivo
+            quedaba dañado y el historial se borraba solo. Ahora se guarda con
+            una copia de respaldo y, si algo pasa, la app se recupera sola.
+          </li>
+          <li>
+            <b>Las etiquetas ya no salen con "Cliente no identificado" por
+            error.</b> Cuando Contabilium tardaba en responder, la app se
+            quedaba con media lista de clientes y creía que estaba completa.
+          </li>
+          <li>
+            <b>El Excel mostraba mal la hora.</b> Un pedido armado a las 19:02
+            figuraba como armado a las 07:02. Ya sale la hora real.
+          </li>
+          <li>
+            <b>Los pedidos de la tarde quedaban con la fecha del día
+            siguiente</b> al buscarlos por fecha. Corregido.
+          </li>
+          <li>
+            <b>Al confirmar el armado, la app revisa el pedido en
+            Contabilium.</b> Si ya se canceló o se facturó, avisa y no lo deja
+            confirmar. Antes lo daba por armado igual.
+          </li>
+          <li>
+            <b>Columna nueva en el Excel: "Orden verificada"</b>, para saber
+            qué pedidos se armaron sin poder consultar Contabilium.
+          </li>
+          <li><b>Las etiquetas salen con el logo.</b> Estaba cargado en la app pero no se dibujaba.</li>
+          <li><b>Los pedidos ya facturados no aparecen más en el listado</b> para armar.</li>
+          <li>
+            <b>La app quedó cerrada a la red.</b> Ahora se usa solo desde la PC
+            del depósito, salvo que se configure lo contrario a propósito.
+          </li>
+          <li><b>Esta pantalla de Tutorial y novedades.</b></li>
+        </ul>
+      </div>
+
+      <div class="novedad">
+        <div class="novedad-titulo">
+          <span class="novedad-version">Versión 1.0</span>
+          <span class="novedad-fecha">5 de agosto de 2026</span>
+        </div>
+        <p>Primera versión, la que se probó en el depósito.</p>
+        <ul>
+          <li>Listado de pedidos pendientes desde Contabilium, por rango de fechas.</li>
+          <li>Control por código de barra: EAN por unidad y DUN por caja cerrada.</li>
+          <li>Los combos se abren en sus productos para poder pickearlos.</li>
+          <li>Confirmación de bultos e impresión de etiquetas directo a la Zebra.</li>
+          <li>Historial de pedidos armados con reporte en Excel.</li>
+          <li>Usuarios con contraseña, para saber quién armó cada pedido.</li>
+        </ul>
+      </div>
+
+      <div class="dato">
+        <b>En camino:</b> que la factura se genere e imprima desde acá cuando el
+        pedido queda armado. Estamos definiendo con administración cómo tiene
+        que funcionar antes de construirlo.
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- fin app-completa -->
 
 <script>
@@ -462,6 +720,10 @@
     $('app-completa').style.display = 'block';
     $('usuario-widget').style.display = 'flex';
     $('usuario-actual-nombre').textContent = usuario;
+    // El tutorial se muestra siempre, incluso antes de configurar las
+    // credenciales: es justo cuando más se necesita.
+    $('btnAbrirAyuda').style.display = 'inline-block';
+    actualizarPuntoNovedades();
     verificarConfig();
   }
 
@@ -469,6 +731,7 @@
     try {
       const resp = await fetch('/api/auth/estado');
       const data = await resp.json();
+      versionApp = data.version || null;
       if (!data.hayUsuarios) {
         $('login-normal').style.display = 'none';
         $('login-primero').style.display = 'block';
@@ -539,12 +802,59 @@
   function abrirPantallaUsuarios() {
     $('pantalla-principal').style.display = 'none';
     $('pantalla-consulta').style.display = 'none';
+    $('pantalla-ayuda').style.display = 'none';
     $('pantalla-usuarios').style.display = 'block';
     cargarListaUsuarios();
   }
 
   function volverDeUsuarios() {
     $('pantalla-usuarios').style.display = 'none';
+    $('pantalla-principal').style.display = 'block';
+  }
+
+  // ---------- Tutorial y novedades ----------
+  // La versión la manda el servidor en /api/auth/estado. Guardamos en el
+  // navegador cuál fue la última que esta persona leyó, para poder marcar con
+  // un punto verde cuando hay novedades sin ver.
+  let versionApp = null;
+  const CLAVE_NOVEDADES_VISTAS = 'picking_novedades_vistas';
+
+  function hayNovedadesSinVer() {
+    try {
+      return !!versionApp && localStorage.getItem(CLAVE_NOVEDADES_VISTAS) !== versionApp;
+    } catch {
+      return false; // si el navegador no deja usar localStorage, no molestamos
+    }
+  }
+
+  function actualizarPuntoNovedades() {
+    $('punto-novedades').style.display = hayNovedadesSinVer() ? 'inline-block' : 'none';
+  }
+
+  function mostrarSeccionAyuda(cual) {
+    const esTutorial = cual === 'tutorial';
+    $('ayuda-tutorial').style.display = esTutorial ? 'block' : 'none';
+    $('ayuda-novedades').style.display = esTutorial ? 'none' : 'block';
+    $('btnTabTutorial').classList.toggle('activo', esTutorial);
+    $('btnTabNovedades').classList.toggle('activo', !esTutorial);
+    if (!esTutorial && versionApp) {
+      try { localStorage.setItem(CLAVE_NOVEDADES_VISTAS, versionApp); } catch { /* sin localStorage, se muestra siempre */ }
+      actualizarPuntoNovedades();
+    }
+  }
+
+  function abrirPantallaAyuda() {
+    $('pantalla-principal').style.display = 'none';
+    $('pantalla-consulta').style.display = 'none';
+    $('pantalla-usuarios').style.display = 'none';
+    $('pantalla-ayuda').style.display = 'block';
+    // Si todavía no leyó las novedades de esta versión, abrimos ahí directo.
+    mostrarSeccionAyuda(hayNovedadesSinVer() ? 'novedades' : 'tutorial');
+    window.scrollTo(0, 0);
+  }
+
+  function volverDeAyuda() {
+    $('pantalla-ayuda').style.display = 'none';
     $('pantalla-principal').style.display = 'block';
   }
 
@@ -603,6 +913,10 @@
 
   $('btnAbrirUsuarios').addEventListener('click', abrirPantallaUsuarios);
   $('btnVolverPrincipalUsuarios').addEventListener('click', volverDeUsuarios);
+  $('btnAbrirAyuda').addEventListener('click', abrirPantallaAyuda);
+  $('btnVolverPrincipalAyuda').addEventListener('click', volverDeAyuda);
+  $('btnTabTutorial').addEventListener('click', () => mostrarSeccionAyuda('tutorial'));
+  $('btnTabNovedades').addEventListener('click', () => mostrarSeccionAyuda('novedades'));
   $('btnCrearUsuario').addEventListener('click', crearUsuarioUI);
 
   function hoyISO() {
@@ -1277,6 +1591,7 @@
     limpiarConsultaArmados();
     $('pantalla-principal').style.display = 'none';
     $('pantalla-usuarios').style.display = 'none';
+    $('pantalla-ayuda').style.display = 'none';
     $('pantalla-consulta').style.display = 'block';
   }
 
