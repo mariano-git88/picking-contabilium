@@ -245,11 +245,36 @@ function guardarArmadosDisco() {
   escribirJsonAtomico(ARMADOS_PATH, armados);
 }
 
-function registrarArmado({ orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente, usuarioArmado, verificado }) {
+// Normaliza el detalle de lo escaneado que manda el navegador. Guardamos una
+// línea por producto con lo pedido y lo realmente contado, porque es lo que va
+// a necesitar el facturador para emitir por lo que salió y no por lo que decía
+// la orden. Las líneas de combo quedan marcadas: en la orden son un solo
+// renglón, acá están abiertas en sus componentes.
+function normalizarItemsArmado(items) {
+  if (!Array.isArray(items)) return [];
+  return items.slice(0, 500).map(it => ({
+    codigo: it && it.codigo ? String(it.codigo) : null,
+    concepto: it && it.concepto ? String(it.concepto).slice(0, 200) : '',
+    pedido: Number(it && it.pedido) || 0,
+    escaneado: Number(it && it.escaneado) || 0,
+    combo: !!(it && it.combo)
+  }));
+}
+
+function registrarArmado({ orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente, usuarioArmado, verificado, items }) {
   orderId = String(orderId);
   const timestamp = new Date().toISOString();
   const existente = armados.findIndex(a => a.orderId === orderId);
-  const registro = { orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente, usuarioArmado, timestamp, verificado: !!verificado };
+  const detalle = normalizarItemsArmado(items);
+  const registro = {
+    orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente,
+    usuarioArmado, timestamp, verificado: !!verificado,
+    items: detalle,
+    // Se despachó exactamente lo pedido. Hoy es siempre true porque la app no
+    // deja confirmar de otra forma; queda calculado para cuando se habiliten
+    // los parciales y el facturador tenga que distinguirlos.
+    completo: detalle.length > 0 && detalle.every(i => i.escaneado === i.pedido)
+  };
   if (existente >= 0) armados[existente] = registro;
   else armados.push(registro);
   guardarArmadosDisco();
@@ -1414,7 +1439,8 @@ const server = http.createServer(async (req, res) => {
       const registro = registrarArmado({
         orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente,
         usuarioArmado: req.usuarioActual,
-        verificado
+        verificado,
+        items: datos.items
       });
       return sendJSON(res, 200, registro);
     }

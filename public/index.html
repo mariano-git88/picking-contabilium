@@ -1302,7 +1302,17 @@
           bultos: valor,
           lineas: orden.items ? orden.items.length : null,
           unidades: orden.cantidadProductos,
-          idCliente: orden.idCliente
+          idCliente: orden.idCliente,
+          // Detalle de lo contado, producto por producto. Todavía no se usa en
+          // pantalla: queda guardado para que después el facturador pueda
+          // emitir por lo que salió del depósito.
+          items: (orden.items || []).map((it, i) => ({
+            codigo: it.codigo,
+            concepto: it.concepto,
+            pedido: it.cantidad || 0,
+            escaneado: (escaneos[idx] && escaneos[idx][i]) || 0,
+            combo: !!it.esComponenteCombo
+          }))
         })
       });
 
