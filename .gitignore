@@ -8,6 +8,11 @@ catalogo.json
 clientes_cache.json
 temp_etiquetas/
 
+# Respaldos y temporales de esos mismos archivos (escritura atómica)
+*.json.bak
+*.json.tmp
+*.json.dañado-*
+
 # Build / empaquetado
 dist/
 bin/

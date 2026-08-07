@@ -6,6 +6,63 @@ const { URL } = require('url');
 const { exec, spawn } = require('child_process');
 const XLSX = require('xlsx');
 
+// --- Persistencia en disco (escritura atómica + respaldo) ---
+// La PC del depósito se puede apagar de golpe. Un writeFileSync interrumpido
+// deja el JSON cortado a la mitad, y si además arrancáramos con lista vacía,
+// el primer guardado siguiente pisaría el archivo dañado y se perdería todo
+// el historial. Por eso: se escribe en un temporal, se conserva la última
+// versión buena en .bak, y recién ahí se reemplaza el archivo real.
+function escribirJsonAtomico(rutaFinal, datos) {
+  const rutaTmp = `${rutaFinal}.tmp`;
+  const rutaBak = `${rutaFinal}.bak`;
+  const contenido = JSON.stringify(datos, null, 2);
+
+  const fd = fs.openSync(rutaTmp, 'w');
+  try {
+    fs.writeFileSync(fd, contenido, 'utf8');
+    fs.fsyncSync(fd); // que llegue al disco antes de reemplazar nada
+  } finally {
+    fs.closeSync(fd);
+  }
+
+  try {
+    if (fs.existsSync(rutaFinal)) fs.copyFileSync(rutaFinal, rutaBak);
+  } catch (err) {
+    console.log(`  ⚠ No se pudo respaldar ${path.basename(rutaFinal)}: ${err.message}`);
+  }
+
+  fs.renameSync(rutaTmp, rutaFinal); // atómico dentro del mismo volumen
+}
+
+// Lee un JSON tolerando que esté dañado: si el archivo principal no parsea,
+// prueba con el .bak; si tampoco, aparta el corrupto con otro nombre (nunca
+// lo pisa en silencio) y devuelve el valor por defecto.
+function leerJsonSeguro(ruta, valorPorDefecto, validar) {
+  for (const candidato of [ruta, `${ruta}.bak`]) {
+    let crudo;
+    try {
+      crudo = fs.readFileSync(candidato, 'utf8');
+    } catch {
+      continue; // no existe: probamos el siguiente
+    }
+    try {
+      const datos = JSON.parse(crudo);
+      if (validar && !validar(datos)) throw new Error('el contenido no tiene el formato esperado');
+      if (candidato !== ruta) {
+        console.log(`  ⚠ ${path.basename(ruta)} estaba dañado; se recuperó desde el respaldo .bak`);
+      }
+      return datos;
+    } catch (err) {
+      const apartado = `${candidato}.dañado-${new Date().toISOString().replace(/[:.]/g, '-')}`;
+      try {
+        fs.renameSync(candidato, apartado);
+        console.log(`  ⚠ No se pudo leer ${path.basename(candidato)} (${err.message}). Se guardó como ${path.basename(apartado)} para no perder los datos.`);
+      } catch { /* si no se puede mover, al menos no lo sobreescribimos sin avisar */ }
+    }
+  }
+  return valorPorDefecto;
+}
+
 // --- Catálogo de productos (EAN / DUN / Factor) ---
 // Se parte del catálogo por defecto embebido en la app; si el usuario sube
 // una tabla actualizada desde la interfaz, esa queda guardada junto al
@@ -36,11 +93,15 @@ function reconstruirIndices() {
 
 function cargarCatalogoInicial() {
   const catalogoGuardadoPath = path.join(APP_DIR, 'catalogo.json');
-  try {
-    const raw = JSON.parse(fs.readFileSync(catalogoGuardadoPath, 'utf8'));
+  const raw = leerJsonSeguro(
+    catalogoGuardadoPath,
+    null,
+    d => d && Array.isArray(d.productos) && d.productos.length > 0
+  );
+  if (raw) {
     productos = raw.productos;
     catalogoInfo = { origen: 'subido', actualizado: raw.actualizado, archivo: raw.archivo, cantidad: productos.length };
-  } catch {
+  } else {
     productos = catalogoDefault;
     catalogoInfo = { origen: 'default', actualizado: null, archivo: null, cantidad: productos.length };
   }
@@ -57,11 +118,11 @@ function guardarCatalogo(nuevosProductos, nombreArchivo) {
   };
   reconstruirIndices();
   const catalogoGuardadoPath = path.join(APP_DIR, 'catalogo.json');
-  fs.writeFileSync(catalogoGuardadoPath, JSON.stringify({
+  escribirJsonAtomico(catalogoGuardadoPath, {
     productos,
     actualizado: catalogoInfo.actualizado,
     archivo: nombreArchivo
-  }, null, 2));
+  });
 }
 
 function limpiarCodigo(v) {
@@ -147,12 +208,17 @@ const CONFIG_PATH = path.join(APP_DIR, 'config.json');
 const ARMADOS_PATH = path.join(APP_DIR, 'armados.json');
 const CLIENTES_CACHE_PATH = path.join(APP_DIR, 'clientes_cache.json');
 const PUBLIC_DIR = path.join(__dirname, 'public');
-const WKHTMLTOIMAGE_PATH = path.join(APP_DIR, 'bin', 'wkhtmltoimage.exe');
 const LOGO_PATH = path.join(APP_DIR, 'assets', 'logo_suprabond.png');
 const TEMP_DIR = path.join(os.tmpdir(), 'picking-contabilium-etiquetas');
 
 const BASE_URL = 'https://rest.contabilium.com.uy';
 const PORT = 3000;
+
+// Por defecto la app escucha SOLO en la propia PC. Si en el depósito la
+// quieren usar desde otra máquina de la red, agregar "host": "0.0.0.0" en
+// config.json — pero ojo, en ese caso cualquiera que llegue al puerto 3000
+// entra a la pantalla de login.
+const HOST_DEFECTO = '127.0.0.1';
 
 // Logo del encabezado de la etiqueta (se carga una vez al arrancar)
 let logoBase64 = null;
@@ -166,22 +232,18 @@ try {
 let armados = [];
 
 function cargarArmadosInicial() {
-  try {
-    armados = JSON.parse(fs.readFileSync(ARMADOS_PATH, 'utf8'));
-  } catch {
-    armados = [];
-  }
+  armados = leerJsonSeguro(ARMADOS_PATH, [], Array.isArray);
 }
 
 function guardarArmadosDisco() {
-  fs.writeFileSync(ARMADOS_PATH, JSON.stringify(armados, null, 2));
+  escribirJsonAtomico(ARMADOS_PATH, armados);
 }
 
-function registrarArmado({ orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente, usuarioArmado }) {
+function registrarArmado({ orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente, usuarioArmado, verificado }) {
   orderId = String(orderId);
   const timestamp = new Date().toISOString();
   const existente = armados.findIndex(a => a.orderId === orderId);
-  const registro = { orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente, usuarioArmado, timestamp };
+  const registro = { orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente, usuarioArmado, timestamp, verificado: !!verificado };
   if (existente >= 0) armados[existente] = registro;
   else armados.push(registro);
   guardarArmadosDisco();
@@ -204,8 +266,28 @@ function eliminarArmado(orderId) {
   guardarArmadosDisco();
 }
 
-function fechaISOaDate(iso) {
-  return iso.slice(0, 10); // YYYY-MM-DD
+// El timestamp se guarda en UTC (ISO), pero el depósito razona en hora de
+// Uruguay (UTC−3). Si filtráramos por la fecha del ISO, un armado del viernes
+// 21:30 quedaría archivado como del sábado — y encima el Excel muestra la
+// hora local, así que el reporte se contradecía con su propio filtro.
+// toLocaleString('es-AR') formatea en 12 horas y, en las versiones actuales de
+// Node, se come el "p. m.": un armado de las 19:02 salía impreso como
+// "07:02:45" en el Excel. Formateamos a mano para no depender del ICU de turno.
+function formatearFechaHoraLocal(iso) {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '-';
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mi = String(d.getMinutes()).padStart(2, '0');
+  return `${dd}/${mm}/${d.getFullYear()} ${hh}:${mi}`;
+}
+
+function fechaLocalISO(iso) {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10); // YYYY-MM-DD en hora local
 }
 
 function consultarArmados({ numeroOrden, fechaDesde, fechaHasta }) {
@@ -215,24 +297,22 @@ function consultarArmados({ numeroOrden, fechaDesde, fechaHasta }) {
     resultado = resultado.filter(a => (a.numeroOrden || '').toLowerCase().includes(buscado));
   }
   if (fechaDesde) {
-    resultado = resultado.filter(a => fechaISOaDate(a.timestamp) >= fechaDesde);
+    resultado = resultado.filter(a => fechaLocalISO(a.timestamp) >= fechaDesde);
   }
   if (fechaHasta) {
-    resultado = resultado.filter(a => fechaISOaDate(a.timestamp) <= fechaHasta);
+    resultado = resultado.filter(a => fechaLocalISO(a.timestamp) <= fechaHasta);
   }
   return resultado.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 }
 
-// --- Config (credenciales) ---
+// --- Config (credenciales + usuarios) ---
+// Ojo: acá viven también los usuarios de la app, así que perder este archivo
+// obliga a reconfigurar todo. Va con el mismo respaldo que el resto.
 function leerConfig() {
-  try {
-    return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
-  } catch {
-    return null;
-  }
+  return leerJsonSeguro(CONFIG_PATH, null, d => d && typeof d === 'object');
 }
 function guardarConfig(cfg) {
-  fs.writeFileSync(CONFIG_PATH, JSON.stringify(cfg, null, 2));
+  escribirJsonAtomico(CONFIG_PATH, cfg);
 }
 
 // --- Usuarios y sesiones ---
@@ -281,18 +361,29 @@ function autenticar(usuario, password) {
   return verificarPassword(password, u.salt, u.hash);
 }
 
-// Sesiones en memoria: token -> { usuario, creado }
+// Sesiones en memoria: token -> { usuario, creado, ultimoUso }
 const sesiones = new Map();
+
+// Caducan a las 12 h SIN USO (no desde el login), para que no se corte a
+// mitad de un turno pero tampoco quede una sesión abierta para siempre.
+const SESION_TTL_MS = 12 * 60 * 60 * 1000;
 
 function crearSesion(usuario) {
   const token = crypto.randomBytes(24).toString('hex');
-  sesiones.set(token, { usuario, creado: Date.now() });
+  const ahora = Date.now();
+  sesiones.set(token, { usuario, creado: ahora, ultimoUso: ahora });
   return token;
 }
 
 function usuarioDeSesion(token) {
   const s = sesiones.get(token);
-  return s ? s.usuario : null;
+  if (!s) return null;
+  if (Date.now() - s.ultimoUso > SESION_TTL_MS) {
+    sesiones.delete(token);
+    return null;
+  }
+  s.ultimoUso = Date.now();
+  return s.usuario;
 }
 
 function cerrarSesion(token) {
@@ -334,14 +425,56 @@ async function getToken() {
   return cachedToken;
 }
 
-async function authedFetch(url) {
-  const token = await getToken();
-  const resp = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-  if (!resp.ok) {
+const REINTENTOS_MAX = 3;
+const ESPERA_BASE_MS = 800;
+
+function esperar(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Contabilium responde 429 cuando se le pega muy seguido (ya nos pasó en los
+// otros proyectos contra la misma API). Reintenta respetando el Retry-After
+// que manda el servidor, y también ante 5xx o cortes de red, que son
+// transitorios. Un error definitivo sigue levantando excepción.
+async function authedFetch(url, { intentos = REINTENTOS_MAX } = {}) {
+  let ultimoError = null;
+
+  for (let intento = 1; intento <= intentos; intento++) {
+    let resp;
+    try {
+      const token = await getToken();
+      resp = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    } catch (err) {
+      ultimoError = new Error(`No se pudo contactar a Contabilium: ${err.message}`);
+      if (intento === intentos) throw ultimoError;
+      await esperar(ESPERA_BASE_MS * intento);
+      continue;
+    }
+
+    if (resp.ok) return resp.json();
+
+    // Token vencido antes de lo previsto: lo tiramos y pedimos uno nuevo.
+    if (resp.status === 401 && intento < intentos) {
+      cachedToken = null;
+      tokenExpiresAt = 0;
+      continue;
+    }
+
+    if ((resp.status === 429 || resp.status >= 500) && intento < intentos) {
+      const retryAfter = parseInt(resp.headers.get('retry-after') || '', 10);
+      const espera = Number.isFinite(retryAfter)
+        ? retryAfter * 1000
+        : ESPERA_BASE_MS * Math.pow(2, intento - 1);
+      console.log(`  … Contabilium respondió ${resp.status}; reintento ${intento + 1}/${intentos} en ${Math.round(espera / 1000)}s`);
+      await esperar(espera);
+      continue;
+    }
+
     const text = await resp.text();
     throw new Error(`Error consultando Contabilium (${resp.status}): ${text}`);
   }
-  return resp.json();
+
+  throw ultimoError || new Error('No se pudo consultar Contabilium.');
 }
 
 async function fetchAllOrdenes(fechaDesde, fechaHasta) {
@@ -431,42 +564,49 @@ let clientesUltimaActualizacion = 0;
 let clientesCargando = null; // Promise en curso, para no disparar cargas en paralelo duplicadas
 
 function cargarClientesDesdeDiscoSiExiste() {
-  try {
-    const raw = JSON.parse(fs.readFileSync(CLIENTES_CACHE_PATH, 'utf8'));
-    clientesPorId = new Map();
-    for (const c of raw.clientes) clientesPorId.set(String(c.Id), c);
-    clientesCargados = true;
-    clientesUltimaActualizacion = new Date(raw.actualizado).getTime() || 0;
-    console.log(`  Clientes cargados desde caché en disco: ${clientesPorId.size} (actualizado ${raw.actualizado})`);
-  } catch {
-    // No hay caché en disco todavía; se cargará desde la API cuando haga falta
-  }
+  const raw = leerJsonSeguro(CLIENTES_CACHE_PATH, null, d => d && Array.isArray(d.clientes));
+  if (!raw) return; // todavía no hay caché; se carga desde la API cuando haga falta
+  clientesPorId = new Map();
+  for (const c of raw.clientes) clientesPorId.set(String(c.Id), c);
+  clientesCargados = true;
+  clientesUltimaActualizacion = new Date(raw.actualizado).getTime() || 0;
+  console.log(`  Clientes cargados desde caché en disco: ${clientesPorId.size} (actualizado ${raw.actualizado})`);
 }
 
 function guardarClientesDisco() {
   try {
-    fs.writeFileSync(CLIENTES_CACHE_PATH, JSON.stringify({
+    escribirJsonAtomico(CLIENTES_CACHE_PATH, {
       actualizado: new Date().toISOString(),
       clientes: Array.from(clientesPorId.values())
-    }));
+    });
   } catch (err) {
     console.log(`  ⚠ No se pudo guardar la caché de clientes en disco: ${err.message}`);
   }
 }
 
+const CLIENTES_CONCURRENCIA = 6;
+
 async function cargarClientesInterno() {
   const nuevoMapa = new Map();
-  const CONCURRENCIA = 8;
   let page = 1;
   let seguir = true;
 
   while (seguir) {
-    const paginas = Array.from({ length: CONCURRENCIA }, (_, i) => page + i);
+    const paginas = Array.from({ length: CLIENTES_CONCURRENCIA }, (_, i) => page + i);
+
+    // IMPORTANTE: acá no se puede tragar el error de una página. Antes, si una
+    // fallaba (un 429, un corte) se la trataba como página vacía, el barrido
+    // cortaba ahí y se guardaba en disco un padrón incompleto como si estuviera
+    // completo. El síntoma no dice nada útil: etiquetas con "Cliente no
+    // identificado". Ahora, si una página falla después de sus reintentos,
+    // abortamos el refresco entero y conservamos la caché anterior.
     const resultados = await Promise.all(
       paginas.map(p =>
         authedFetch(`${BASE_URL}/api/clientes/search?pageSize=500&page=${p}`)
           .then(data => data.Items || data.items || (Array.isArray(data) ? data : []))
-          .catch(() => [])
+          .catch(err => {
+            throw new Error(`falló la página ${p} del padrón de clientes: ${err.message}`);
+          })
       )
     );
 
@@ -475,11 +615,11 @@ async function cargarClientesInterno() {
       const items = resultados[i];
       for (const c of items) nuevoMapa.set(String(c.Id), c);
       console.log(`  Clientes: página ${paginas[i]} → ${items.length} registro(s)`);
-      if (items.length === 0) algunaVacia = true;
+      if (items.length === 0) algunaVacia = true; // fin real del padrón
     }
 
     if (algunaVacia) seguir = false;
-    else page += CONCURRENCIA;
+    else page += CLIENTES_CONCURRENCIA;
 
     if (page > 2000) break; // salvaguarda para no loopear indefinidamente
   }
@@ -499,17 +639,29 @@ function cargarClientes() {
   return clientesCargando;
 }
 
+// IDs que ya buscamos con la caché fresca y no aparecieron (típicamente
+// contactos cargados como Proveedor). Sin esto, cada etiqueta de esos
+// contactos vuelve a paginar el padrón entero.
+const clientesNoEncontrados = new Set();
+
 async function obtenerCliente(idCliente) {
   if (!idCliente) return null;
-  if (!clientesCargados) await cargarClientes();
+  if (!clientesCargados) await cargarClientes(); // sin caché no hay nada que hacer: que el error suba
 
-  let c = clientesPorId.get(String(idCliente));
+  const clave = String(idCliente);
+  let c = clientesPorId.get(clave);
 
   // Si no aparece, puede ser un cliente nuevo: solo re-consultamos si la
   // caché ya tiene un rato (para no volver a paginar todo por cada intento)
-  if (!c && Date.now() - clientesUltimaActualizacion > 5 * 60 * 1000) {
-    await cargarClientes();
-    c = clientesPorId.get(String(idCliente));
+  if (!c && !clientesNoEncontrados.has(clave) && Date.now() - clientesUltimaActualizacion > 5 * 60 * 1000) {
+    try {
+      await cargarClientes();
+    } catch (err) {
+      // Refrescar es best effort: seguimos con la caché que ya teníamos.
+      console.log(`  ⚠ No se pudo refrescar el padrón de clientes: ${err.message}`);
+    }
+    c = clientesPorId.get(clave);
+    if (!c) clientesNoEncontrados.add(clave);
   }
 
   return c || null;
@@ -678,8 +830,28 @@ function generarZplEtiqueta({ numeroOrden, i, totalBultos, cliente }) {
   return partes.join('\n');
 }
 
+// El logo se lee de assets/ al arrancar. Si falta, la etiqueta cae al
+// encabezado de texto (que es además lo que usa siempre la versión ZPL).
+// Va como fondo por CSS y no como <img> para que el PNG viaje UNA sola vez
+// aunque el pedido tenga 8 bultos: embebido por etiqueta, el HTML de una
+// impresión pasaba del megabyte.
+function claseEncabezado() {
+  return logoBase64 ? 'encabezado con-logo' : 'encabezado';
+}
+
 function encabezadoHtml() {
-  return `GRUPO SUPRABOND URUGUAY SAS`;
+  return logoBase64 ? '' : 'GRUPO SUPRABOND URUGUAY SAS';
+}
+
+function estilosEtiqueta() {
+  if (!logoBase64) return ESTILOS_ETIQUETA;
+  return `${ESTILOS_ETIQUETA}
+  .encabezado.con-logo {
+    background-image: url("data:image/png;base64,${logoBase64}");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }`;
 }
 
 const ESTILOS_ETIQUETA = `
@@ -725,7 +897,7 @@ const ESTILOS_ETIQUETA = `
 function contenidoEtiqueta({ numeroOrden, i, totalBultos, destinatario, direccion, observaciones, contacto }) {
   return `
     <div class="etiqueta">
-      <div class="encabezado">${encabezadoHtml()}</div>
+      <div class="${claseEncabezado()}">${encabezadoHtml()}</div>
       <div class="cuerpo">
         <div class="campo"><span class="label">Destinatario:</span> ${destinatario}</div>
         <div class="campo"><span class="label">Dirección:</span> ${escaparHtml(direccion)}</div>
@@ -759,7 +931,7 @@ function generarHtmlEtiquetas({ numeroOrden, bultos, cliente }) {
 <title>Etiquetas - Pedido ${escaparHtml(numeroOrden)}</title>
 <style>
   @page { size: 15cm 10cm landscape; margin: 0; }
-  ${ESTILOS_ETIQUETA}
+  ${estilosEtiqueta()}
   @media screen {
     body { background: #eee; padding: 20px; }
     .etiqueta { background: white; margin-bottom: 20px; box-shadow: 0 0 6px rgba(0,0,0,0.3); }
@@ -771,36 +943,6 @@ ${etiquetasHtml}
 <script>
   window.onload = () => { window.print(); };
 </script>
-</body>
-</html>`;
-}
-
-// HTML de UNA sola etiqueta, en tamaño de píxeles exacto, para renderizar a
-// PNG con wkhtmltoimage y enviarla directo a la impresora sin diálogo.
-const ETIQUETA_PX_ANCHO = 1772; // 15cm a 300dpi
-const ETIQUETA_PX_ALTO = 1181;  // 10cm a 300dpi
-
-function generarHtmlEtiquetaUnica({ numeroOrden, i, totalBultos, cliente }) {
-  const datos = datosEtiquetaDesdeCliente(cliente);
-  return `<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8" />
-<style>
-  html, body { width: ${ETIQUETA_PX_ANCHO}px; height: ${ETIQUETA_PX_ALTO}px; }
-  ${ESTILOS_ETIQUETA}
-  .etiqueta { width: ${ETIQUETA_PX_ANCHO}px; height: ${ETIQUETA_PX_ALTO}px; padding: 60px; }
-  .cuerpo { flex: 1; margin-top: 0.4cm; display: flex; flex-direction: column; justify-content: space-between; }
-  .campo { font-size: 46pt; margin-bottom: 0; }
-  .observaciones { font-size: 34pt; }
-  .pie { font-size: 36pt; }
-  .bulto, .ov { font-size: 58pt; }
-  .encabezado { min-height: 170px; font-size: 54pt; }
-  .encabezado img.logo { max-height: 170px; }
-</style>
-</head>
-<body>
-${contenidoEtiqueta({ numeroOrden, i, totalBultos, ...datos })}
 </body>
 </html>`;
 }
@@ -1009,6 +1151,14 @@ function serveStatic(req, res, urlPath) {
   });
 }
 
+// ¿El pedido viene de la propia PC donde corre la app? Se usa para que la
+// creación del primer usuario (la cuenta que después crea a las demás) no la
+// pueda hacer alguien de la red si abren el puerto.
+function esPedidoLocal(req) {
+  const ip = req.socket.remoteAddress || '';
+  return ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1';
+}
+
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let data = '';
@@ -1043,6 +1193,9 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/auth/registrar-primero' && req.method === 'POST') {
       if (leerUsuarios().length > 0) {
         return sendJSON(res, 400, { error: 'Ya existen usuarios. Pedile a un usuario existente que te cree una cuenta.' });
+      }
+      if (!esPedidoLocal(req)) {
+        return sendJSON(res, 403, { error: 'El primer usuario se tiene que crear desde la PC donde corre la app.' });
       }
       const raw = await readBody(req);
       const { usuario, password } = JSON.parse(raw || '{}');
@@ -1169,8 +1322,12 @@ const server = http.createServer(async (req, res) => {
       }
 
       const ordenes = await fetchAllOrdenes(fechaDesde, fechaHasta);
-      // Solo interesan las órdenes pendientes de picking
-      const filtradas = ordenes.filter(o => o.Estado === 'Pendiente');
+      // Solo interesan las órdenes pendientes de picking. Una orden puede
+      // quedar en Pendiente pero ya tener comprobante asociado (facturada
+      // desde la web de Contabilium): esa no hay que volver a armarla.
+      const filtradas = ordenes.filter(
+        o => o.Estado === 'Pendiente' && !((o.IDComprobante || 0) > 0)
+      );
 
       const picking = [];
       for (const orden of filtradas) {
@@ -1214,11 +1371,45 @@ const server = http.createServer(async (req, res) => {
     // --- Pedidos armados ---
     if (pathname === '/api/armado' && req.method === 'POST') {
       const raw = await readBody(req);
-      const { orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente } = JSON.parse(raw || '{}');
+      const datos = JSON.parse(raw || '{}');
+      const { orderId, bultos, lineas, unidades } = datos;
       if (!orderId || !bultos) {
         return sendJSON(res, 400, { error: 'Faltan datos (orderId, bultos)' });
       }
-      const registro = registrarArmado({ orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente, usuarioArmado: req.usuarioActual });
+
+      // Releemos la orden en Contabilium en vez de confiar en lo que manda el
+      // navegador: una pestaña abierta hace rato puede estar mostrando una
+      // orden que mientras tanto se canceló o se facturó. Si la API no
+      // responde, igual registramos el armado (el depósito no puede quedar
+      // parado por eso) pero lo dejamos marcado como no verificado.
+      let numeroOrden = datos.numeroOrden;
+      let fechaOrden = datos.fechaOrden;
+      let idCliente = datos.idCliente;
+      let verificado = false;
+
+      try {
+        const detalle = await fetchOrdenDetalle(orderId);
+        const estado = (detalle.Estado || '').trim();
+        const yaFacturada = (detalle.IDComprobante || 0) > 0;
+        if (estado !== 'Pendiente' || yaFacturada) {
+          const motivo = yaFacturada ? 'ya tiene factura asociada' : `figura como "${estado || 'sin estado'}"`;
+          return sendJSON(res, 409, {
+            error: `La orden ${detalle.NumeroOrden || numeroOrden || orderId} ${motivo} en Contabilium. Volvé a consultar el listado antes de armarla.`
+          });
+        }
+        numeroOrden = detalle.NumeroOrden || numeroOrden;
+        fechaOrden = detalle.FechaCreacion || fechaOrden;
+        idCliente = detalle.IDCliente || idCliente;
+        verificado = true;
+      } catch (err) {
+        console.log(`  ⚠ No se pudo verificar la orden ${orderId} contra Contabilium (${err.message}). Se registra el armado igual, sin verificar.`);
+      }
+
+      const registro = registrarArmado({
+        orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente,
+        usuarioArmado: req.usuarioActual,
+        verificado
+      });
       return sendJSON(res, 200, registro);
     }
 
@@ -1303,9 +1494,11 @@ const server = http.createServer(async (req, res) => {
         'Unidades': a.unidades,
         'Bultos': a.bultos,
         'Armado por': a.usuarioArmado || '-',
-        'Armado el': new Date(a.timestamp).toLocaleString('es-AR'),
+        'Armado el': formatearFechaHoraLocal(a.timestamp),
         'Impreso por': a.usuarioImpresion || '-',
-        'Impreso el': a.fechaImpresion ? new Date(a.fechaImpresion).toLocaleString('es-AR') : '-'
+        'Impreso el': a.fechaImpresion ? formatearFechaHoraLocal(a.fechaImpresion) : '-',
+        // "-" en los armados anteriores a esta versión, que no se verificaban.
+        'Orden verificada': a.verificado === undefined ? '-' : (a.verificado ? 'Sí' : 'No')
       }));
 
       const ws = XLSX.utils.json_to_sheet(filas);
@@ -1333,7 +1526,9 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
+const HOST = (leerConfig() || {}).host || HOST_DEFECTO;
+
+server.listen(PORT, HOST, () => {
   cargarCatalogoInicial();
   cargarArmadosInicial();
   cargarClientesDesdeDiscoSiExiste();
@@ -1342,6 +1537,10 @@ server.listen(PORT, () => {
   console.log(' Lista de Picking - Contabilium');
   console.log(` Abrí tu navegador en: http://localhost:${PORT}`);
   console.log(` Catálogo cargado: ${catalogoInfo.cantidad} productos (${catalogoInfo.origen})`);
+  console.log(` Pedidos armados en el historial: ${armados.length}`);
+  if (HOST !== HOST_DEFECTO) {
+    console.log(` ⚠ Escuchando en ${HOST}: la app queda accesible desde la red.`);
+  }
   console.log(' Dejá esta ventana abierta mientras usás la app.');
   console.log('==================================================');
 

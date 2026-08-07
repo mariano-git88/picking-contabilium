@@ -698,8 +698,9 @@
   // ---------- Catálogo EAN / DUN ----------
   function formatearFecha(iso) {
     if (!iso) return null;
-    const d = new Date(iso);
-    return d.toLocaleString('es-AR');
+    // Con formatearFechaHora (24 h, hecho a mano) en vez de toLocaleString,
+    // que en es-AR formatea en 12 horas y a veces se come el "p. m.".
+    return formatearFechaHora(new Date(iso));
   }
 
   async function cargarEstadoCatalogo() {
@@ -977,7 +978,7 @@
     setScanFeedback(idx, '', '');
 
     try {
-      await apiFetch('/api/armado', {
+      const resp = await apiFetch('/api/armado', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -990,6 +991,17 @@
           idCliente: orden.idCliente
         })
       });
+
+      // Si el servidor rechazó el armado (por ejemplo, la orden ya no está
+      // pendiente en Contabilium), hay que revertir la marca de la pantalla:
+      // antes se quedaba mostrando "armado" aunque no se hubiera guardado.
+      if (!resp.ok) {
+        const data = await resp.json().catch(() => ({}));
+        pickingEstado[idx] = { armado: false, bultos: null, timestamp: null };
+        actualizarBultosBox(idx);
+        actualizarFilaPickingCompleta(idx);
+        setScanFeedback(idx, data.error || 'No se pudo registrar el armado.', 'error');
+      }
     } catch (err) {
       setScanFeedback(idx, 'Se guardó localmente, pero no se pudo registrar en el historial: ' + err.message, 'error');
     }

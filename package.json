@@ -1,22 +1,21 @@
 {
   "name": "contabilium-picking",
-  "version": "1.0.0",
-  "description": "App web local para generar listas de picking a partir de las ordenes de venta de Contabilium",
-  "main": "server.js",
+  "version": "1.1.0",
+  "description": "App web local de picking, control y etiquetado de ordenes de venta de Contabilium",
+  "main": "server-standalone.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server-standalone.js",
+    "build": "pkg --config pkg/pkg-package.json server-standalone.js --output dist/PickingContabilium.exe"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "pkg": "^5.8.1",
-    "xlsx": "^0.18.5"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
   },
   "engines": {
     "node": ">=18"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC"
 }
