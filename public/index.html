@@ -368,6 +368,21 @@
       </div>
       <div id="impresora-status"></div>
     </div>
+    <div class="catalogo-widget" id="buzon-widget" style="display:none">
+      <div class="fila">
+        <span>Envío al facturador</span>
+        <span id="buzon-estado"></span>
+      </div>
+      <div class="fila">
+        <input type="text" id="buzonUrlInput" placeholder="Dirección del buzón (termina en /exec)" style="min-width:230px" />
+      </div>
+      <div class="fila">
+        <input type="password" id="buzonTokenInput" placeholder="Clave" style="min-width:120px" />
+        <button class="btn-chico" id="btnGuardarBuzon">Guardar</button>
+        <button class="secondary btn-chico" id="btnReintentarEnvio" style="display:none">Reintentar</button>
+      </div>
+      <div id="buzon-status"></div>
+    </div>
     <div class="catalogo-widget" id="catalogo-card" style="display:none">
       <div class="fila">
         <span>Catálogo EAN/DUN</span>
@@ -582,6 +597,24 @@
         despachar: la etiqueta va sin dirección.
       </div>
 
+      <h3>El envío a quien factura</h3>
+      <p>
+        Cuando confirmás un armado, el pedido se le manda solo a
+        administración. No tenés que hacer nada.
+      </p>
+      <p>
+        Arriba a la derecha, en <b>Envío al facturador</b>, se ve el estado.
+        <b>Al día</b> quiere decir que está todo enviado. Si dice
+        <b>N sin enviar</b> es que falló el envío — casi siempre porque se
+        cortó internet. La app reintenta sola cada unos minutos, y también
+        podés tocar <b>Reintentar</b>. Mientras tanto podés seguir armando
+        tranquilo: no se pierde nada.
+      </p>
+      <div class="ojo">
+        Si el cartel de "sin enviar" queda ahí mucho rato, avisá. Esos pedidos
+        no le están llegando a quien tiene que facturarlos.
+      </div>
+
       <h3>Consultar lo que se armó</h3>
       <p>
         Con el botón <b>Consultar pedidos armados</b>, arriba a la derecha.
@@ -621,9 +654,42 @@
 
       <div class="novedad">
         <div class="novedad-titulo">
-          <span class="novedad-version">Versión 1.1</span>
+          <span class="novedad-version">Versión 1.2</span>
           <span class="novedad-fecha">7 de agosto de 2026</span>
           <span class="novedad-actual">Esta versión</span>
+        </div>
+        <p>
+          Primer paso hacia la facturación automática: los pedidos armados
+          ahora viajan solos a administración.
+        </p>
+        <ul>
+          <li>
+            <b>Cuando confirmás un armado, el pedido se le envía a quien
+            factura.</b> Se terminó el ida y vuelta del papel.
+          </li>
+          <li>
+            <b>Si en ese momento no hay internet, no pasa nada:</b> el pedido
+            queda guardado y la app lo reintenta sola cada unos minutos y cada
+            vez que arranca. Nunca te va a trabar para seguir armando.
+          </li>
+          <li>
+            <b>Arriba a la derecha, en "Envío al facturador", se ve cómo va.</b>
+            Si dice <b>al día</b>, está todo enviado. Si dice
+            <b>N sin enviar</b>, hay pedidos esperando: podés tocar
+            <b>Reintentar</b>. Si queda así mucho rato, avisá.
+          </li>
+          <li>
+            Se guarda también el detalle de lo que escaneaste producto por
+            producto, que es lo que va a permitir facturar exactamente lo que
+            sale del depósito.
+          </li>
+        </ul>
+      </div>
+
+      <div class="novedad">
+        <div class="novedad-titulo">
+          <span class="novedad-version">Versión 1.1</span>
+          <span class="novedad-fecha">7 de agosto de 2026</span>
         </div>
         <p>Repaso a fondo antes de sumarle la facturación. Casi todo es para que no se pierda ni se ensucie información.</p>
         <ul>
@@ -943,18 +1009,97 @@
         $('impresora-widget').style.display = 'flex';
         $('resultados-card').style.display = 'block';
         $('btnAbrirConsultaArmados').style.display = 'inline-block';
+        $('buzon-widget').style.display = 'flex';
         $('printerNameInput').value = data.printerName || '';
+        $('buzonUrlInput').value = data.sheetUrl || '';
+        // El token nunca vuelve del servidor. Si ya hay uno cargado, se
+        // muestra el campo con puntos para que se note, y solo se pisa si
+        // alguien escribe uno nuevo.
+        $('buzonTokenInput').placeholder = data.sheetTokenCargado ? '•••••••• (ya cargada)' : 'Clave';
         cargarEstadoCatalogo();
+        cargarEstadoBuzon();
       } else {
         $('setup-card').style.display = 'block';
         $('main-card').style.display = 'none';
         $('catalogo-card').style.display = 'none';
         $('impresora-widget').style.display = 'none';
+        $('buzon-widget').style.display = 'none';
         $('resultados-card').style.display = 'none';
         $('btnAbrirConsultaArmados').style.display = 'none';
       }
     } catch (err) {
       $('setup-card').style.display = 'block';
+    }
+  }
+
+  // ---------- Envío al facturador ----------
+  async function cargarEstadoBuzon() {
+    const el = $('buzon-estado');
+    const btnReintentar = $('btnReintentarEnvio');
+    try {
+      const resp = await apiFetch('/api/sincronizacion');
+      const data = await resp.json();
+
+      if (!data.configurado) {
+        el.textContent = '';
+        btnReintentar.style.display = 'none';
+        return;
+      }
+      if (data.pendientes > 0) {
+        // Que se vea: si esto queda trabado, esos pedidos no le llegan a
+        // quien factura y nadie se entera hasta que alguien reclama.
+        el.innerHTML = `<span class="estado-exceso">${data.pendientes} sin enviar</span>`;
+        btnReintentar.style.display = 'inline-block';
+      } else {
+        el.innerHTML = '<span class="estado-ok">al día</span>';
+        btnReintentar.style.display = 'none';
+      }
+    } catch {
+      el.textContent = '';
+      btnReintentar.style.display = 'none';
+    }
+  }
+
+  async function guardarBuzon() {
+    const sheetUrl = $('buzonUrlInput').value.trim();
+    const sheetToken = $('buzonTokenInput').value.trim();
+    const statusEl = $('buzon-status');
+    statusEl.textContent = 'Guardando...';
+    try {
+      const resp = await apiFetch('/api/config/buzon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sheetUrl, sheetToken })
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || 'Error al guardar');
+      $('buzonTokenInput').value = '';
+      statusEl.textContent = data.errorEnvio
+        ? 'Guardado, pero la prueba de envío falló: ' + data.errorEnvio
+        : 'Guardado.';
+      cargarEstadoBuzon();
+      setTimeout(() => { statusEl.textContent = ''; }, 6000);
+    } catch (err) {
+      statusEl.textContent = 'Error: ' + err.message;
+    }
+  }
+
+  async function reintentarEnvio() {
+    const statusEl = $('buzon-status');
+    const btn = $('btnReintentarEnvio');
+    btn.disabled = true;
+    statusEl.textContent = 'Enviando...';
+    try {
+      const resp = await apiFetch('/api/sincronizacion', { method: 'POST' });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || 'No se pudo enviar');
+      statusEl.textContent = `Enviados ${data.enviados}.`;
+      setTimeout(() => { statusEl.textContent = ''; }, 4000);
+    } catch (err) {
+      statusEl.textContent = err.message;
+    } finally {
+      btn.disabled = false;
+      cargarEstadoBuzon();
     }
   }
 
@@ -978,6 +1123,8 @@
   }
 
   $('btnGuardarImpresora').addEventListener('click', guardarImpresora);
+  $('btnGuardarBuzon').addEventListener('click', guardarBuzon);
+  $('btnReintentarEnvio').addEventListener('click', reintentarEnvio);
 
   async function guardarConfig() {
     const clientId = $('setupClientId').value.trim();
@@ -1325,6 +1472,8 @@
         actualizarBultosBox(idx);
         actualizarFilaPickingCompleta(idx);
         setScanFeedback(idx, data.error || 'No se pudo registrar el armado.', 'error');
+      } else {
+        cargarEstadoBuzon();
       }
     } catch (err) {
       setScanFeedback(idx, 'Se guardó localmente, pero no se pudo registrar en el historial: ' + err.message, 'error');

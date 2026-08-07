@@ -59,6 +59,25 @@ y conserva la versión anterior en un `.bak`. Si al arrancar un archivo no se
 puede leer porque quedó dañado, la app **no lo pisa**: lo guarda aparte como
 `.dañado-<fecha>` y recupera los datos desde el `.bak`.
 
+## Envío al facturador (buzón)
+La app corre local y el facturador corre en la nube: no se ven entre sí. Se
+comunican por una tab `armados` en el Sheet `gsu-facturacion-log`, a la que
+esta app le escribe a través de un Apps Script.
+
+El código del script y sus instrucciones de instalación están en
+`apps-script/Codigo.gs`. Se instala una sola vez; después se cargan la URL y
+la clave en el recuadro **Envío al facturador** de la app.
+
+Se eligió el Apps Script en vez de meter la librería de Google en el `.exe`
+para que la PC del depósito no guarde las credenciales del service account,
+que dan acceso a todos los Sheets de GSU. Lo único que vive en esa máquina es
+una URL y un token que solo sirve para agregar un armado.
+
+El envío nunca bloquea al depósito: el armado se guarda en disco primero y, si
+el envío falla, queda pendiente y se reintenta al arrancar, cada 5 minutos y
+con cada armado nuevo. Reenviar de más es inofensivo (el buzón es un log de
+eventos y el facturador se queda con uno por orden); perder un envío no lo es.
+
 ## Respaldo
 Lo que hay que respaldar es **`armados.json`** (el historial de pedidos
 armados). El reporte en Excel de la pantalla "Consultar armados" sirve como

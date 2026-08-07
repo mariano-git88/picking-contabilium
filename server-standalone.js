@@ -273,7 +273,10 @@ function registrarArmado({ orderId, numeroOrden, fechaOrden, bultos, lineas, uni
     // Se despachó exactamente lo pedido. Hoy es siempre true porque la app no
     // deja confirmar de otra forma; queda calculado para cuando se habiliten
     // los parciales y el facturador tenga que distinguirlos.
-    completo: detalle.length > 0 && detalle.every(i => i.escaneado === i.pedido)
+    completo: detalle.length > 0 && detalle.every(i => i.escaneado === i.pedido),
+    // Todavía no llegó al buzón del facturador. Lo pone en true
+    // `sincronizarArmados()` cuando el envío se confirma.
+    enviado: false
   };
   if (existente >= 0) armados[existente] = registro;
   else armados.push(registro);
@@ -334,6 +337,115 @@ function consultarArmados({ numeroOrden, fechaDesde, fechaHasta }) {
     resultado = resultado.filter(a => fechaLocalISO(a.timestamp) <= fechaHasta);
   }
   return resultado.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+}
+
+// --- Envío al facturador (buzón en Google Sheets vía Apps Script) ---
+//
+// El armado se guarda SIEMPRE primero en disco y recién después se intenta
+// mandar. Si el envío falla, el registro queda marcado `enviado: false` y se
+// reintenta solo: al arrancar, cada 5 minutos, y cada vez que se confirma un
+// armado nuevo. El depósito nunca queda trabado por un problema de internet.
+//
+// Reenviar de más es inofensivo: el buzón es un log de eventos y el
+// facturador se queda con uno solo por orden. Perder un envío no lo es —
+// ese pedido no le aparece nunca a quien factura.
+const SYNC_INTERVALO_MS = 5 * 60 * 1000;
+const SYNC_LOTE_MAX = 50;
+
+let sincronizando = false;
+let sincronizacionUltimoError = null;
+
+function armadoAFilaBuzon(a) {
+  return {
+    timestamp: a.timestamp,
+    fecha_local: fechaLocalISO(a.timestamp),
+    evento: 'armado',
+    id_orden: a.orderId,
+    numero_orden: a.numeroOrden || '',
+    fecha_orden: a.fechaOrden || '',
+    id_cliente: a.idCliente == null ? '' : String(a.idCliente),
+    bultos: a.bultos == null ? '' : String(a.bultos),
+    lineas: a.lineas == null ? '' : String(a.lineas),
+    unidades: a.unidades == null ? '' : String(a.unidades),
+    usuario: a.usuarioArmado || '',
+    completo: a.completo ? 'SI' : 'NO',
+    verificado: a.verificado ? 'SI' : 'NO',
+    items_json: JSON.stringify(a.items || []).slice(0, 45000),
+    id_comprobante: '',
+    numero_factura: '',
+    cae: '',
+    observacion: ''
+  };
+}
+
+function armadosPendientesDeEnvio() {
+  return armados.filter(a => a.enviado !== true);
+}
+
+// Devuelve {ok, enviados, error}. Nunca lanza: la llaman handlers que no
+// se pueden romper por esto.
+async function sincronizarArmados() {
+  const cfg = leerConfig() || {};
+  if (!cfg.sheetUrl || !cfg.sheetToken) {
+    return { ok: false, enviados: 0, error: 'sin_configurar' };
+  }
+  if (sincronizando) return { ok: true, enviados: 0, error: null };
+
+  const pendientes = armadosPendientesDeEnvio().slice(0, SYNC_LOTE_MAX);
+  if (!pendientes.length) {
+    sincronizacionUltimoError = null;
+    return { ok: true, enviados: 0, error: null };
+  }
+
+  sincronizando = true;
+  try {
+    const resp = await fetch(cfg.sheetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: cfg.sheetToken,
+        filas: pendientes.map(armadoAFilaBuzon)
+      }),
+      redirect: 'follow' // Apps Script redirige a googleusercontent
+    });
+
+    // OJO: Apps Script responde 200 aunque haya rechazado el pedido. El
+    // resultado real viene en el campo `ok` del cuerpo. Mirar solo el
+    // status HTTP haría pasar por bueno un token inválido.
+    let datos = null;
+    try {
+      datos = await resp.json();
+    } catch {
+      throw new Error(`el buzón respondió algo que no es JSON (HTTP ${resp.status}). ¿La URL termina en /exec?`);
+    }
+    if (!datos || datos.ok !== true) {
+      throw new Error((datos && datos.error) || 'el buzón rechazó el envío');
+    }
+
+    const idsEnviados = new Set(pendientes.map(p => p.orderId));
+    for (const a of armados) {
+      if (idsEnviados.has(a.orderId)) a.enviado = true;
+    }
+    guardarArmadosDisco();
+    sincronizacionUltimoError = null;
+    console.log(`  ✔ Enviados al facturador: ${pendientes.length} armado(s).`);
+    return { ok: true, enviados: pendientes.length, error: null };
+  } catch (err) {
+    sincronizacionUltimoError = err.message;
+    console.log(`  ⚠ No se pudo enviar al facturador (${err.message}). Queda pendiente y se reintenta solo.`);
+    return { ok: false, enviados: 0, error: err.message };
+  } finally {
+    sincronizando = false;
+  }
+}
+
+function estadoSincronizacion() {
+  const cfg = leerConfig() || {};
+  return {
+    configurado: !!(cfg.sheetUrl && cfg.sheetToken),
+    pendientes: armadosPendientesDeEnvio().length,
+    ultimoError: sincronizacionUltimoError
+  };
 }
 
 // --- Config (credenciales + usuarios) ---
@@ -1296,7 +1408,10 @@ const server = http.createServer(async (req, res) => {
       const cfg = leerConfig();
       return sendJSON(res, 200, {
         configurado: !!(cfg && cfg.clientId && cfg.clientSecret),
-        printerName: cfg ? (cfg.printerName || '') : ''
+        printerName: cfg ? (cfg.printerName || '') : '',
+        sheetUrl: cfg ? (cfg.sheetUrl || '') : '',
+        // El token no se devuelve nunca; solo si ya hay uno cargado.
+        sheetTokenCargado: !!(cfg && cfg.sheetToken)
       });
     }
 
@@ -1314,6 +1429,48 @@ const server = http.createServer(async (req, res) => {
       });
       cachedToken = null;
       return sendJSON(res, 200, { ok: true });
+    }
+
+    // --- Envío al facturador ---
+    if (pathname === '/api/sincronizacion' && req.method === 'GET') {
+      return sendJSON(res, 200, estadoSincronizacion());
+    }
+
+    if (pathname === '/api/sincronizacion' && req.method === 'POST') {
+      const resultado = await sincronizarArmados();
+      if (!resultado.ok && resultado.error === 'sin_configurar') {
+        return sendJSON(res, 400, {
+          error: 'Todavía no configuraste el envío al facturador (falta la dirección del buzón y su clave).'
+        });
+      }
+      if (!resultado.ok) {
+        return sendJSON(res, 502, { error: `No se pudo enviar: ${resultado.error}` });
+      }
+      return sendJSON(res, 200, { ok: true, enviados: resultado.enviados, ...estadoSincronizacion() });
+    }
+
+    if (pathname === '/api/config/buzon' && req.method === 'POST') {
+      const raw = await readBody(req);
+      const { sheetUrl, sheetToken } = JSON.parse(raw || '{}');
+      const cfgActual = leerConfig();
+      if (!cfgActual) return sendJSON(res, 400, { error: 'Primero configurá tus credenciales de Contabilium.' });
+      if (sheetUrl && !/^https:\/\/script\.google\.com\/.*\/exec$/.test(sheetUrl.trim())) {
+        return sendJSON(res, 400, {
+          error: 'La dirección del buzón tiene que ser la de la implementación de Apps Script y terminar en /exec.'
+        });
+      }
+      guardarConfig({
+        ...cfgActual,
+        sheetUrl: (sheetUrl || '').trim(),
+        sheetToken: (sheetToken || '').trim()
+      });
+      const resultado = await sincronizarArmados();
+      return sendJSON(res, 200, {
+        ok: true,
+        enviados: resultado.enviados,
+        errorEnvio: resultado.ok ? null : resultado.error,
+        ...estadoSincronizacion()
+      });
     }
 
     if (pathname === '/api/config/impresora' && req.method === 'POST') {
@@ -1442,6 +1599,11 @@ const server = http.createServer(async (req, res) => {
         verificado,
         items: datos.items
       });
+
+      // El envío al facturador no bloquea la respuesta: el armado ya está
+      // guardado en disco y, si el envío falla, se reintenta solo.
+      sincronizarArmados().catch(() => {});
+
       return sendJSON(res, 200, registro);
     }
 
@@ -1575,6 +1737,15 @@ server.listen(PORT, HOST, () => {
   }
   console.log(' Dejá esta ventana abierta mientras usás la app.');
   console.log('==================================================');
+
+  // Reintento de los armados que quedaron sin llegar al facturador: uno al
+  // arrancar (por si la PC estuvo apagada) y después cada 5 minutos.
+  const pendientesAlArrancar = armadosPendientesDeEnvio().length;
+  if (pendientesAlArrancar) {
+    console.log(`  ${pendientesAlArrancar} armado(s) todavía sin enviar al facturador; se reintenta ahora.`);
+  }
+  sincronizarArmados().catch(() => {});
+  setInterval(() => { sincronizarArmados().catch(() => {}); }, SYNC_INTERVALO_MS);
 
   // Actualiza la caché de clientes en segundo plano (no bloquea el arranque).
   // Si todavía no hay credenciales configuradas, simplemente no hace nada
