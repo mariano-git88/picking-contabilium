@@ -374,13 +374,11 @@
         <span id="buzon-estado"></span>
       </div>
       <div class="fila">
-        <input type="text" id="buzonUrlInput" placeholder="Dirección del buzón (termina en /exec)" style="min-width:230px" />
-      </div>
-      <div class="fila">
-        <input type="password" id="buzonTokenInput" placeholder="Clave" style="min-width:120px" />
+        <input type="text" id="buzonSheetInput" placeholder="Dirección de la planilla del buzón" style="min-width:230px" />
         <button class="btn-chico" id="btnGuardarBuzon">Guardar</button>
         <button class="secondary btn-chico" id="btnReintentarEnvio" style="display:none">Reintentar</button>
       </div>
+      <div id="buzon-credencial"></div>
       <div id="buzon-status"></div>
     </div>
     <div class="catalogo-widget" id="catalogo-card" style="display:none">
@@ -1011,11 +1009,7 @@
         $('btnAbrirConsultaArmados').style.display = 'inline-block';
         $('buzon-widget').style.display = 'flex';
         $('printerNameInput').value = data.printerName || '';
-        $('buzonUrlInput').value = data.sheetUrl || '';
-        // El token nunca vuelve del servidor. Si ya hay uno cargado, se
-        // muestra el campo con puntos para que se note, y solo se pisa si
-        // alguien escribe uno nuevo.
-        $('buzonTokenInput').placeholder = data.sheetTokenCargado ? '•••••••• (ya cargada)' : 'Clave';
+        $('buzonSheetInput').value = data.sheetId || '';
         cargarEstadoCatalogo();
         cargarEstadoBuzon();
       } else {
@@ -1040,6 +1034,16 @@
       const resp = await apiFetch('/api/sincronizacion');
       const data = await resp.json();
 
+      // El archivo de credenciales va al lado del programa; si falta, decirlo
+      // con todas las letras, porque si no el envío no funciona y no se ve
+      // por qué.
+      const cred = $('buzon-credencial');
+      if (data.credencialCargada) {
+        cred.innerHTML = `<span class="sin-codigo">credencial: ${data.credencialEmail}</span>`;
+      } else {
+        cred.innerHTML = '<span class="estado-exceso">Falta el archivo buzon-sa.json al lado del programa.</span>';
+      }
+
       if (!data.configurado) {
         el.textContent = '';
         btnReintentar.style.display = 'none';
@@ -1061,19 +1065,17 @@
   }
 
   async function guardarBuzon() {
-    const sheetUrl = $('buzonUrlInput').value.trim();
-    const sheetToken = $('buzonTokenInput').value.trim();
+    const sheetId = $('buzonSheetInput').value.trim();
     const statusEl = $('buzon-status');
     statusEl.textContent = 'Guardando...';
     try {
       const resp = await apiFetch('/api/config/buzon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sheetUrl, sheetToken })
+        body: JSON.stringify({ sheetId })
       });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error || 'Error al guardar');
-      $('buzonTokenInput').value = '';
       statusEl.textContent = data.errorEnvio
         ? 'Guardado, pero la prueba de envío falló: ' + data.errorEnvio
         : 'Guardado.';

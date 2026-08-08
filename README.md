@@ -60,23 +60,30 @@ puede leer porque quedó dañado, la app **no lo pisa**: lo guarda aparte como
 `.dañado-<fecha>` y recupera los datos desde el `.bak`.
 
 ## Envío al facturador (buzón)
-La app corre local y el facturador corre en la nube: no se ven entre sí. Se
-comunican por una tab `armados` en el Sheet `gsu-facturacion-log`, a la que
-esta app le escribe a través de un Apps Script.
+La app corre local en el depósito y el facturador corre en la nube: no se ven
+entre sí. Se comunican por una tab `armados` en una planilla de Google
+dedicada, a la que esta app le escribe y de la que el facturador lee.
 
-El código del script y sus instrucciones de instalación están en
-`apps-script/Codigo.gs`. Se instala una sola vez; después se cargan la URL y
-la clave en el recuadro **Envío al facturador** de la app.
+**Configuración (una sola vez):**
 
-Se eligió el Apps Script en vez de meter la librería de Google en el `.exe`
-para que la PC del depósito no guarde las credenciales del service account,
-que dan acceso a todos los Sheets de GSU. Lo único que vive en esa máquina es
-una URL y un token que solo sirve para agregar un armado.
+1. Copiar el archivo del Service Account como **`buzon-sa.json`**, al lado del
+   ejecutable. La app avisa en pantalla si no lo encuentra.
+2. Pegar la dirección de la planilla en el recuadro **Envío al facturador** y
+   guardar. La pestaña `armados` y su encabezado se crean solos.
+
+**El Service Account tiene que ser exclusivo del buzón y tener acceso a esa
+planilla solamente.** Los permisos de Google son por archivo, no por pestaña:
+un service account con acceso a la planilla de comisiones o a los logs de
+facturación pondría todo eso al alcance de la PC del depósito.
+
+El token de Google se firma con el módulo `crypto` de Node, sin librerías de
+Google, para no engordar el `.exe`.
 
 El envío nunca bloquea al depósito: el armado se guarda en disco primero y, si
 el envío falla, queda pendiente y se reintenta al arrancar, cada 5 minutos y
 con cada armado nuevo. Reenviar de más es inofensivo (el buzón es un log de
-eventos y el facturador se queda con uno por orden); perder un envío no lo es.
+eventos y el facturador se queda con uno por orden); perder un envío no lo es,
+así que la pantalla muestra cuántos quedan sin enviar.
 
 ## Respaldo
 Lo que hay que respaldar es **`armados.json`** (el historial de pedidos

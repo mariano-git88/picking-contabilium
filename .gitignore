@@ -6,6 +6,7 @@ config.json
 armados.json
 catalogo.json
 clientes_cache.json
+buzon-sa.json
 temp_etiquetas/
 
 # Respaldos y temporales de esos mismos archivos (escritura atómica)

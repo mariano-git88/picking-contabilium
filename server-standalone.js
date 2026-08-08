@@ -339,7 +339,7 @@ function consultarArmados({ numeroOrden, fechaDesde, fechaHasta }) {
   return resultado.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 }
 
-// --- Envío al facturador (buzón en Google Sheets vía Apps Script) ---
+// --- Envío al facturador (buzón en Google Sheets) ---
 //
 // El armado se guarda SIEMPRE primero en disco y recién después se intenta
 // mandar. Si el envío falla, el registro queda marcado `enviado: false` y se
@@ -349,11 +349,156 @@ function consultarArmados({ numeroOrden, fechaDesde, fechaHasta }) {
 // Reenviar de más es inofensivo: el buzón es un log de eventos y el
 // facturador se queda con uno solo por orden. Perder un envío no lo es —
 // ese pedido no le aparece nunca a quien factura.
+//
+// La autenticación es con un Service Account propio, cuyo archivo va al lado
+// del ejecutable (`buzon-sa.json`). Ese service account tiene acceso a UNA
+// sola planilla, la del buzón: si esta PC se pierde, no se llega desde acá a
+// las planillas de comisiones ni a los logs de facturación.
+//
+// Se firma el token a mano con el módulo `crypto` de Node en vez de usar las
+// librerías de Google, para no sumarle dependencias al .exe. Son 40 líneas y
+// el protocolo (JWT firmado con RS256 → access token) no cambia nunca.
 const SYNC_INTERVALO_MS = 5 * 60 * 1000;
 const SYNC_LOTE_MAX = 50;
+const BUZON_SA_PATH = path.join(APP_DIR, 'buzon-sa.json');
+const BUZON_TAB = 'armados';
+const BUZON_COLUMNAS = [
+  'timestamp', 'fecha_local', 'evento', 'id_orden', 'numero_orden',
+  'fecha_orden', 'id_cliente', 'bultos', 'lineas', 'unidades', 'usuario',
+  'completo', 'verificado', 'items_json', 'id_comprobante', 'numero_factura',
+  'cae', 'observacion'
+];
 
 let sincronizando = false;
 let sincronizacionUltimoError = null;
+let googleToken = null;
+let googleTokenExpira = 0;
+
+function leerServiceAccountBuzon() {
+  try {
+    const sa = JSON.parse(fs.readFileSync(BUZON_SA_PATH, 'utf8'));
+    if (!sa.client_email || !sa.private_key) return null;
+    return sa;
+  } catch {
+    return null;
+  }
+}
+
+function base64url(buf) {
+  return Buffer.from(buf).toString('base64')
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+// Intercambia el Service Account por un access token de Google (OAuth2
+// "JWT bearer"). El token dura una hora; lo cacheamos con un minuto de
+// margen para no pedir uno por cada envío.
+async function obtenerTokenGoogle(sa) {
+  const ahora = Math.floor(Date.now() / 1000);
+  if (googleToken && ahora < googleTokenExpira - 60) return googleToken;
+
+  const header = { alg: 'RS256', typ: 'JWT' };
+  const claims = {
+    iss: sa.client_email,
+    scope: 'https://www.googleapis.com/auth/spreadsheets',
+    aud: sa.token_uri || 'https://oauth2.googleapis.com/token',
+    iat: ahora,
+    exp: ahora + 3600
+  };
+
+  const sinFirma = `${base64url(JSON.stringify(header))}.${base64url(JSON.stringify(claims))}`;
+  const firma = crypto.createSign('RSA-SHA256').update(sinFirma).sign(sa.private_key);
+  const jwt = `${sinFirma}.${base64url(firma)}`;
+
+  const resp = await fetch(claims.aud, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      assertion: jwt
+    })
+  });
+
+  const datos = await resp.json().catch(() => ({}));
+  if (!resp.ok || !datos.access_token) {
+    throw new Error(
+      `Google rechazó las credenciales del buzón (${resp.status}): ` +
+      `${datos.error_description || datos.error || 'sin detalle'}`
+    );
+  }
+
+  googleToken = datos.access_token;
+  googleTokenExpira = ahora + (datos.expires_in || 3600);
+  return googleToken;
+}
+
+async function googleFetch(url, opciones, token) {
+  const resp = await fetch(url, {
+    ...opciones,
+    headers: {
+      ...(opciones && opciones.headers),
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  const datos = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    const msg = (datos.error && datos.error.message) || `HTTP ${resp.status}`;
+    throw new Error(msg);
+  }
+  return datos;
+}
+
+// Crea la pestaña y su encabezado si todavía no existen, para que la planilla
+// del buzón se pueda estrenar vacía sin que nadie prepare nada a mano.
+async function asegurarTabBuzon(sheetId, token) {
+  const meta = await googleFetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties.title`,
+    { method: 'GET' }, token
+  );
+  const existe = (meta.sheets || []).some(
+    s => s.properties && s.properties.title === BUZON_TAB
+  );
+
+  if (!existe) {
+    await googleFetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}:batchUpdate`,
+      { method: 'POST', body: JSON.stringify({ requests: [{ addSheet: { properties: { title: BUZON_TAB } } }] }) },
+      token
+    );
+  }
+
+  const encabezado = await googleFetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${BUZON_TAB}!A1:R1`,
+    { method: 'GET' }, token
+  );
+  if (!encabezado.values || !encabezado.values.length) {
+    await googleFetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${BUZON_TAB}!A1?valueInputOption=RAW`,
+      { method: 'PUT', body: JSON.stringify({ values: [BUZON_COLUMNAS] }) },
+      token
+    );
+  }
+}
+
+async function enviarFilasAlBuzon(sheetId, sa, filas) {
+  const token = await obtenerTokenGoogle(sa);
+  await asegurarTabBuzon(sheetId, token);
+
+  const valores = filas.map(f => BUZON_COLUMNAS.map(c => {
+    const v = f[c];
+    return (v === null || v === undefined) ? '' : String(v);
+  }));
+
+  // RAW y no USER_ENTERED: el número de orden viene con ceros a la izquierda
+  // ("00012036") y USER_ENTERED lo guardaría como 12036, rompiendo el cruce
+  // contra Contabilium del otro lado.
+  await googleFetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${BUZON_TAB}!A1:append` +
+    `?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
+    { method: 'POST', body: JSON.stringify({ values: valores }) },
+    token
+  );
+}
 
 function armadoAFilaBuzon(a) {
   return {
@@ -386,7 +531,8 @@ function armadosPendientesDeEnvio() {
 // se pueden romper por esto.
 async function sincronizarArmados() {
   const cfg = leerConfig() || {};
-  if (!cfg.sheetUrl || !cfg.sheetToken) {
+  const sa = leerServiceAccountBuzon();
+  if (!cfg.sheetId || !sa) {
     return { ok: false, enviados: 0, error: 'sin_configurar' };
   }
   if (sincronizando) return { ok: true, enviados: 0, error: null };
@@ -399,28 +545,7 @@ async function sincronizarArmados() {
 
   sincronizando = true;
   try {
-    const resp = await fetch(cfg.sheetUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        token: cfg.sheetToken,
-        filas: pendientes.map(armadoAFilaBuzon)
-      }),
-      redirect: 'follow' // Apps Script redirige a googleusercontent
-    });
-
-    // OJO: Apps Script responde 200 aunque haya rechazado el pedido. El
-    // resultado real viene en el campo `ok` del cuerpo. Mirar solo el
-    // status HTTP haría pasar por bueno un token inválido.
-    let datos = null;
-    try {
-      datos = await resp.json();
-    } catch {
-      throw new Error(`el buzón respondió algo que no es JSON (HTTP ${resp.status}). ¿La URL termina en /exec?`);
-    }
-    if (!datos || datos.ok !== true) {
-      throw new Error((datos && datos.error) || 'el buzón rechazó el envío');
-    }
+    await enviarFilasAlBuzon(cfg.sheetId, sa, pendientes.map(armadoAFilaBuzon));
 
     const idsEnviados = new Set(pendientes.map(p => p.orderId));
     for (const a of armados) {
@@ -441,8 +566,12 @@ async function sincronizarArmados() {
 
 function estadoSincronizacion() {
   const cfg = leerConfig() || {};
+  const sa = leerServiceAccountBuzon();
   return {
-    configurado: !!(cfg.sheetUrl && cfg.sheetToken),
+    configurado: !!(cfg.sheetId && sa),
+    sheetId: cfg.sheetId || '',
+    credencialCargada: !!sa,
+    credencialEmail: sa ? sa.client_email : '',
     pendientes: armadosPendientesDeEnvio().length,
     ultimoError: sincronizacionUltimoError
   };
@@ -1409,9 +1538,7 @@ const server = http.createServer(async (req, res) => {
       return sendJSON(res, 200, {
         configurado: !!(cfg && cfg.clientId && cfg.clientSecret),
         printerName: cfg ? (cfg.printerName || '') : '',
-        sheetUrl: cfg ? (cfg.sheetUrl || '') : '',
-        // El token no se devuelve nunca; solo si ya hay uno cargado.
-        sheetTokenCargado: !!(cfg && cfg.sheetToken)
+        sheetId: cfg ? (cfg.sheetId || '') : ''
       });
     }
 
@@ -1451,19 +1578,22 @@ const server = http.createServer(async (req, res) => {
 
     if (pathname === '/api/config/buzon' && req.method === 'POST') {
       const raw = await readBody(req);
-      const { sheetUrl, sheetToken } = JSON.parse(raw || '{}');
+      let { sheetId } = JSON.parse(raw || '{}');
       const cfgActual = leerConfig();
       if (!cfgActual) return sendJSON(res, 400, { error: 'Primero configurá tus credenciales de Contabilium.' });
-      if (sheetUrl && !/^https:\/\/script\.google\.com\/.*\/exec$/.test(sheetUrl.trim())) {
+
+      sheetId = (sheetId || '').trim();
+      // Se acepta la dirección entera de la planilla, no solo el ID: es lo
+      // que uno tiene a mano cuando la está mirando en el navegador.
+      const desdeUrl = sheetId.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+      if (desdeUrl) sheetId = desdeUrl[1];
+      if (sheetId && !/^[a-zA-Z0-9_-]{20,}$/.test(sheetId)) {
         return sendJSON(res, 400, {
-          error: 'La dirección del buzón tiene que ser la de la implementación de Apps Script y terminar en /exec.'
+          error: 'Eso no parece el ID de una planilla de Google. Pegá la dirección completa de la planilla del buzón.'
         });
       }
-      guardarConfig({
-        ...cfgActual,
-        sheetUrl: (sheetUrl || '').trim(),
-        sheetToken: (sheetToken || '').trim()
-      });
+
+      guardarConfig({ ...cfgActual, sheetId });
       const resultado = await sincronizarArmados();
       return sendJSON(res, 200, {
         ok: true,
