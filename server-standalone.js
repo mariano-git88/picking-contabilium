@@ -374,6 +374,29 @@ let sincronizacionUltimoError = null;
 let googleToken = null;
 let googleTokenExpira = 0;
 
+// La planilla del buzón puede venir de config.json (cargada desde la app) o
+// de un archivo `buzon-sheet.txt` que viaja en el paquete de actualización.
+// El archivo existe para que quien instala en el depósito no tenga que pegar
+// a mano una dirección larga: es el paso más fácil de errar de toda la
+// instalación, y el más difícil de diagnosticar después.
+function extraerSheetId(texto) {
+  const limpio = (texto || '').trim();
+  if (!limpio) return '';
+  const desdeUrl = limpio.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+  const id = desdeUrl ? desdeUrl[1] : limpio;
+  return /^[a-zA-Z0-9_-]{20,}$/.test(id) ? id : '';
+}
+
+function sheetIdDelBuzon() {
+  const cfg = leerConfig() || {};
+  if (cfg.sheetId) return cfg.sheetId;
+  try {
+    return extraerSheetId(fs.readFileSync(path.join(APP_DIR, 'buzon-sheet.txt'), 'utf8'));
+  } catch {
+    return '';
+  }
+}
+
 function leerServiceAccountBuzon() {
   try {
     const sa = JSON.parse(fs.readFileSync(BUZON_SA_PATH, 'utf8'));
@@ -530,9 +553,9 @@ function armadosPendientesDeEnvio() {
 // Devuelve {ok, enviados, error}. Nunca lanza: la llaman handlers que no
 // se pueden romper por esto.
 async function sincronizarArmados() {
-  const cfg = leerConfig() || {};
+  const sheetId = sheetIdDelBuzon();
   const sa = leerServiceAccountBuzon();
-  if (!cfg.sheetId || !sa) {
+  if (!sheetId || !sa) {
     return { ok: false, enviados: 0, error: 'sin_configurar' };
   }
   if (sincronizando) return { ok: true, enviados: 0, error: null };
@@ -545,7 +568,7 @@ async function sincronizarArmados() {
 
   sincronizando = true;
   try {
-    await enviarFilasAlBuzon(cfg.sheetId, sa, pendientes.map(armadoAFilaBuzon));
+    await enviarFilasAlBuzon(sheetId, sa, pendientes.map(armadoAFilaBuzon));
 
     const idsEnviados = new Set(pendientes.map(p => p.orderId));
     for (const a of armados) {
@@ -565,11 +588,11 @@ async function sincronizarArmados() {
 }
 
 function estadoSincronizacion() {
-  const cfg = leerConfig() || {};
+  const sheetId = sheetIdDelBuzon();
   const sa = leerServiceAccountBuzon();
   return {
-    configurado: !!(cfg.sheetId && sa),
-    sheetId: cfg.sheetId || '',
+    configurado: !!(sheetId && sa),
+    sheetId,
     credencialCargada: !!sa,
     credencialEmail: sa ? sa.client_email : '',
     pendientes: armadosPendientesDeEnvio().length,
@@ -1538,7 +1561,7 @@ const server = http.createServer(async (req, res) => {
       return sendJSON(res, 200, {
         configurado: !!(cfg && cfg.clientId && cfg.clientSecret),
         printerName: cfg ? (cfg.printerName || '') : '',
-        sheetId: cfg ? (cfg.sheetId || '') : ''
+        sheetId: sheetIdDelBuzon()
       });
     }
 
@@ -1582,12 +1605,11 @@ const server = http.createServer(async (req, res) => {
       const cfgActual = leerConfig();
       if (!cfgActual) return sendJSON(res, 400, { error: 'Primero configurá tus credenciales de Contabilium.' });
 
-      sheetId = (sheetId || '').trim();
       // Se acepta la dirección entera de la planilla, no solo el ID: es lo
       // que uno tiene a mano cuando la está mirando en el navegador.
-      const desdeUrl = sheetId.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
-      if (desdeUrl) sheetId = desdeUrl[1];
-      if (sheetId && !/^[a-zA-Z0-9_-]{20,}$/.test(sheetId)) {
+      const crudo = (sheetId || '').trim();
+      sheetId = extraerSheetId(crudo);
+      if (crudo && !sheetId) {
         return sendJSON(res, 400, {
           error: 'Eso no parece el ID de una planilla de Google. Pegá la dirección completa de la planilla del buzón.'
         });
