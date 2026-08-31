@@ -25,10 +25,30 @@ máquina de la red, agregar `"host": "0.0.0.0"` en `config.json` — teniendo en
 cuenta que ahí cualquiera de la red llega a la pantalla de login.
 
 ## Empaquetado como ejecutable (.exe)
-Este proyecto usa `pkg` para generar un ejecutable standalone para Windows:
+
 ```
-npm run build
+npm run build       # compila dist/PickingContabilium.exe
+npm run verificar   # lo levanta y comprueba que sirva la pantalla
+npm run paquete     # verifica y arma el ZIP para el depósito
 ```
+
+**`npm run build` no alcanza como verificación, y no es un detalle.** Hasta la
+v1.2.1 la config de `pkg` vivía en `pkg/pkg-package.json`, y los globs de
+`assets` se resuelven **relativo a la carpeta del archivo de config**: así
+`"public/**/*"` apuntaba a `pkg/public/`, que no existe. El `index.html` nunca
+entró al ejecutable. El `.exe` arrancaba, imprimía su banner, abría el
+navegador solo y respondía la API — pero devolvía **404 en `/`**. Encima `pkg`
+puede fallar y devolver exit code 0, así que ni el build se quejaba.
+
+Por eso la config de `pkg` ahora vive en `package.json` (donde el glob se
+resuelve desde la raíz) y `npm run paquete` **no arma el ZIP si
+`npm run verificar` no pasa**. La única prueba que vale es levantar el binario
+y pedirle la página.
+
+El ZIP queda en `dist/PickingContabilium-v<version>.zip` con el `.exe`,
+`assets/logo_suprabond.png`, `buzon-sa.json`, `buzon-sheet.txt` y un
+`LEEME.txt`. **Tiene una credencial adentro**: va por pendrive o acceso
+remoto, no por mail ni por WhatsApp.
 
 ## Estructura
 - `server-standalone.js` — backend (Node, sin dependencias de framework)

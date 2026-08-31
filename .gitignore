@@ -22,3 +22,5 @@ bin/
 # Archivos de sistema
 .DS_Store
 Thumbs.db
+
+dist/.verificacion-*
