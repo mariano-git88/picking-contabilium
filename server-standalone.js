@@ -702,19 +702,46 @@ function esSupervisor(usuario) {
   return rolDe(usuario) === 'supervisor';
 }
 
-// Las configuraciones anteriores a la v1.3 no tienen `rol`. Si migráramos
-// todo a "operario" nadie podría autorizar un faltante ni crear usuarios;
-// si migráramos todo a "supervisor" el control quedaría de adorno. El
-// primero de la lista es quien instaló la app en esa PC, así que ese queda
-// de supervisor y el resto de operarios — y se escribe en config.json para
-// que se vea en la pantalla de usuarios y se pueda corregir ahí.
+// ¿Alguien definió los roles a mano en esta instalación?
+//
+// Mientras sea false, la app viene de una versión sin roles y NO sabe quién
+// es supervisor. No lo puede adivinar: la 1.3.0 lo intentó con "el primero de
+// la lista es quien instaló la app" y en el depósito el primer usuario es
+// Jesica, que es la que usa la app todos los días — así que el que administra
+// quedó afuera de la administración, sin forma de arreglarlo desde la app.
+function rolesDefinidos() {
+  const cfg = leerConfig() || {};
+  return cfg.rolesDefinidos === true;
+}
+
+function marcarRolesDefinidos() {
+  const cfg = leerConfig() || {};
+  if (cfg.rolesDefinidos !== true) guardarConfig({ ...cfg, rolesDefinidos: true });
+}
+
+// Migración de las instalaciones sin roles (previas a la 1.3) y de las que
+// quedaron con los roles repartidos por la regla vieja de la 1.3.0/1.3.1.
+//
+// Todos quedan supervisores, que es exactamente lo que podían hacer antes:
+// hasta la 1.3 cualquier usuario hacía cualquier cosa. Así nadie pierde
+// acceso y, sobre todo, nadie queda encerrado afuera. El control se cierra
+// cuando una persona decide quién es quién en la pantalla de Usuarios, y
+// hasta que eso pase la app lo avisa en pantalla.
+//
+// Preferir que quede abierto y visible antes que cerrado sobre la persona
+// equivocada: de lo segundo no se sale sin editar config.json a mano en la
+// PC del depósito.
 function migrarRolesSiHaceFalta() {
+  const cfg = leerConfig() || {};
+  if (cfg.rolesDefinidos !== undefined) return;
+
   const usuarios = leerUsuarios();
   if (!usuarios.length) return;
-  if (usuarios.some(u => u.rol)) return;
-  usuarios.forEach((u, i) => { u.rol = i === 0 ? 'supervisor' : 'operario'; });
-  guardarUsuarios(usuarios);
-  console.log(`  ℹ Usuarios migrados a roles: ${usuarios.map(u => `${u.usuario} (${u.rol})`).join(', ')}`);
+
+  usuarios.forEach(u => { u.rol = 'supervisor'; });
+  guardarConfig({ ...cfg, usuarios, rolesDefinidos: false });
+  console.log(`  ℹ Actualización a roles: ${usuarios.map(u => u.usuario).join(', ')} quedaron todos como supervisores.`);
+  console.log('    Definí quién es supervisor y quién operario en la pantalla de Usuarios.');
 }
 
 function crearUsuario(usuario, password, rol) {
@@ -744,6 +771,7 @@ function cambiarRol(usuario, rol) {
   }
   u.rol = nuevo;
   guardarUsuarios(usuarios);
+  marcarRolesDefinidos();
   return nuevo;
 }
 
@@ -1613,6 +1641,7 @@ const server = http.createServer(async (req, res) => {
       // El primero es quien instala la app: arranca de supervisor, si no
       // no habría nadie que pueda crear usuarios ni autorizar faltantes.
       crearUsuario(usuario, password, 'supervisor');
+      marcarRolesDefinidos();
       const token = crearSesion(usuario);
       return sendJSON(res, 200, { ok: true, token, usuario, rol: 'supervisor' });
     }
@@ -1651,7 +1680,11 @@ const server = http.createServer(async (req, res) => {
         usuario: u.usuario,
         rol: u.rol === 'supervisor' ? 'supervisor' : 'operario'
       }));
-      return sendJSON(res, 200, { usuarios, puedeAdministrar: req.rolActual === 'supervisor' });
+      return sendJSON(res, 200, {
+        usuarios,
+        puedeAdministrar: req.rolActual === 'supervisor',
+        rolesDefinidos: rolesDefinidos()
+      });
     }
 
     if (pathname === '/api/usuarios' && req.method === 'POST') {
@@ -1664,6 +1697,9 @@ const server = http.createServer(async (req, res) => {
       if (password.length < 4) return sendJSON(res, 400, { error: 'La contraseña debe tener al menos 4 caracteres.' });
       try {
         crearUsuario(usuario, password, rol);
+        // Elegir el rol de alguien en el desplegable es tan deliberado como
+        // cambiárselo: cierra la migración.
+        marcarRolesDefinidos();
         return sendJSON(res, 200, { ok: true });
       } catch (err) {
         return sendJSON(res, 400, { error: err.message });
@@ -2114,6 +2150,9 @@ server.listen(PORT, HOST, () => {
   const supervisores = leerUsuarios().filter(u => u.rol === 'supervisor').map(u => u.usuario);
   if (supervisores.length) {
     console.log(` Supervisores (autorizan pedidos incompletos): ${supervisores.join(', ')}`);
+  }
+  if (leerUsuarios().length && !rolesDefinidos()) {
+    console.log(' ⚠ Todavía no se definió quién es supervisor: por ahora pueden todos.');
   }
   if (HOST !== HOST_DEFECTO) {
     console.log(` ⚠ Escuchando en ${HOST}: la app queda accesible desde la red.`);

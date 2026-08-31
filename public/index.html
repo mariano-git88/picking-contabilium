@@ -1106,7 +1106,23 @@
       const data = await resp.json();
       if (!data.usuarios.length) { cont.innerHTML = '<div class="empty">No hay usuarios.</div>'; return; }
       const puede = data.puedeAdministrar;
-      let html = '<table><thead><tr><th>Usuario</th><th>Rol</th><th></th></tr></thead><tbody>';
+      let html = '';
+      if (!data.rolesDefinidos) {
+        // La app viene de una version sin roles y no puede adivinar quien es
+        // supervisor, asi que por ahora pueden todos. Que se vea, porque
+        // mientras tanto cualquiera puede autorizar un pedido incompleto.
+        html += `
+          <div class="faltante-box" style="margin-bottom:16px">
+            <b>Falta definir quién es supervisor.</b><br />
+            Esta instalación viene de una versión que no tenía roles, así que
+            por ahora <b>todos pueden todo</b>, igual que antes — incluido
+            autorizar un pedido que sale incompleto.<br /><br />
+            Dejá como <b>supervisor</b> solo a quien tenga que autorizar esos
+            pedidos, y pasá al resto a <b>operario</b>. Este aviso desaparece
+            cuando lo hagas.
+          </div>`;
+      }
+      html += '<table><thead><tr><th>Usuario</th><th>Rol</th><th></th></tr></thead><tbody>';
       data.usuarios.forEach(u => {
         const esSup = u.rol === 'supervisor';
         const acciones = puede

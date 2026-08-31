@@ -63,11 +63,19 @@ hace cualquiera; **autorizar un pedido que sale incompleto y administrar
 usuarios, solo un supervisor**. Lo pidió Gabriel Parodi (2026-08-10): cerrar un
 pedido con menos es lo que después dispara la factura por menos.
 
-Las instalaciones anteriores a la 1.3 no tienen `rol` en `config.json`. Al
-arrancar se migran solas: **el primer usuario de la lista** (quien instaló la
-app en esa PC) queda de supervisor y el resto de operarios. Se escribe en
-`config.json` y se ve en la pantalla de Usuarios, donde se corrige. El
-arranque imprime en consola quiénes son supervisores.
+**La app no adivina quién es supervisor.** Al actualizar desde una versión sin
+roles, **todos quedan supervisores** —exactamente lo que podían hacer antes— y
+`config.json` marca `rolesDefinidos: false`. La pantalla de Usuarios avisa que
+faltan definir, y el aviso desaparece cuando una persona cambia un rol o crea
+un usuario eligiéndolo.
+
+La 1.3.0 intentó adivinar con "el primero de la lista es quien instaló la app".
+En el depósito el primer usuario es **Jesica**, que es la que usa la app todos
+los días, así que quien administra quedó de operario y **sin forma de
+arreglarlo desde la app**. De un control cerrado sobre la persona equivocada no
+se sale sin editar `config.json` a mano en la PC del depósito; de uno abierto y
+avisado, sí. Por eso ahora falla abierto. Las instalaciones que quedaron mal
+con la 1.3.0/1.3.1 se reparan solas al arrancar la 1.3.2.
 
 No se puede quedar sin ningún supervisor: la app rechaza borrar o degradar al
 último.
