@@ -1241,12 +1241,32 @@
       // por qué.
       const cred = $('buzon-credencial');
       if (data.credencialCargada) {
-        cred.innerHTML = `<span class="sin-codigo">credencial: ${data.credencialEmail}</span>`;
+        cred.innerHTML = `<span class="sin-codigo">credencial: ${escapeHtml(data.credencialEmail)}</span>`;
       } else {
-        cred.innerHTML = '<span class="estado-exceso">Falta el archivo buzon-sa.json al lado del programa.</span>';
+        cred.innerHTML = '';
       }
 
       if (!data.configurado) {
+        // Decir QUÉ falta y, sobre todo, EN QUÉ CARPETA lo está buscando. El
+        // error casi siempre es que los archivos quedaron en otro lado al
+        // actualizar, y sin la ruta no hay forma de darse cuenta.
+        const faltan = [];
+        if (!data.credencialCargada) faltan.push('buzon-sa.json');
+        if (!data.sheetId) faltan.push('buzon-sheet.txt');
+        cred.innerHTML = `
+          <div class="armado-error" style="margin:8px 0 0">
+            <b>El envío al facturador no está andando.</b> Los pedidos que armes
+            se guardan igual, pero no le llegan a quien factura.<br /><br />
+            Falta${faltan.length > 1 ? 'n' : ''} ${faltan.map(f => `<b>${f}</b>`).join(' y ')}
+            en la carpeta del programa:<br />
+            <code style="word-break:break-all">${escapeHtml(data.carpeta || '')}</code><br /><br />
+            Los dos archivos vienen adentro del ZIP de la actualización y van
+            <b>sueltos en esa carpeta</b>, al lado de PickingContabilium.exe.
+            Las dos formas de equivocarse: abrir el programa
+            <b>desde adentro del ZIP</b> sin extraerlo (Windows lo copia solo a
+            una carpeta temporal, sin los demás archivos), o dejar que al
+            extraer cree una carpeta nueva con el nombre del ZIP.
+          </div>`;
         el.textContent = '';
         btnReintentar.style.display = 'none';
         return;

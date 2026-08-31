@@ -66,8 +66,27 @@ Si queda abierta, Windows no deja reemplazar el programa.
 
 PASO 2 - COPIAR LOS ARCHIVOS
 ----------------------------
+NO ABRAS EL PROGRAMA DESDE ADENTRO DEL ZIP. Si haces doble click en
+PickingContabilium.exe sin extraer, Windows lo copia solo a una carpeta
+temporal, sin los demas archivos, y el programa arranca a medias: no
+encuentra la credencial y los pedidos armados no le llegan a nadie.
+Primero extraer, despues abrir.
+
 Copiar TODO lo que esta en esta carpeta dentro de la carpeta donde ya vive
 el programa, y aceptar cuando pregunte si reemplaza.
+
+Son 4 cosas y tienen que quedar las 4 SUELTAS, al lado del programa:
+
+    PickingContabilium.exe
+    buzon-sa.json
+    buzon-sheet.txt
+    assets  (una carpeta)
+
+OJO CON ESTO: cuando Windows pregunta donde extraer, propone crear una
+carpeta nueva con el nombre del ZIP. Si se acepta esa propuesta, los
+archivos quedan adentro de esa carpeta nueva y el programa no los
+encuentra. Hay que borrar el nombre que propone y elegir la carpeta donde
+ya esta el programa.
 
 IMPORTANTE: no borrar la carpeta vieja antes de copiar. Adentro hay tres
 archivos (config.json, armados.json, catalogo.json) con las contrasenas, el

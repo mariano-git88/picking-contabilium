@@ -612,6 +612,11 @@ async function sincronizarArmados() {
   }
 }
 
+function cfg_tieneSheetId() {
+  const cfg = leerConfig() || {};
+  return !!cfg.sheetId;
+}
+
 function estadoSincronizacion() {
   const sheetId = sheetIdDelBuzon();
   const sa = leerServiceAccountBuzon();
@@ -620,6 +625,13 @@ function estadoSincronizacion() {
     sheetId,
     credencialCargada: !!sa,
     credencialEmail: sa ? sa.client_email : '',
+    // La carpeta donde la app busca buzon-sa.json y buzon-sheet.txt. Va a la
+    // pantalla porque el error más común al actualizar es dejar esos archivos
+    // en otro lado —"Extraer todo" de Windows los mete en una subcarpeta con
+    // el nombre del ZIP— y "falta el archivo" sin decir DÓNDE lo busca no se
+    // puede diagnosticar, menos por teléfono con el depósito.
+    carpeta: APP_DIR,
+    hojaEnArchivo: !cfg_tieneSheetId(),
     pendientes: armadosPendientesDeEnvio().length,
     ultimoError: sincronizacionUltimoError
   };
