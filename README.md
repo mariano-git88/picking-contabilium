@@ -36,6 +36,50 @@ npm run build
 - `products.json` — catálogo EAN/DUN por defecto (se puede actualizar desde la app)
 - `assets/logo_suprabond.png` — logo usado en las etiquetas
 
+## Usuarios y roles
+
+Cada usuario es **operario** o **supervisor**. Armar, escanear e imprimir lo
+hace cualquiera; **autorizar un pedido que sale incompleto y administrar
+usuarios, solo un supervisor**. Lo pidió Gabriel Parodi (2026-08-10): cerrar un
+pedido con menos es lo que después dispara la factura por menos.
+
+Las instalaciones anteriores a la 1.3 no tienen `rol` en `config.json`. Al
+arrancar se migran solas: **el primer usuario de la lista** (quien instaló la
+app en esa PC) queda de supervisor y el resto de operarios. Se escribe en
+`config.json` y se ve en la pantalla de Usuarios, donde se corrige. El
+arranque imprime en consola quiénes son supervisores.
+
+No se puede quedar sin ningún supervisor: la app rechaza borrar o degradar al
+último.
+
+## Pedidos incompletos
+
+Cuando falta escanear mercadería hay dos caminos, y el orden importa:
+
+1. **Volver a leer esta orden** — el camino normal. Los dos casos reales que
+   planteó Gabriel (no había stock y se ajustó la nota de pedido; el vendedor
+   agregó productos) se resuelven **editando la orden en la web de
+   Contabilium** y releyéndola acá. La app no edita órdenes: por API no se
+   puede, `POST /api/ordenesventa/<lo que sea>?id=` es un handler genérico que
+   **cancela** la orden. Al releer, el conteo se reinicia — los renglones
+   pueden haber cambiado de posición o de cantidad.
+2. **El pedido sale incompleto** — la excepción. Pide un motivo por línea
+   (faltante de stock · no apto para despachar · producto vencido · otro) y la
+   contraseña de un supervisor. Son botones y no un campo de texto a propósito.
+
+**Escanear de más sigue bloqueado**, sin excepción.
+
+El motivo viaja al buzón **adentro de `items_json`**, no en una columna nueva:
+el buzón es un log append-only con las dos puntas desplegadas por separado (el
+depósito se actualiza a mano, la nube no), así que migrar el encabezado sería
+un problema. Quién autorizó va en la columna `observacion`, que en los eventos
+`armado` iba vacía.
+
+**Un pedido incompleto no lo factura el depósito.** Llega marcado a la pantalla
+de administración con el detalle y el motivo, y ahí está bloqueado a propósito:
+el body de la factura se arma con las cantidades de la **orden**, no con lo
+preparado, así que emitirlo desde ahí facturaría de más.
+
 ## Tutorial y novedades
 La app tiene una pantalla propia de **Tutorial y novedades**, dentro de
 `public/index.html` (`#pantalla-ayuda`). El tutorial está escrito para la gente

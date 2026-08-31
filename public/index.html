@@ -239,6 +239,85 @@
     font-size: 13px;
     color: #ff6b6b;
   }
+  .faltante-box {
+    background: rgba(229, 169, 75, 0.09);
+    border: 1px solid var(--warn);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .faltante-box small {
+    display: block;
+    color: var(--muted);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .faltante-acciones {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .faltante-panel {
+    background: rgba(229, 169, 75, 0.09);
+    border: 1px solid var(--warn);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .faltante-panel h4 {
+    margin: 0 0 4px;
+    font-size: 14px;
+  }
+  .faltante-panel table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  .faltante-panel th {
+    text-align: left;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0 8px 6px 0;
+    font-weight: 500;
+  }
+  .faltante-panel td {
+    padding: 8px 8px 8px 0;
+    border-top: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .motivo-botones { display: flex; gap: 6px; flex-wrap: wrap; }
+  .motivo-botones button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .motivo-botones button:hover { border-color: var(--warn); color: var(--text); }
+  .motivo-botones button.motivo-elegido {
+    background: var(--warn);
+    border-color: var(--warn);
+    color: #1a1300;
+    font-weight: 600;
+  }
+  .autorizacion {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: end;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .autorizacion input { width: 150px; }
+  .faltante-panel .acciones-final {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
 
   /* --- Tutorial y novedades --- */
   .ayuda-nav { display: flex; gap: 8px; }
@@ -495,8 +574,20 @@
         <input type="password" id="nuevoPasswordInput" />
       </div>
       <div class="field">
+        <label for="nuevoRolInput">Rol</label>
+        <select id="nuevoRolInput">
+          <option value="operario">Operario</option>
+          <option value="supervisor">Supervisor</option>
+        </select>
+      </div>
+      <div class="field">
         <button id="btnCrearUsuario">Crear usuario</button>
       </div>
+    </div>
+    <div style="margin-top:10px;font-size:13px;color:var(--muted);line-height:1.5">
+      Los <b>supervisores</b> son los únicos que pueden autorizar un pedido que
+      sale incompleto y administrar usuarios. Todo lo demás —armar, escanear,
+      imprimir etiquetas— lo hace cualquiera.
     </div>
     <div id="usuarios-status" style="margin-top:10px;font-size:13px;color:var(--muted)"></div>
     <div id="usuarios-lista" style="margin-top:16px"></div>
@@ -565,6 +656,37 @@
         <b>Si un código no lo reconoce</b>, es que ese producto no está en el
         catálogo EAN/DUN. Avisá para que se actualice el catálogo (ver más
         abajo). Mientras tanto, ese producto hay que contarlo a mano.
+      </div>
+
+      <h3>Paso 2b — Si falta mercadería</h3>
+      <p>
+        Cuando quedan productos sin escanear, abajo del listado aparecen dos
+        botones. Cuál usar depende de qué pasó.
+      </p>
+      <ul>
+        <li>
+          <b>Volver a leer esta orden.</b> Es el que hay que usar casi siempre.
+          Si alguien corrigió la nota de pedido en Contabilium —porque no había
+          stock y se sacó lo que faltaba, o porque el vendedor agregó
+          productos— este botón trae la versión nueva. Ojo: <b>el conteo
+          arranca de cero</b>, porque los productos pueden haber cambiado de
+          lugar o de cantidad.
+        </li>
+        <li>
+          <b>El pedido sale incompleto.</b> Solo si de verdad se despacha de
+          menos. Te va a pedir dos cosas: marcar por qué faltó cada producto, y
+          que un <b>supervisor</b> ponga su usuario y contraseña.
+        </li>
+      </ul>
+      <div class="ojo">
+        <b>Por qué hace falta un supervisor:</b> cerrar el pedido con menos es
+        lo que después dispara la factura por menos. Si sale mal, arreglarlo es
+        una nota de crédito a mano. Por eso lo tiene que mirar alguien.
+      </div>
+      <div class="ojo">
+        El pedido incompleto le llega a administración marcado, con lo que se
+        pidió, lo que salió y por qué. <b>Esa factura la emiten ellos</b>, no
+        sale sola.
       </div>
 
       <h3>Paso 3 — Confirmar los bultos</h3>
@@ -652,9 +774,58 @@
 
       <div class="novedad">
         <div class="novedad-titulo">
+          <span class="novedad-version">Versión 1.3</span>
+          <span class="novedad-fecha">31 de agosto de 2026</span>
+          <span class="novedad-actual">Esta versión</span>
+        </div>
+        <p>
+          Hasta ahora, si en el depósito no estaba toda la mercadería, el
+          pedido no se podía cerrar. Ya se puede — con dos condiciones.
+        </p>
+        <ul>
+          <li>
+            <b>Si el pedido cambió, volvé a leerlo.</b> Cuando falta escanear
+            mercadería aparece el botón <b>Volver a leer esta orden</b>. Sirve
+            para cuando se corrigió la nota de pedido en Contabilium: porque no
+            había stock y se sacó lo que faltaba, o porque el vendedor agregó
+            productos. La app trae la versión nueva y arrancás el conteo de
+            cero. <b>Este es el camino normal</b>, y evita mandar dos envíos y
+            dos facturas.
+          </li>
+          <li>
+            <b>Si el pedido igual sale incompleto</b>, tocá <b>El pedido sale
+            incompleto</b>. Vas a tener que hacer dos cosas: marcar por qué
+            faltó cada producto (faltante de stock · no apto para despachar ·
+            producto vencido · otro motivo) y pedirle a un
+            <b>supervisor</b> que ponga su usuario y contraseña.
+          </li>
+          <li>
+            <b>Por qué la firma del supervisor:</b> cerrar un pedido con menos
+            es lo que después dispara la factura por menos. No es un trámite,
+            es la única marca de que alguien lo miró.
+          </li>
+          <li>
+            <b>De más nunca.</b> Si escaneaste más de lo pedido, la app sigue
+            sin dejarte cerrar. Eso no cambió.
+          </li>
+          <li>
+            <b>Usuarios con rol.</b> En la pantalla de Usuarios ahora cada uno
+            es <b>operario</b> o <b>supervisor</b>. Armar, escanear e imprimir
+            lo hace cualquiera; autorizar un pedido incompleto y administrar
+            usuarios, solo los supervisores.
+          </li>
+          <li>
+            El pedido incompleto le llega a administración con el detalle de
+            qué faltó, por qué y quién lo autorizó. Esa factura la emiten
+            ellos, no sale sola.
+          </li>
+        </ul>
+      </div>
+
+      <div class="novedad">
+        <div class="novedad-titulo">
           <span class="novedad-version">Versión 1.2</span>
           <span class="novedad-fecha">7 de agosto de 2026</span>
-          <span class="novedad-actual">Esta versión</span>
         </div>
         <p>
           Primer paso hacia la facturación automática: los pedidos armados
@@ -796,6 +967,7 @@
       const resp = await fetch('/api/auth/estado');
       const data = await resp.json();
       versionApp = data.version || null;
+      if (Array.isArray(data.motivosFaltante)) MOTIVOS_FALTANTE = data.motivosFaltante;
       if (!data.hayUsuarios) {
         $('login-normal').style.display = 'none';
         $('login-primero').style.display = 'block';
@@ -881,6 +1053,10 @@
   // navegador cuál fue la última que esta persona leyó, para poder marcar con
   // un punto verde cuando hay novedades sin ver.
   let versionApp = null;
+  // La lista de motivos de faltante la manda el servidor en el mismo
+  // /api/auth/estado, para que agregar un motivo sea un cambio en un solo
+  // lado. Se declara acá arriba porque inicializarAuth() la escribe.
+  let MOTIVOS_FALTANTE = [];
   const CLAVE_NOVEDADES_VISTAS = 'picking_novedades_vistas';
 
   function hayNovedadesSinVer() {
@@ -929,11 +1105,20 @@
       const resp = await apiFetch('/api/usuarios');
       const data = await resp.json();
       if (!data.usuarios.length) { cont.innerHTML = '<div class="empty">No hay usuarios.</div>'; return; }
-      let html = '<table><thead><tr><th>Usuario</th><th></th></tr></thead><tbody>';
+      const puede = data.puedeAdministrar;
+      let html = '<table><thead><tr><th>Usuario</th><th>Rol</th><th></th></tr></thead><tbody>';
       data.usuarios.forEach(u => {
-        html += `<tr><td>${u.usuario}</td><td><button class="secondary btn-chico" onclick="eliminarUsuarioUI('${u.usuario}')">Eliminar</button></td></tr>`;
+        const esSup = u.rol === 'supervisor';
+        const acciones = puede
+          ? `<button class="secondary btn-chico" onclick="cambiarRolUI('${u.usuario}', '${esSup ? 'operario' : 'supervisor'}')">${esSup ? 'Pasar a operario' : 'Hacer supervisor'}</button>
+             <button class="secondary btn-chico" onclick="eliminarUsuarioUI('${u.usuario}')">Eliminar</button>`
+          : '';
+        html += `<tr><td>${escapeHtml(u.usuario)}</td><td>${esSup ? '<b>Supervisor</b>' : 'Operario'}</td><td>${acciones}</td></tr>`;
       });
       html += '</tbody></table>';
+      if (!puede) {
+        html += '<div style="margin-top:10px;font-size:13px;color:var(--muted)">Para crear, eliminar o cambiar el rol de un usuario hay que entrar con un usuario supervisor.</div>';
+      }
       cont.innerHTML = html;
     } catch (err) {
       cont.innerHTML = 'Error: ' + err.message;
@@ -950,13 +1135,30 @@
       const resp = await apiFetch('/api/usuarios', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ usuario, password })
+        body: JSON.stringify({ usuario, password, rol: $('nuevoRolInput').value })
       });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error || 'Error al crear el usuario');
       statusEl.textContent = 'Usuario creado.';
       $('nuevoUsuarioInput').value = '';
       $('nuevoPasswordInput').value = '';
+      cargarListaUsuarios();
+    } catch (err) {
+      statusEl.textContent = 'Error: ' + err.message;
+    }
+  }
+
+  async function cambiarRolUI(usuario, rol) {
+    const statusEl = $('usuarios-status');
+    try {
+      const resp = await apiFetch('/api/usuarios/rol', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ usuario, rol })
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || 'Error al cambiar el rol');
+      statusEl.textContent = `${usuario} ahora es ${data.rol}.`;
       cargarListaUsuarios();
     } catch (err) {
       statusEl.textContent = 'Error: ' + err.message;
@@ -1295,20 +1497,76 @@
       document.getElementById(`chev-${idx}`).parentElement.parentElement
         .addEventListener('click', () => toggleDetalle(idx));
 
-      const input = document.getElementById(`scan-input-${idx}`);
-      if (input) {
-        input.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            procesarScan(idx, input.value);
-            input.value = '';
-          }
-        });
-      }
+      engancharScanner(idx);
       actualizarResumenPicking(idx);
     });
 
     $('btnExportar').disabled = false;
+  }
+
+  // El input de escaneo se vuelve a enganchar cada vez que se redibuja el
+  // detalle de una orden (al cargarla y al volver a leerla de Contabilium).
+  function engancharScanner(idx) {
+    const input = document.getElementById(`scan-input-${idx}`);
+    if (!input) return;
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        procesarScan(idx, input.value);
+        input.value = '';
+      }
+    });
+  }
+
+  // Vuelve a traer la orden de Contabilium y rearma el detalle contra la
+  // versión nueva. Es el camino que pidió Gabriel para los dos casos en que
+  // el pedido cambia después de impreso: falta stock y se ajusta la nota de
+  // pedido, o el vendedor le agrega productos. Editar la orden por API no se
+  // puede (el endpoint la cancela), así que se edita en Contabilium y acá se
+  // relee.
+  async function volverALeerOrden(idx) {
+    const orden = ultimaData[idx];
+    setScanFeedback(idx, 'Volviendo a leer la orden en Contabilium...', '');
+    try {
+      const resp = await apiFetch(`/api/picking/orden?id=${encodeURIComponent(orden.id)}`);
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || 'No se pudo leer la orden.');
+
+      if (!data.armable) {
+        setScanFeedback(idx, data.yaFacturada
+          ? 'Esta orden ya tiene factura en Contabilium: no hay que armarla.'
+          : `En Contabilium la orden figura como "${data.estado || 'sin estado'}", ya no está pendiente.`, 'error');
+        return;
+      }
+
+      // Lo escaneado hasta acá se descarta a propósito: los renglones pueden
+      // haber cambiado de posición, de cantidad o directamente no estar. Dar
+      // por bueno un conteo viejo contra una lista nueva es justo el error
+      // que esta pantalla tiene que evitar.
+      ultimaData[idx] = { ...orden, ...data };
+      escaneos[idx] = (data.items || []).map(() => 0);
+      motivosElegidos[idx] = {};
+      panelFaltante[idx] = false;
+      pickingEstado[idx] = { armado: false, bultos: null, timestamp: null };
+
+      const cont = document.querySelector(`#detalle-${idx} .detalle-inner`);
+      if (cont) {
+        cont.innerHTML = renderDetalleItems(idx, data.items);
+        engancharScanner(idx);
+      }
+      actualizarFilaPickingCompleta(idx);
+      actualizarResumenPicking(idx);
+
+      const fila = document.querySelector(`tr.orden-row[data-idx="${idx}"]`);
+      if (fila) {
+        fila.children[3].textContent = data.items ? data.items.length : '-';
+        fila.children[4].textContent = data.cantidadProductos ?? '-';
+      }
+
+      setScanFeedback(idx, `Orden actualizada: ${data.items.length} producto(s), ${data.cantidadProductos} unidad(es). El conteo se reinició.`, 'ok');
+    } catch (err) {
+      setScanFeedback(idx, 'No se pudo volver a leer la orden: ' + err.message, 'error');
+    }
   }
 
   // Estado de escaneo por orden: { [idx]: { [itemIndex]: cantidadEscaneada } }
@@ -1372,6 +1630,23 @@
     return items.some((it, i) => escaneos[idx][i] > (it.cantidad || 0));
   }
 
+  // Motivo elegido por línea que salió de menos: { [idx]: { [itemIndex]: codigo } }
+  const motivosElegidos = {};
+  // Qué órdenes tienen abierto el panel de "sale incompleto".
+  const panelFaltante = {};
+  function escapeHtml(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+
+  function itemsFaltantes(idx) {
+    const items = ultimaData[idx].items;
+    return items
+      .map((it, i) => ({ it, i, escaneado: escaneos[idx][i] || 0 }))
+      .filter(x => x.escaneado < (x.it.cantidad || 0));
+  }
+
   function itemsConExceso(idx) {
     const items = ultimaData[idx].items;
     return items
@@ -1383,9 +1658,12 @@
     const est = obtenerEstadoPicking(idx);
 
     if (est.armado) {
+      const aviso = est.completo === false
+        ? `<br /><span class="estado-exceso">Salió incompleto${est.autorizadoPor ? ` — autorizado por ${escapeHtml(est.autorizadoPor)}` : ''}. Lo factura administración.</span>`
+        : '';
       return `
         <div class="armado-info">
-          <span>✔ <b>Armado</b> — ${est.bultos} bulto(s) — ${formatearFechaHora(new Date(est.timestamp))}</span>
+          <span>✔ <b>Armado</b> — ${est.bultos} bulto(s) — ${formatearFechaHora(new Date(est.timestamp))}${aviso}</span>
           <div style="display:flex; gap:8px">
             <button class="btn-chico" onclick="imprimirEtiquetas(${idx})">Imprimir etiquetas</button>
             <button class="secondary btn-chico" onclick="deshacerArmado(${idx})">Deshacer</button>
@@ -1415,7 +1693,108 @@
       `;
     }
 
-    return '';
+    return renderFaltanteBox(idx);
+  }
+
+  // Lo que se ve cuando todavía falta escanear mercadería.
+  //
+  // El camino que quiere Gabriel es el PRIMER botón, no el segundo: si en el
+  // depósito no está la mercadería, se corrige la nota de pedido en
+  // Contabilium y se arma la corregida. Cerrar el pedido incompleto es la
+  // excepción, y por eso pide motivo y firma de un supervisor.
+  function renderFaltanteBox(idx) {
+    const faltan = itemsFaltantes(idx);
+    if (!faltan.length) return '';
+
+    if (!panelFaltante[idx]) {
+      const unidades = faltan.reduce((n, x) => n + ((x.it.cantidad || 0) - x.escaneado), 0);
+      return `
+        <div class="faltante-box">
+          <b>Falta escanear ${unidades} unidad(es) en ${faltan.length} producto(s).</b>
+          <div class="faltante-acciones">
+            <button class="secondary btn-chico" onclick="volverALeerOrden(${idx})">Volver a leer esta orden</button>
+            <button class="secondary btn-chico" onclick="abrirPanelFaltante(${idx})">El pedido sale incompleto</button>
+          </div>
+          <small>
+            Si el faltante se resolvió cambiando la nota de pedido en Contabilium
+            (se quitó lo que no había, o el vendedor agregó productos), tocá
+            <b>Volver a leer esta orden</b> y armala contra la versión nueva.<br />
+            <b>El pedido sale incompleto</b> es para cuando se despacha de menos:
+            hay que decir por qué y lo tiene que autorizar un supervisor, porque
+            es lo que después dispara la factura por menos.
+          </small>
+        </div>
+      `;
+    }
+
+    const filas = faltan.map(x => `
+      <tr>
+        <td>${escapeHtml(x.it.concepto || x.it.codigo || '')}</td>
+        <td style="white-space:nowrap">${x.escaneado} de ${x.it.cantidad || 0}</td>
+        <td>
+          <div class="motivo-botones" data-motivo-fila="${idx}-${x.i}">
+            ${MOTIVOS_FALTANTE.map(m => `
+              <button type="button" data-motivo="${m.codigo}"
+                class="${(motivosElegidos[idx] || {})[x.i] === m.codigo ? 'motivo-elegido' : ''}"
+                onclick="elegirMotivo(${idx}, ${x.i}, '${m.codigo}')">${escapeHtml(m.etiqueta)}</button>
+            `).join('')}
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    return `
+      <div class="faltante-panel">
+        <h4>El pedido sale incompleto</h4>
+        <div style="color:var(--muted)">Indicá por qué salió de menos cada producto.</div>
+        <table>
+          <thead>
+            <tr><th>Producto</th><th>Preparado</th><th>¿Por qué faltó?</th></tr>
+          </thead>
+          <tbody>${filas}</tbody>
+        </table>
+        <div class="autorizacion">
+          <div class="field">
+            <label for="bultos-input-${idx}">Bultos</label>
+            <input type="number" min="1" step="1" id="bultos-input-${idx}" placeholder="Ej: 3" style="width:90px" />
+          </div>
+          <div class="field">
+            <label for="sup-usuario-${idx}">Supervisor</label>
+            <input type="text" id="sup-usuario-${idx}" autocomplete="off" placeholder="Usuario" />
+          </div>
+          <div class="field">
+            <label for="sup-password-${idx}">Contraseña</label>
+            <input type="password" id="sup-password-${idx}" autocomplete="off" placeholder="Contraseña" />
+          </div>
+        </div>
+        <div class="acciones-final">
+          <button onclick="confirmarArmado(${idx})">Confirmar pedido incompleto</button>
+          <button class="secondary" onclick="cerrarPanelFaltante(${idx})">Cancelar</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function abrirPanelFaltante(idx) {
+    panelFaltante[idx] = true;
+    actualizarBultosBox(idx);
+  }
+
+  function cerrarPanelFaltante(idx) {
+    panelFaltante[idx] = false;
+    actualizarBultosBox(idx);
+  }
+
+  // Cambia solo las clases de esa fila. Si re-renderizáramos el panel entero
+  // se borrarían los bultos y la contraseña que el supervisor ya tipeó.
+  function elegirMotivo(idx, i, codigo) {
+    motivosElegidos[idx] = motivosElegidos[idx] || {};
+    motivosElegidos[idx][i] = codigo;
+    const fila = document.querySelector(`[data-motivo-fila="${idx}-${i}"]`);
+    if (!fila) return;
+    fila.querySelectorAll('button').forEach(b => {
+      b.classList.toggle('motivo-elegido', b.dataset.motivo === codigo);
+    });
   }
 
   function actualizarBultosBox(idx) {
@@ -1434,6 +1813,26 @@
       setScanFeedback(idx, 'Ingresá una cantidad de bultos válida.', 'error');
       return;
     }
+
+    // --- Pedido incompleto: motivo por línea + firma del supervisor -------
+    const faltan = itemsFaltantes(idx);
+    let autoriza = null;
+    if (faltan.length) {
+      const elegidos = motivosElegidos[idx] || {};
+      const sinMotivo = faltan.filter(x => !elegidos[x.i]);
+      if (sinMotivo.length) {
+        setScanFeedback(idx, `Falta indicar por qué salieron de menos: ${sinMotivo.map(x => x.it.concepto || x.it.codigo).join('; ')}.`, 'error');
+        return;
+      }
+      const supUsuario = (document.getElementById(`sup-usuario-${idx}`) || {}).value || '';
+      const supPassword = (document.getElementById(`sup-password-${idx}`) || {}).value || '';
+      if (!supUsuario.trim() || !supPassword) {
+        setScanFeedback(idx, 'Un pedido incompleto lo tiene que autorizar un supervisor: falta el usuario y la contraseña.', 'error');
+        return;
+      }
+      autoriza = { usuario: supUsuario.trim(), password: supPassword };
+    }
+
     const orden = ultimaData[idx];
     pickingEstado[idx] = { armado: true, bultos: valor, timestamp: new Date().toISOString() };
     actualizarBultosBox(idx);
@@ -1452,16 +1851,21 @@
           lineas: orden.items ? orden.items.length : null,
           unidades: orden.cantidadProductos,
           idCliente: orden.idCliente,
-          // Detalle de lo contado, producto por producto. Todavía no se usa en
-          // pantalla: queda guardado para que después el facturador pueda
-          // emitir por lo que salió del depósito.
+          // Detalle de lo contado, producto por producto. El facturador lo usa
+          // para mostrar "pedido vs. preparado" y para no facturar solo un
+          // pedido incompleto.
           items: (orden.items || []).map((it, i) => ({
             codigo: it.codigo,
             concepto: it.concepto,
             pedido: it.cantidad || 0,
             escaneado: (escaneos[idx] && escaneos[idx][i]) || 0,
-            combo: !!it.esComponenteCombo
-          }))
+            combo: !!it.esComponenteCombo,
+            motivo: (motivosElegidos[idx] || {})[i] || undefined
+          })),
+          // Solo va cuando el pedido sale de menos. El servidor lo vuelve a
+          // validar: la pantalla frena, pero el que dispara la factura por
+          // menos es el endpoint.
+          autoriza
         })
       });
 
@@ -1475,6 +1879,11 @@
         actualizarFilaPickingCompleta(idx);
         setScanFeedback(idx, data.error || 'No se pudo registrar el armado.', 'error');
       } else {
+        const registro = await resp.json().catch(() => ({}));
+        pickingEstado[idx].completo = registro.completo !== false;
+        pickingEstado[idx].autorizadoPor = registro.autorizadoPor || '';
+        panelFaltante[idx] = false;
+        actualizarBultosBox(idx);
         cargarEstadoBuzon();
       }
     } catch (err) {

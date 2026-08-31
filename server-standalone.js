@@ -250,18 +250,37 @@ function guardarArmadosDisco() {
 // a necesitar el facturador para emitir por lo que salió y no por lo que decía
 // la orden. Las líneas de combo quedan marcadas: en la orden son un solo
 // renglón, acá están abiertas en sus componentes.
+// El motivo del faltante viaja acá adentro, no en una columna nueva del
+// buzón: `items_json` ya cruza a la planilla y el facturador ya lo lee para
+// pintar "pedido vs. preparado". Una columna nueva obligaría a migrar el
+// encabezado de un log append-only con las dos puntas desplegadas por
+// separado — el depósito actualiza a mano y la nube no.
 function normalizarItemsArmado(items) {
   if (!Array.isArray(items)) return [];
-  return items.slice(0, 500).map(it => ({
-    codigo: it && it.codigo ? String(it.codigo) : null,
-    concepto: it && it.concepto ? String(it.concepto).slice(0, 200) : '',
-    pedido: Number(it && it.pedido) || 0,
-    escaneado: Number(it && it.escaneado) || 0,
-    combo: !!(it && it.combo)
-  }));
+  return items.slice(0, 500).map(it => {
+    const pedido = Number(it && it.pedido) || 0;
+    const escaneado = Number(it && it.escaneado) || 0;
+    const item = {
+      codigo: it && it.codigo ? String(it.codigo) : null,
+      concepto: it && it.concepto ? String(it.concepto).slice(0, 200) : '',
+      pedido,
+      escaneado,
+      combo: !!(it && it.combo)
+    };
+    // Solo las líneas que salieron de menos llevan motivo. Guardamos el
+    // código Y la etiqueta: el código para contar, la etiqueta para que la
+    // planilla se entienda sin abrir el programa.
+    if (escaneado < pedido && it && CODIGOS_MOTIVO.has(it.motivo)) {
+      item.motivo = it.motivo;
+      item.motivoTexto = etiquetaMotivo(it.motivo);
+      const nota = it.motivoNota ? String(it.motivoNota).trim().slice(0, 200) : '';
+      if (nota) item.motivoNota = nota;
+    }
+    return item;
+  });
 }
 
-function registrarArmado({ orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente, usuarioArmado, verificado, items }) {
+function registrarArmado({ orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente, usuarioArmado, verificado, items, autorizadoPor }) {
   orderId = String(orderId);
   const timestamp = new Date().toISOString();
   const existente = armados.findIndex(a => a.orderId === orderId);
@@ -270,10 +289,12 @@ function registrarArmado({ orderId, numeroOrden, fechaOrden, bultos, lineas, uni
     orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente,
     usuarioArmado, timestamp, verificado: !!verificado,
     items: detalle,
-    // Se despachó exactamente lo pedido. Hoy es siempre true porque la app no
-    // deja confirmar de otra forma; queda calculado para cuando se habiliten
-    // los parciales y el facturador tenga que distinguirlos.
+    // Se despachó exactamente lo pedido. Desde la v1.3 puede ser false: el
+    // faltante se cierra con motivo por línea y autorización de un
+    // supervisor. El facturador usa esto para NO facturarlo solo.
     completo: detalle.length > 0 && detalle.every(i => i.escaneado === i.pedido),
+    // Usuario supervisor que autorizó el faltante. Vacío si salió completo.
+    autorizadoPor: autorizadoPor || '',
     // Todavía no llegó al buzón del facturador. Lo pone en true
     // `sincronizarArmados()` cuando el envío se confirma.
     enviado: false
@@ -542,7 +563,11 @@ function armadoAFilaBuzon(a) {
     id_comprobante: '',
     numero_factura: '',
     cae: '',
-    observacion: ''
+    // En los eventos `armado` esta columna venía siempre vacía (el
+    // facturador la usa para la adenda al emitir). La aprovechamos para que
+    // en la planilla se lea de un vistazo quién dejó salir el pedido
+    // incompleto, sin tener que abrir el items_json.
+    observacion: a.autorizadoPor ? `Faltante autorizado por ${a.autorizadoPor}` : ''
   };
 }
 
@@ -610,6 +635,25 @@ function guardarConfig(cfg) {
   escribirJsonAtomico(CONFIG_PATH, cfg);
 }
 
+// --- Faltantes: motivos y autorización ---
+//
+// La lista la definió Gabriel Parodi (2026-08-10). Son botones y no un campo
+// de texto a propósito: en un depósito un cuadro para escribir termina vacío
+// o con "falta". El código viaja al buzón adentro de items_json, así que
+// agregar un motivo acá NO cambia el formato de la planilla.
+const MOTIVOS_FALTANTE = [
+  { codigo: 'stock', etiqueta: 'Faltante de stock' },
+  { codigo: 'no_apto', etiqueta: 'No apto para despachar' },
+  { codigo: 'vencido', etiqueta: 'Producto vencido' },
+  { codigo: 'otro', etiqueta: 'Otro motivo' }
+];
+const CODIGOS_MOTIVO = new Set(MOTIVOS_FALTANTE.map(m => m.codigo));
+
+function etiquetaMotivo(codigo) {
+  const m = MOTIVOS_FALTANTE.find(x => x.codigo === codigo);
+  return m ? m.etiqueta : '';
+}
+
 // --- Usuarios y sesiones ---
 const crypto = require('crypto');
 
@@ -634,26 +678,81 @@ function guardarUsuarios(usuarios) {
   guardarConfig({ ...cfg, usuarios });
 }
 
-function crearUsuario(usuario, password) {
+// Cerrar un pedido con menos de lo pedido es lo que después dispara la
+// factura por menos, así que lo tiene que autorizar un supervisor (Gabriel
+// Parodi, 2026-08-10). Todo lo demás lo hace cualquiera.
+function rolDe(usuario) {
+  const u = leerUsuarios().find(x => x.usuario.toLowerCase() === String(usuario || '').toLowerCase());
+  return u && u.rol === 'supervisor' ? 'supervisor' : 'operario';
+}
+
+function esSupervisor(usuario) {
+  return rolDe(usuario) === 'supervisor';
+}
+
+// Las configuraciones anteriores a la v1.3 no tienen `rol`. Si migráramos
+// todo a "operario" nadie podría autorizar un faltante ni crear usuarios;
+// si migráramos todo a "supervisor" el control quedaría de adorno. El
+// primero de la lista es quien instaló la app en esa PC, así que ese queda
+// de supervisor y el resto de operarios — y se escribe en config.json para
+// que se vea en la pantalla de usuarios y se pueda corregir ahí.
+function migrarRolesSiHaceFalta() {
+  const usuarios = leerUsuarios();
+  if (!usuarios.length) return;
+  if (usuarios.some(u => u.rol)) return;
+  usuarios.forEach((u, i) => { u.rol = i === 0 ? 'supervisor' : 'operario'; });
+  guardarUsuarios(usuarios);
+  console.log(`  ℹ Usuarios migrados a roles: ${usuarios.map(u => `${u.usuario} (${u.rol})`).join(', ')}`);
+}
+
+function crearUsuario(usuario, password, rol) {
   const usuarios = leerUsuarios();
   if (usuarios.some(u => u.usuario.toLowerCase() === usuario.toLowerCase())) {
     throw new Error('Ya existe un usuario con ese nombre.');
   }
   const { salt, hash } = hashPassword(password);
-  usuarios.push({ usuario, salt, hash });
+  usuarios.push({ usuario, salt, hash, rol: rol === 'supervisor' ? 'supervisor' : 'operario' });
   guardarUsuarios(usuarios);
+}
+
+function cantidadDeSupervisores(usuarios) {
+  return usuarios.filter(u => u.rol === 'supervisor').length;
+}
+
+function cambiarRol(usuario, rol) {
+  const usuarios = leerUsuarios();
+  const u = usuarios.find(x => x.usuario.toLowerCase() === String(usuario || '').toLowerCase());
+  if (!u) throw new Error('Ese usuario no existe.');
+  const nuevo = rol === 'supervisor' ? 'supervisor' : 'operario';
+  // Quedarse sin supervisores deja la app sin nadie que pueda autorizar un
+  // faltante ni crear usuarios, y de esa no se sale sin editar config.json
+  // a mano en la PC del depósito.
+  if (u.rol === 'supervisor' && nuevo !== 'supervisor' && cantidadDeSupervisores(usuarios) <= 1) {
+    throw new Error('Tiene que quedar al menos un supervisor. Nombrá otro antes de sacarle el rol a este.');
+  }
+  u.rol = nuevo;
+  guardarUsuarios(usuarios);
+  return nuevo;
 }
 
 function eliminarUsuario(usuario) {
-  const usuarios = leerUsuarios().filter(u => u.usuario.toLowerCase() !== usuario.toLowerCase());
-  guardarUsuarios(usuarios);
+  const usuarios = leerUsuarios();
+  const u = usuarios.find(x => x.usuario.toLowerCase() === String(usuario || '').toLowerCase());
+  if (u && u.rol === 'supervisor' && cantidadDeSupervisores(usuarios) <= 1) {
+    throw new Error('Es el único supervisor. Nombrá otro antes de eliminarlo.');
+  }
+  guardarUsuarios(usuarios.filter(x => x.usuario.toLowerCase() !== String(usuario || '').toLowerCase()));
 }
 
+// Devuelve el usuario (con su rol) o null. Antes devolvía un booleano; el
+// rol hace falta para autorizar faltantes, y resolverlo acá evita leer
+// config.json dos veces por login.
 function autenticar(usuario, password) {
   const usuarios = leerUsuarios();
   const u = usuarios.find(x => x.usuario.toLowerCase() === (usuario || '').toLowerCase());
-  if (!u) return false;
-  return verificarPassword(password, u.salt, u.hash);
+  if (!u) return null;
+  if (!verificarPassword(password, u.salt, u.hash)) return null;
+  return { usuario: u.usuario, rol: u.rol === 'supervisor' ? 'supervisor' : 'operario' };
 }
 
 // Sesiones en memoria: token -> { usuario, creado, ultimoUso }
@@ -1482,7 +1581,11 @@ const server = http.createServer(async (req, res) => {
       const hayUsuarios = leerUsuarios().length > 0;
       const token = req.headers['x-session-token'];
       const usuario = token ? usuarioDeSesion(token) : null;
-      return sendJSON(res, 200, { hayUsuarios, autenticado: !!usuario, usuario, version: APP_VERSION });
+      return sendJSON(res, 200, {
+        hayUsuarios, autenticado: !!usuario, usuario, version: APP_VERSION,
+        rol: usuario ? rolDe(usuario) : null,
+        motivosFaltante: MOTIVOS_FALTANTE
+      });
     }
 
     if (pathname === '/api/auth/registrar-primero' && req.method === 'POST') {
@@ -1495,19 +1598,22 @@ const server = http.createServer(async (req, res) => {
       const raw = await readBody(req);
       const { usuario, password } = JSON.parse(raw || '{}');
       if (!usuario || !password) return sendJSON(res, 400, { error: 'Faltan datos' });
-      crearUsuario(usuario, password);
+      // El primero es quien instala la app: arranca de supervisor, si no
+      // no habría nadie que pueda crear usuarios ni autorizar faltantes.
+      crearUsuario(usuario, password, 'supervisor');
       const token = crearSesion(usuario);
-      return sendJSON(res, 200, { ok: true, token, usuario });
+      return sendJSON(res, 200, { ok: true, token, usuario, rol: 'supervisor' });
     }
 
     if (pathname === '/api/auth/login' && req.method === 'POST') {
       const raw = await readBody(req);
       const { usuario, password } = JSON.parse(raw || '{}');
-      if (!autenticar(usuario, password)) {
+      const autenticado = autenticar(usuario, password);
+      if (!autenticado) {
         return sendJSON(res, 401, { error: 'Usuario o contraseña incorrectos.' });
       }
-      const token = crearSesion(usuario);
-      return sendJSON(res, 200, { ok: true, token, usuario });
+      const token = crearSesion(autenticado.usuario);
+      return sendJSON(res, 200, { ok: true, token, usuario: autenticado.usuario, rol: autenticado.rol });
     }
 
     if (pathname === '/api/auth/logout' && req.method === 'POST') {
@@ -1524,21 +1630,28 @@ const server = http.createServer(async (req, res) => {
         return sendJSON(res, 401, { error: 'Sesión inválida o expirada. Volvé a iniciar sesión.' });
       }
       req.usuarioActual = usuarioActual;
+      req.rolActual = rolDe(usuarioActual);
     }
 
     // --- Usuarios (gestión) ---
     if (pathname === '/api/usuarios' && req.method === 'GET') {
-      const usuarios = leerUsuarios().map(u => ({ usuario: u.usuario }));
-      return sendJSON(res, 200, { usuarios });
+      const usuarios = leerUsuarios().map(u => ({
+        usuario: u.usuario,
+        rol: u.rol === 'supervisor' ? 'supervisor' : 'operario'
+      }));
+      return sendJSON(res, 200, { usuarios, puedeAdministrar: req.rolActual === 'supervisor' });
     }
 
     if (pathname === '/api/usuarios' && req.method === 'POST') {
       const raw = await readBody(req);
-      const { usuario, password } = JSON.parse(raw || '{}');
+      const { usuario, password, rol } = JSON.parse(raw || '{}');
+      if (req.rolActual !== 'supervisor') {
+        return sendJSON(res, 403, { error: 'Solo un supervisor puede crear usuarios.' });
+      }
       if (!usuario || !password) return sendJSON(res, 400, { error: 'Faltan datos' });
       if (password.length < 4) return sendJSON(res, 400, { error: 'La contraseña debe tener al menos 4 caracteres.' });
       try {
-        crearUsuario(usuario, password);
+        crearUsuario(usuario, password, rol);
         return sendJSON(res, 200, { ok: true });
       } catch (err) {
         return sendJSON(res, 400, { error: err.message });
@@ -1547,12 +1660,34 @@ const server = http.createServer(async (req, res) => {
 
     if (pathname === '/api/usuarios' && req.method === 'DELETE') {
       const usuario = parsed.searchParams.get('usuario');
+      if (req.rolActual !== 'supervisor') {
+        return sendJSON(res, 403, { error: 'Solo un supervisor puede eliminar usuarios.' });
+      }
       if (!usuario) return sendJSON(res, 400, { error: 'Falta usuario' });
       if (usuario.toLowerCase() === req.usuarioActual.toLowerCase()) {
         return sendJSON(res, 400, { error: 'No podés eliminar tu propio usuario mientras tenés la sesión iniciada.' });
       }
-      eliminarUsuario(usuario);
+      try {
+        eliminarUsuario(usuario);
+      } catch (err) {
+        return sendJSON(res, 400, { error: err.message });
+      }
       return sendJSON(res, 200, { ok: true });
+    }
+
+    if (pathname === '/api/usuarios/rol' && req.method === 'POST') {
+      if (req.rolActual !== 'supervisor') {
+        return sendJSON(res, 403, { error: 'Solo un supervisor puede cambiar roles.' });
+      }
+      const raw = await readBody(req);
+      const { usuario, rol } = JSON.parse(raw || '{}');
+      if (!usuario) return sendJSON(res, 400, { error: 'Falta usuario' });
+      try {
+        const nuevo = cambiarRol(usuario, rol);
+        return sendJSON(res, 200, { ok: true, rol: nuevo });
+      } catch (err) {
+        return sendJSON(res, 400, { error: err.message });
+      }
     }
 
     // --- Estado de configuración ---
@@ -1708,6 +1843,42 @@ const server = http.createServer(async (req, res) => {
       return sendJSON(res, 200, { total: picking.length, ordenes: picking });
     }
 
+    // Releer UNA orden. Gabriel (2026-08-10) planteó los dos casos reales en
+    // que el pedido cambia después de impreso: falta stock y hay que ajustar
+    // la nota de pedido, o el vendedor quiere agregar producto. Los dos se
+    // resuelven editando la orden en la web de Contabilium — por API no se
+    // puede: /api/ordenesventa/<lo que sea>?id= es un handler genérico que
+    // CANCELA la orden. Así que la app no edita: relee.
+    if (pathname === '/api/picking/orden' && req.method === 'GET') {
+      const id = parsed.searchParams.get('id');
+      if (!id) return sendJSON(res, 400, { error: 'Falta id' });
+
+      let detalle;
+      try {
+        detalle = await fetchOrdenDetalle(id);
+      } catch (err) {
+        return sendJSON(res, 502, { error: `No se pudo leer la orden en Contabilium: ${err.message}` });
+      }
+
+      const estado = (detalle.Estado || '').trim();
+      const yaFacturada = (detalle.IDComprobante || 0) > 0;
+      const items = await expandirItemsOrden(detalle.Items || []);
+
+      return sendJSON(res, 200, {
+        id: Number(id),
+        idCliente: detalle.IDCliente,
+        numeroOrden: detalle.NumeroOrden || '',
+        fecha: detalle.FechaCreacion || '',
+        estado,
+        yaFacturada,
+        // Si dejó de estar pendiente o ya tiene factura, no se arma más.
+        armable: estado === 'Pendiente' && !yaFacturada,
+        cantidadProductos: items.reduce((sum, it) => sum + (it.cantidad || 0), 0),
+        items,
+        armadoExistente: armados.find(a => a.orderId === String(id)) || null
+      });
+    }
+
     // --- Pedidos armados ---
     if (pathname === '/api/armado' && req.method === 'POST') {
       const raw = await readBody(req);
@@ -1715,6 +1886,48 @@ const server = http.createServer(async (req, res) => {
       const { orderId, bultos, lineas, unidades } = datos;
       if (!orderId || !bultos) {
         return sendJSON(res, 400, { error: 'Faltan datos (orderId, bultos)' });
+      }
+
+      // --- Faltantes: motivo por línea + autorización de un supervisor ---
+      //
+      // Estos chequeos están acá y no solo en la pantalla: el front bloquea
+      // el botón, pero el que dispara la factura por menos es este endpoint.
+      const detalle = normalizarItemsArmado(datos.items);
+      const excesos = detalle.filter(i => i.escaneado > i.pedido);
+      if (excesos.length) {
+        const cuales = excesos
+          .map(i => `${i.concepto || i.codigo}: ${i.escaneado} de ${i.pedido}`)
+          .join('; ');
+        return sendJSON(res, 400, {
+          error: `Hay productos escaneados de más (${cuales}). Nunca se despacha ni se factura de más: corregí el conteo antes de confirmar.`
+        });
+      }
+
+      const faltantes = detalle.filter(i => i.escaneado < i.pedido);
+      let autorizadoPor = '';
+
+      if (faltantes.length) {
+        const sinMotivo = faltantes.filter(i => !i.motivo);
+        if (sinMotivo.length) {
+          const cuales = sinMotivo.map(i => i.concepto || i.codigo).join('; ');
+          return sendJSON(res, 400, {
+            error: `Falta indicar por qué salieron de menos: ${cuales}.`
+          });
+        }
+
+        const aut = datos.autoriza || {};
+        const supervisor = autenticar(aut.usuario, aut.password);
+        if (!supervisor) {
+          return sendJSON(res, 401, {
+            error: 'Usuario o contraseña del supervisor incorrectos.'
+          });
+        }
+        if (supervisor.rol !== 'supervisor') {
+          return sendJSON(res, 403, {
+            error: `${supervisor.usuario} no es supervisor. Un pedido incompleto lo tiene que autorizar un supervisor, porque es lo que después dispara la factura por menos.`
+          });
+        }
+        autorizadoPor = supervisor.usuario;
       }
 
       // Releemos la orden en Contabilium en vez de confiar en lo que manda el
@@ -1749,7 +1962,8 @@ const server = http.createServer(async (req, res) => {
         orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente,
         usuarioArmado: req.usuarioActual,
         verificado,
-        items: datos.items
+        items: datos.items,
+        autorizadoPor
       });
 
       // El envío al facturador no bloquea la respuesta: el armado ya está
@@ -1878,12 +2092,17 @@ server.listen(PORT, HOST, () => {
   cargarCatalogoInicial();
   cargarArmadosInicial();
   cargarClientesDesdeDiscoSiExiste();
+  migrarRolesSiHaceFalta();
 
   console.log('==================================================');
   console.log(' Lista de Picking - Contabilium');
   console.log(` Abrí tu navegador en: http://localhost:${PORT}`);
   console.log(` Catálogo cargado: ${catalogoInfo.cantidad} productos (${catalogoInfo.origen})`);
   console.log(` Pedidos armados en el historial: ${armados.length}`);
+  const supervisores = leerUsuarios().filter(u => u.rol === 'supervisor').map(u => u.usuario);
+  if (supervisores.length) {
+    console.log(` Supervisores (autorizan pedidos incompletos): ${supervisores.join(', ')}`);
+  }
   if (HOST !== HOST_DEFECTO) {
     console.log(` ⚠ Escuchando en ${HOST}: la app queda accesible desde la red.`);
   }
