@@ -265,7 +265,10 @@ function normalizarItemsArmado(items) {
       concepto: it && it.concepto ? String(it.concepto).slice(0, 200) : '',
       pedido,
       escaneado,
-      combo: !!(it && it.combo)
+      combo: !!(it && it.combo),
+      // Se contó a mano porque el producto no tiene código de barra en el
+      // catálogo. No es un faltante: la mercadería salió completa.
+      contadoAMano: !!(it && it.contadoAMano)
     };
     // Solo las líneas que salieron de menos llevan motivo. Guardamos el
     // código Y la etiqueta: el código para contar, la etiqueta para que la
@@ -937,6 +940,15 @@ async function obtenerConcepto(idConcepto) {
   const data = await authedFetch(`${BASE_URL}/api/conceptos/?id=${idConcepto}`);
   conceptosCache.set(idConcepto, data);
   return data;
+}
+
+// Un producto se puede escanear solo si el catálogo le conoce un EAN o un
+// DUN. Los que no, hay que contarlos a mano — y el servidor usa esto para que
+// "contado a mano" NO sea una puerta para saltearse el escaneo en un producto
+// que sí tiene código.
+function productoSinCodigo(codigo, concepto) {
+  const prod = buscarProducto(codigo, concepto);
+  return !prod || (!prod.ean && !prod.dun);
 }
 
 function construirItemPicking(codigo, concepto, cantidad, extra = {}) {
@@ -1948,6 +1960,19 @@ const server = http.createServer(async (req, res) => {
           .join('; ');
         return sendJSON(res, 400, {
           error: `Hay productos escaneados de más (${cuales}). Nunca se despacha ni se factura de más: corregí el conteo antes de confirmar.`
+        });
+      }
+
+      // Contar a mano solo vale donde escanear es imposible. Si el producto
+      // tiene código, se escanea: si no, el control del escaneo se saltea
+      // escribiendo un número.
+      const manualIndebido = detalle.filter(
+        i => i.contadoAMano && i.escaneado > 0 && !productoSinCodigo(i.codigo, i.concepto)
+      );
+      if (manualIndebido.length) {
+        const cuales = manualIndebido.map(i => i.concepto || i.codigo).join('; ');
+        return sendJSON(res, 400, {
+          error: `Estos productos sí tienen código de barra, hay que escanearlos: ${cuales}.`
         });
       }
 

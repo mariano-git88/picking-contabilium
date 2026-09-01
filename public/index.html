@@ -239,6 +239,13 @@
     font-size: 13px;
     color: #ff6b6b;
   }
+  .contar-mano {
+    width: 72px;
+    padding: 4px 6px;
+    font-size: 13px;
+    border: 1px solid var(--warn);
+    background: rgba(229, 169, 75, 0.08);
+  }
   .faltante-box {
     background: rgba(229, 169, 75, 0.09);
     border: 1px solid var(--warn);
@@ -653,9 +660,17 @@
         aparece después en el inventario y nadie sabe de dónde salió.
       </div>
       <div class="ojo">
-        <b>Si un código no lo reconoce</b>, es que ese producto no está en el
-        catálogo EAN/DUN. Avisá para que se actualice el catálogo (ver más
-        abajo). Mientras tanto, ese producto hay que contarlo a mano.
+        <b>Si un producto no tiene código de barra cargado</b>, la app te lo
+        avisa arriba del pedido y te deja un casillero en la columna
+        <b>Escaneado</b> para que anotes la cantidad a mano. El pedido cierra
+        igual y <b>no cuenta como faltante</b>.<br /><br />
+        Pero <b>pasá esa lista</b> para que le den de alta el código de barra:
+        mientras no lo tenga, ese producto se sigue contando a ojo, que es
+        justo lo que el escaneo viene a evitar.
+      </div>
+      <div class="ojo">
+        <b>Si escaneás un código y no lo reconoce</b>, puede ser que ese
+        producto no esté en el catálogo. Avisá para que se actualice.
       </div>
 
       <h3>Paso 2b — Si falta mercadería</h3>
@@ -774,9 +789,41 @@
 
       <div class="novedad">
         <div class="novedad-titulo">
+          <span class="novedad-version">Versión 1.4</span>
+          <span class="novedad-fecha">1 de septiembre de 2026</span>
+          <span class="novedad-actual">Esta versión</span>
+        </div>
+        <p>
+          Los productos que no tienen código de barra ya no te dejan trabado.
+        </p>
+        <ul>
+          <li>
+            <b>Si un producto del pedido no tiene código de barra cargado</b>, en
+            la columna <b>Escaneado</b> te aparece un casillero para escribir la
+            cantidad a mano. Antes esa línea se quedaba en cero para siempre y
+            el pedido no se podía cerrar.
+          </li>
+          <li>
+            <b>Eso no cuenta como faltante.</b> Si contaste todo, el pedido
+            cierra completo y no hace falta ningún supervisor: la mercadería
+            salió entera, lo que falta es el código en el sistema.
+          </li>
+          <li>
+            <b>Arriba del pedido te avisa cuáles son</b> y te arma la lista para
+            pasársela a quien mantiene el catálogo. <b>Hay que darles de alta el
+            código de barra</b>, así la próxima vez se escanean como todos.
+          </li>
+          <li>
+            El casillero <b>solo aparece en los productos sin código</b>. Los que
+            tienen código hay que escanearlos, como siempre.
+          </li>
+        </ul>
+      </div>
+
+      <div class="novedad">
+        <div class="novedad-titulo">
           <span class="novedad-version">Versión 1.3</span>
           <span class="novedad-fecha">31 de agosto de 2026</span>
-          <span class="novedad-actual">Esta versión</span>
         </div>
         <p>
           Hasta ahora, si en el depósito no estaba toda la mercadería, el
@@ -1581,6 +1628,7 @@
       // que esta pantalla tiene que evitar.
       ultimaData[idx] = { ...orden, ...data };
       escaneos[idx] = (data.items || []).map(() => 0);
+      if (contadosAMano[idx]) contadosAMano[idx].clear();
       motivosElegidos[idx] = {};
       panelFaltante[idx] = false;
       pickingEstado[idx] = { armado: false, bultos: null, timestamp: null };
@@ -1896,7 +1944,8 @@
             pedido: it.cantidad || 0,
             escaneado: (escaneos[idx] && escaneos[idx][i]) || 0,
             combo: !!it.esComponenteCombo,
-            motivo: (motivosElegidos[idx] || {})[i] || undefined
+            motivo: (motivosElegidos[idx] || {})[i] || undefined,
+            contadoAMano: !!(contadosAMano[idx] && contadosAMano[idx].has(i)) || undefined
           })),
           // Solo va cuando el pedido sale de menos. El servidor lo vuelve a
           // validar: la pantalla frena, pero el que dispara la factura por
@@ -1973,7 +2022,22 @@
       escaneos[idx] = items.map(() => 0);
     }
 
+    const sinCodigo = items.filter(it => !it.ean && !it.dun);
+    const avisoSinCodigo = sinCodigo.length ? `
+      <div class="faltante-box" style="margin-bottom:12px">
+        <b>${sinCodigo.length} producto(s) de este pedido no se pueden escanear</b>
+        porque no tienen código de barra cargado en el catálogo.
+        Anotá la cantidad a mano en la columna <b>Escaneado</b>; el pedido se
+        cierra igual y no cuenta como faltante.
+        <small>
+          <b>Hay que darles de alta el código de barra para la próxima.</b>
+          Pasale esta lista a quien mantiene el catálogo:<br />
+          ${sinCodigo.map(it => `<code>${escapeHtml(it.codigo || '')}</code> — ${escapeHtml(it.concepto || '')}`).join('<br />')}
+        </small>
+      </div>` : '';
+
     let html = `
+      ${avisoSinCodigo}
       <div class="scan-box">
         <input type="text" id="scan-input-${idx}" placeholder="Escaneá un código EAN o DUN y presioná Enter" autocomplete="off" />
         <button class="secondary" onclick="reiniciarEscaneo(${idx})">Reiniciar</button>
@@ -2000,25 +2064,63 @@
     else if (escaneado > esperado) { estadoTexto = '<span class="estado-exceso">⚠ Exceso</span>'; filaClase = 'row-exceso'; }
     else { estadoTexto = `<span class="estado-pendiente">Pendiente</span>`; filaClase = ''; }
 
-    const sinCodigo = !it.ean && !it.dun
-      ? '<div class="sin-codigo">Sin EAN/DUN cargado</div>'
+    // Sin EAN ni DUN no hay forma de escanearlo. Antes esa línea quedaba
+    // clavada en cero y el pedido no se podía cerrar; desde la v1.4 se cuenta
+    // a mano, queda marcada como tal, y NO cuenta como faltante — porque no
+    // falta nada, lo que falta es el código en el catálogo.
+    const noSePuedeEscanear = !it.ean && !it.dun;
+    const aviso = noSePuedeEscanear
+      ? '<div class="sin-codigo">Sin código de barra — contalo a mano</div>'
       : (!it.reconocido ? '<div class="sin-codigo">Producto no identificado en el catálogo</div>' : '');
+
+    const celdaContado = noSePuedeEscanear
+      ? `<input type="number" min="0" step="1" class="contar-mano" id="mano-${idx}-${i}"
+                value="${escaneado || ''}" placeholder="0"
+                onchange="contarAMano(${idx}, ${i}, this.value)" />`
+      : escaneado;
 
     return `
       <tr class="${filaClase}" id="fila-${idx}-${i}">
-        <td>${it.codigo ?? '-'}</td>
-        <td>${it.concepto ?? '-'}${sinCodigo}</td>
+        <td>${escapeHtml(it.codigo ?? '-')}</td>
+        <td>${escapeHtml(it.concepto ?? '-')}${aviso}</td>
         <td>${esperado}</td>
-        <td>${escaneado}</td>
+        <td>${celdaContado}</td>
         <td>${estadoTexto}</td>
       </tr>
     `;
+  }
+
+  // Qué líneas se contaron a mano: { [idx]: Set(itemIndex) }
+  const contadosAMano = {};
+
+  function contarAMano(idx, i, valor) {
+    const it = ultimaData[idx].items[i];
+    const esperado = it.cantidad || 0;
+    const cantidad = Math.max(0, parseInt(valor, 10) || 0);
+
+    if (cantidad > esperado) {
+      setScanFeedback(idx, `"${it.concepto || it.codigo}": el pedido son ${esperado}, no se puede anotar ${cantidad}.`, 'error');
+      const campo = document.getElementById(`mano-${idx}-${i}`);
+      if (campo) campo.value = escaneos[idx][i] || '';
+      return;
+    }
+
+    escaneos[idx][i] = cantidad;
+    contadosAMano[idx] = contadosAMano[idx] || new Set();
+    if (cantidad > 0) contadosAMano[idx].add(i);
+    else contadosAMano[idx].delete(i);
+
+    document.getElementById(`fila-${idx}-${i}`).outerHTML = renderFilaItem(idx, i, it);
+    setScanFeedback(idx, `"${it.concepto || it.codigo}": anotadas ${cantidad} unidad(es) a mano.`, 'ok');
+    actualizarResumenPicking(idx);
+    actualizarBultosBox(idx);
   }
 
   async function reiniciarEscaneo(idx) {
     const items = ultimaData[idx].items;
     const estabaArmado = obtenerEstadoPicking(idx).armado;
     escaneos[idx] = items.map(() => 0);
+    if (contadosAMano[idx]) contadosAMano[idx].clear();
     items.forEach((it, i) => {
       document.getElementById(`fila-${idx}-${i}`).outerHTML = renderFilaItem(idx, i, it);
     });

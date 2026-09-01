@@ -80,6 +80,35 @@ con la 1.3.0/1.3.1 se reparan solas al arrancar la 1.3.2.
 No se puede quedar sin ningún supervisor: la app rechaza borrar o degradar al
 último.
 
+## Productos sin código de barra
+
+El escaneo es la única forma de contar una línea: si el producto no tiene EAN
+ni DUN en el catálogo, esa línea quedaba clavada en cero y el pedido no se
+podía cerrar. Desde la v1.4 esas líneas —**y solo esas**— tienen un casillero
+para anotar la cantidad a mano.
+
+**No cuentan como faltante.** Si se anotó todo lo pedido, el armado cierra como
+completo y no pide supervisor: la mercadería salió entera, lo que falta es el
+código en el catálogo. Si se anotó de menos, sí es un faltante real y pide
+motivo y firma como cualquier otro.
+
+`productoSinCodigo()` valida esto **en el servidor**: anotar a mano un producto
+que sí tiene código se rechaza. Si no, el casillero sería la puerta para
+saltearse el escaneo escribiendo un número.
+
+La pantalla lista arriba del pedido los SKU que no se pueden escanear, para
+pasárselos a quien mantiene el catálogo, y el armado viaja al buzón con
+`contadoAMano` por item.
+
+**Por qué el catálogo es una planilla y no la API** (medido el 1/9/2026):
+Contabilium expone `CodigoBarras` en `/api/conceptos/search`, pero lo tiene
+cargado en **7 de 598 productos** — los 463 EAN que usa el depósito viven solo
+en la planilla. Y **no hay ningún campo para el DUN ni para el factor**, que
+son los que permiten escanear una caja cerrada y sumar 24 unidades de una. O
+sea que la API no puede reemplazar la planilla ni aunque alguien cargara todos
+los códigos. Ver `assets/Tabla EAN DUN GSU.xlsx` en el repo de Gestión de
+Vendedores.
+
 ## Pedidos incompletos
 
 Cuando falta escanear mercadería hay dos caminos, y el orden importa:
