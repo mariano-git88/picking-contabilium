@@ -1,1 +1,3369 @@
-[{"sku": "06008C9000-000", "nombre": "CORTA CERCOS GHE 18V-60 S/B", "ean": null, "dun": null, "factor": null}, {"sku": "06008D1000-000", "nombre": "DESBROZADORA GFR 18V-23 S/B", "ean": null, "dun": null, "factor": null}, {"sku": "0600910FN-000", "nombre": "HIDROLAVADORA GHP 4-50 2.200W 173 BAR", "ean": null, "dun": null, "factor": null}, {"sku": "06012B80E2-000", "nombre": "TALADRO PERCUTOR BOSCH GSB 13 RE 127V", "ean": null, "dun": null, "factor": null}, {"sku": "06019F40E3-000", "nombre": "TALADRO ATORNILLADOR INALÁMBRICO DE 12V GSR 1000 SMART", "ean": null, "dun": null, "factor": null}, {"sku": "1600A015TJ-000", "nombre": "CARGADOR RÁPIDO 18V 8A GAL 1880 CV 220V", "ean": null, "dun": null, "factor": null}, {"sku": "AFX CA 25X5 N", "nombre": "CINTA ANTIDESLIZANTE AUTOADHESIVA AFIX 25 MM X 5 M NEGRA", "ean": "7793300706026", "dun": "17793300706023", "factor": 24}, {"sku": "AFX MP 1X2,2 N", "nombre": "MOSQUITERO AUTOADHESICO PARA PUERTAS AFIX", "ean": "7793300707665", "dun": "17793300707662", "factor": 15}, {"sku": "AFX MV 1,3X1,6 N", "nombre": "MOSQUITERO AUTOADHESICO PARA VENTANA AFIX 130X160 CM. NEGRO", "ean": "7793300707672", "dun": "17793300707679", "factor": 15}, {"sku": "AFX MV 1X1,2 N", "nombre": "MOSQUITERO AUTOADHESICO PARA VENTANAS AFIX", "ean": "7793300707689", "dun": "17793300707686", "factor": 15}, {"sku": "AFX MV 2X2 N", "nombre": "MOSQUITERO AUTOADHESICO PARA VENTANA AFIX 200X200 CM. NEGRO", "ean": "7793300707696", "dun": "17793300707693", "factor": 15}, {"sku": "AFX P R33 B", "nombre": "PERCHAS AUTOADHESIVAS REMOVIBLES 33 MM BLANCAS X 5 U.", "ean": "7793300707818", "dun": "17793300707815", "factor": 144}, {"sku": "AFX P R80 BO", "nombre": "PERCHAS AUTOADHESIVAS REMOVIBLES 80 MM BLANCAS X 2 U.", "ean": "7793300707825", "dun": "17793300707822", "factor": 144}, {"sku": "AFX P R80 TO", "nombre": "PERCHAS AUTOADHESIVAS REMOVIBLES 80 MM TRANSPARENTES X 2 U.", "ean": "7793300707832", "dun": "17793300707839", "factor": 144}, {"sku": "AFX P18 AR", "nombre": "PERCHAS RECTANGULARES X 5 U. 18MM A. INOXIDABLE", "ean": "7793300050136", "dun": "17793300050133", "factor": 12}, {"sku": "AFX P35 BO", "nombre": "PERCHAS AUTOADHESIVAS OVAL X 5 U. 35MM BLANCO", "ean": "7793300050075", "dun": "17793300050072", "factor": 12}, {"sku": "AFX P35 TO", "nombre": "PERCHAS AUTOADHESIVAS OVAL X 5 U. 35MM TRANSPARENTE", "ean": "7793300050129", "dun": "17793300050126", "factor": 12}, {"sku": "AFX P49 AR", "nombre": "PERCHAS RECTANGULARES X 2 U. 49MM A. INOXIDABLE", "ean": "7793300050143", "dun": "17793300050140", "factor": 12}, {"sku": "AFX P54 BO", "nombre": "PERCHAS AUTOADHESIVAS OVAL X 3 U. 54MM BLANCO", "ean": "7793300050068", "dun": "17793300050065", "factor": 12}, {"sku": "AFX P54 TO", "nombre": "PERCHAS AUTOADHESIVAS OVAL X 3 U. 54MM TRANSPARENTE", "ean": "7793300050181", "dun": "17793300050188", "factor": 12}, {"sku": "AFX P66 BO", "nombre": "PERCHA AUTOADHESIVA OVAL X 1 U. 66MM BLANCO", "ean": "7793300050105", "dun": "17793300050102", "factor": 12}, {"sku": "AFX PC 1 20", "nombre": "AFIX PRACTI CLAVO 20 UNIDADES C/SUJETADOR", "ean": "7793300706408", "dun": "17793300706405", "factor": 12}, {"sku": "AFX PEA 4 T", "nombre": "PORTA ESTANTES AUTOADHESIVOS AFIX TRANSPARENTE X 4U.", "ean": "7793300705807", "dun": "17793300705804", "factor": 12}, {"sku": "AFX RUE 4 AI", "nombre": "RUEDAS AUTOADHESIVAS AFIX ACERO INOX. X 4 U.", "ean": "7793300705791", "dun": "17793300705798", "factor": 12}, {"sku": "AFX S E", "nombre": "GANCHO AUTOADHESIVO SUJETA ESCOBAS ARO BLANCO", "ean": "7793300050082", "dun": "17793300050089", "factor": 12}, {"sku": "AFX VA 2", "nombre": "ABROJO SUJETADOR AUTOADHESIVO 20 MM X 2 M", "ean": "7793300050044", "dun": "17793300050041", "factor": 12}, {"sku": "AFX W 16", "nombre": "AUTOADHESIVO DOBLE FAZ EN PLACA", "ean": "7793300220102", "dun": "17793300220109", "factor": 40}, {"sku": "AFX W R2", "nombre": "AUTOADHESIVO DOBLE FAZ EN ROLLO", "ean": "7793300413566", "dun": "17793300413563", "factor": 40}, {"sku": "AFX ZP 7X5 B", "nombre": "ZOCALO AUTOADHESIVO PARA VENTANA AFIX", "ean": "7793300709072", "dun": "17793300709079", "factor": 32}, {"sku": "ARN FL 1X3 B", "nombre": "ADHESIVO FLASH 1 G X 3 UNIDADES BLISTER", "ean": "7793300704367", "dun": "17793300704364", "factor": 25}, {"sku": "ARN FL 2 B", "nombre": "ADHESIVO FLASH 2 G BLISTER", "ean": "7793300704350", "dun": "17793300704357", "factor": 50}, {"sku": "ARN FL 2 T", "nombre": "ADHESIVO FLASH 2 G TIRA", "ean": "7793300704343", "dun": "17793300704340", "factor": 70}, {"sku": "ARN FL 3G T", "nombre": "ADHESIVO FLASH GEL 3 G TIRA", "ean": "7793300704329", "dun": "17793300704326", "factor": 70}, {"sku": "C CTR 3 G R", "nombre": "CUTTER REFORZADO GRANDE SERIE 300", "ean": "7793300425866", "dun": "17793300425863", "factor": 12}, {"sku": "C CTR 5 G", "nombre": "CUTTER REFORZADO A ROSCA CON REPUESTO SERIE 500", "ean": "7793300425927", "dun": "17793300425924", "factor": 24}, {"sku": "C CTR 5A G", "nombre": "CUTTER REFORFADO AUTOM?TICO GRANDE SERIE 500", "ean": "7793300425903", "dun": "17793300425900", "factor": 12}, {"sku": "C CTR 8A G", "nombre": "CUTTER PROFESIONAL AUTOM?TICO SERIE 800", "ean": "7793300425941", "dun": "17793300425948", "factor": 12}, {"sku": "C CTR C H CRP", "nombre": "CUTTER CHICO -  C/ 5 REPUESTOS", "ean": "7793300415409", "dun": "17793300415406", "factor": 24}, {"sku": "C CTR C/R", "nombre": "REPUESTO CUTTER - CHICO - 10 UNIDADES", "ean": "7793300423886", "dun": "17793300423883", "factor": 60}, {"sku": "C CTR G H", "nombre": "CUTTER GRANDE - HOBBY", "ean": "7793300415423", "dun": "17793300415420", "factor": 36}, {"sku": "C CTR G/R", "nombre": "REPUESTO CUTTER - GRANDE - 5 UNIDADES", "ean": "7793300423909", "dun": "17793300423906", "factor": 30}, {"sku": "C CTR P4", "nombre": "CUTTER PROFESIONAL METALICO - 4 POSICIONES", "ean": "7793300414860", "dun": "17793300414867", "factor": 12}, {"sku": "C CTR PR", "nombre": "REPUESTO CUTTER PROFESIONAL - 5 UNIDADES", "ean": "7793300418882", "dun": "17793300418889", "factor": 50}, {"sku": "C CTR SBD C", "nombre": "CUTTER CORTA PICOS CARTUCHOS SUPTABOND", "ean": "7793300000513", "dun": "17793300000510", "factor": 12}, {"sku": "C HM F30 UN 41", "nombre": "BARRAS ADH.UNIV 0,74X30CMX41 UNIDADES", "ean": "7793300704206", "dun": "17793300704203", "factor": 5}, {"sku": "C HM G30 UT 17", "nombre": "BARRAS ADHESIVAS ULTRA TRANSPARENTE 17 UNIDADES 1,12 X 30 CM", "ean": "7793300704220", "dun": "17793300704227", "factor": 6}, {"sku": "C HM HX GL 12", "nombre": "BARRAS ADHESIVAS GLITTER X 12 UNIDADES", "ean": "7793300703889", "dun": "17793300703886", "factor": 18}, {"sku": "C PHX 100", "nombre": "MODELO HX 100 - POTENCIA 10 WATTS", "ean": "7793300417083", "dun": "17793300417080", "factor": 12}, {"sku": "C PHX 200 R", "nombre": "PISTOLA HOT MELT MODELO HX 200 ROSA", "ean": "7793300701878", "dun": "17793300701875", "factor": 12}, {"sku": "C PX 2100", "nombre": "MOD. PX 2100 PROFESIONAL", "ean": "7793300230316", "dun": "17793300230313", "factor": 6}, {"sku": "C PX 300", "nombre": "MODELO PX 300 - POTENCIA 40 WATTS", "ean": "7793300230309", "dun": "17793300230306", "factor": 12}, {"sku": "CAB", "nombre": "ABROCHADORA ENGRAMPADORA 2 EN 1", "ean": "7793300292345", "dun": "17793300292342", "factor": 10}, {"sku": "CAB 2", "nombre": "ABROCHADORA ENGRAMPADORA 2 EN 1", "ean": "7793300708396", "dun": "17793300708393", "factor": 12}, {"sku": "CAB CP 15", "nombre": "CLAVOS 15MMX500 MOD.PRO.POT.REGULAB", "ean": "7793300424302", "dun": "17793300424309", "factor": 300}, {"sku": "CAB INT 2", "nombre": "ENGRAMPADORA USO INTENSIVO- ACERO NEGRA", "ean": "7793300705784", "dun": "17793300705781", "factor": 6}, {"sku": "CAB P12 N", "nombre": "GRAMPAS P12 -12MM.X 1000", "ean": "7793300418806", "dun": "17793300418803", "factor": 5}, {"sku": "CAB P8 N", "nombre": "GRAMPAS P8 -8MM.X 1000", "ean": "7793300418783", "dun": "17793300418780", "factor": 5}, {"sku": "CAB PRO", "nombre": "ENGRAMPADORA PROFESIONAL-AC.CROMADO", "ean": "7793300294561", "dun": "17793300294568", "factor": 6}, {"sku": "CAB PRO PR", "nombre": "ENGRAMP.PROF.POT.REG.ACEP.CLAV/GRAM", "ean": "7793300419742", "dun": "17793300419749", "factor": 6}, {"sku": "CAB PRO PR GM", "nombre": "ENGRAMP.PROF.POT.REG.ACEP.CLAV/GRAM.METAL.GATILLO", "ean": "7793300707115", "dun": "17793300707112", "factor": 10}, {"sku": "CAB PRO PR GP", "nombre": "ENGRAMP.PROF.POT.REG.ACEP.CLAV/GRAM.PLAS.GATILLO", "ean": "7793300707108", "dun": "17793300707105", "factor": 10}, {"sku": "CAD 1/4 1", "nombre": "CADENA MAXIMA SEGURIDAD ACERO CEMENTADO 1M", "ean": "7793300702318", "dun": "17793300427263", "factor": 6}, {"sku": "CAD 3/8 1", "nombre": "CADENA MAXIMA SEGURIDAD ACERO CEMENTADO 1M", "ean": "7793300702295", "dun": "17793300427300", "factor": 6}, {"sku": "CAD 3/8 1.5", "nombre": "CADENA MAXIMA SEGURIDAD ACERO CEMENTADO 1.5 METROS", "ean": "7793300705159", "dun": "17793300705156", "factor": 8}, {"sku": "CALP SBD TR PR", "nombre": "CALCO PISO SUPRABOND TRANPARENTE PRECISION", "ean": "7793300709034", "dun": null, "factor": null}, {"sku": "CAS BI L B", "nombre": "CASCO DE BICICLETA, TALLE LARGE, BLANCO", "ean": "7793300707740", "dun": "17793300707747", "factor": 10}, {"sku": "CAS BI L N", "nombre": "CASCO DE BICICLETA, TALLE LARGE, NEGRO", "ean": "7793300707757", "dun": "17793300707754", "factor": 10}, {"sku": "CAS BI L R", "nombre": "CASCO DE BICICLETA, TALLE LARGE, ROJO", "ean": "7793300707764", "dun": "17793300707761", "factor": 10}, {"sku": "CAS BI M B", "nombre": "CASCO CICLISTA TALLE MEDIUM BLANCO", "ean": "7793300707702", "dun": "17793300707709", "factor": 10}, {"sku": "CAS BI M N", "nombre": "CASCO DE BICICLETA,TALLE MEDIUM, NEGRO", "ean": "7793300707726", "dun": "17793300707723", "factor": 10}, {"sku": "CAS BI M R", "nombre": "CASCO DE BICICLETA,TALLE MEDIUM, ROJO", "ean": "7793300707733", "dun": "17793300707730", "factor": 10}, {"sku": "CCO TJ 500", "nombre": "TIJERA CORTA CA?OS. SERIE 500", "ean": "7793300701076", "dun": "17793300701073", "factor": 10}, {"sku": "CCO TJ 600", "nombre": "TIJERA CORTA CA?OS.  SERIE 600", "ean": "7793300701069", "dun": "17793300701066", "factor": 10}, {"sku": "CDB AR 30", "nombre": "CANDADO REF. ACERO NIQUELADO 30 MM", "ean": "7793300426184", "dun": "17793300426181", "factor": 12}, {"sku": "CDB AR 30 L", "nombre": "CANDADO REF. ACERO NIQUELADO 30 MM ARO LARGO", "ean": "7793300426269", "dun": "17793300426266", "factor": 12}, {"sku": "CDB AR 40", "nombre": "CANDADO REF. ACERO NIQUELADO 40 MM", "ean": "7793300426207", "dun": "17793300426204", "factor": 12}, {"sku": "CDB AR 40 L", "nombre": "CANDADO REF. ACERO NIQUELADO 40 MM ARO LARGO", "ean": "7793300426283", "dun": "17793300426280", "factor": 12}, {"sku": "CDB AR 40X2", "nombre": "CANDADO REFORZADO ACERO NIQUELADO 40 MM. X 2 UNIDADES", "ean": "7793300427068", "dun": "17793300427065", "factor": 6}, {"sku": "CDB AR 40X4", "nombre": "CANDADO REF. ACERO NIQUELADO 40 MM X 4 UN", "ean": "7793300705395", "dun": "17793300705392", "factor": 4}, {"sku": "CDB AR 50", "nombre": "CANDADO REF. ACERO NIQUELADO 50 MM", "ean": "7793300426221", "dun": "17793300426228", "factor": 6}, {"sku": "CDB AR 50 L", "nombre": "CANDADO REF. ACERO NIQUELADO 50 MM ARO LARGO", "ean": "7793300426306", "dun": "17793300426303", "factor": 6}, {"sku": "CDB AR 60", "nombre": "CANDADO REF. ACERO NIQUELADO 60 MM", "ean": "7793300426245", "dun": "17793300426242", "factor": 6}, {"sku": "CDB AR 80P", "nombre": "CANDADO REFORZADO ACERO NIQUELADO 80 MM PERNO HORIZONTAL APERTURA", "ean": "7793300707351", "dun": "17793300707358", "factor": 6}, {"sku": "CDB AS 40", "nombre": "CANDADO REFORZADO ALTA SEGURIDAD ACERO NIQUELADO 40 MM", "ean": "7793300428225", "dun": "17793300428222", "factor": 6}, {"sku": "CDB AS 50", "nombre": "CANDADO REFORZADO ALTA SEGURIDAD ACERO NIQUELADO 50 MM", "ean": "7793300428249", "dun": "17793300428246", "factor": 6}, {"sku": "CDB B 25", "nombre": "REFORZADO - 3 LLAVES", "ean": "7793300260122", "dun": "17793300260129", "factor": 12}, {"sku": "CDB BR 30", "nombre": "REFORZADO - DOBLE TRABA - 3 LLAVES", "ean": "7793300417489", "dun": "17793300417486", "factor": 12}, {"sku": "CDB BR 40", "nombre": "REFORZADO - DOBLE TRABA - 3 LLAVES", "ean": "7793300417526", "dun": "17793300417523", "factor": 12}, {"sku": "CDB BR 50", "nombre": "REFORZADO - DOBLE TRABA - 3 LLAVES", "ean": "7793300417564", "dun": "17793300417561", "factor": 6}, {"sku": "CDB BS 20", "nombre": "BRONCE STANDARD - 3 LLAVES", "ean": "7793300413924", "dun": "17793300413921", "factor": 12}, {"sku": "CDB BS 30", "nombre": "BRONCE STANDARD - 3 LLAVES", "ean": "7793300413948", "dun": "17793300413945", "factor": 12}, {"sku": "CDB BS 40", "nombre": "BRONCE STANDARD - 3 LLAVES", "ean": "7793300413962", "dun": "17793300413969", "factor": 12}, {"sku": "CDB C3 20 AR", "nombre": "CANDADO DE ALEACION ALUMINIO 3 COMB. 20 MM ROJO", "ean": "7793300000308", "dun": "17793300000305", "factor": 12}, {"sku": "CDB C3 30 AR", "nombre": "CANDADO DE ALEACION ALUMINIO 3 COMB. 30 MM ROJO", "ean": "7793300000322", "dun": "17793300000329", "factor": 12}, {"sku": "CDB C3 35 TSA A", "nombre": "CANDADO DE COMBINACION TSA CON ARO", "ean": "7793300703360", "dun": "17793300703367", "factor": 50}, {"sku": "CDB C3 35 TSA C", "nombre": "CANDADO DE COMBINACION TSA CON CABLE", "ean": "7793300703377", "dun": "17793300703374", "factor": 50}, {"sku": "CDB C4 40 AR", "nombre": "CANDADO DE ALEACION ALUMINIO 3 COMB. 40 MM ROJO", "ean": "7793300000346", "dun": "17793300000343", "factor": 12}, {"sku": "CDB C4 PP", "nombre": "CANDADO DE ALEACION 4 COMB. PERSIANAS", "ean": "7793300000384", "dun": "27793300000388", "factor": 6}, {"sku": "CDB C5 65 CA", "nombre": "CANDADO DE ALEACION 5 COMB.", "ean": "7793300000360", "dun": "27793300000364", "factor": 6}, {"sku": "CDB C5 65 CR", "nombre": "CANDADO DE ALEACION 5 COMBINACIONES 65 MM ROJO", "ean": "7793300000353", "dun": "27793300000357", "factor": 6}, {"sku": "CDB CAD 10 1 C", "nombre": "CADENA MAXIMA SEGURIDAD CON CANDADO", "ean": "7793300701427", "dun": null, "factor": null}, {"sku": "CDB H 30", "nombre": "HIERRO - 3 LLAVES", "ean": "7793300413887", "dun": "17793300413884", "factor": 12}, {"sku": "CDB H 30 D", "nombre": "CANDADO DE HIERRO DORADO N? 30", "ean": "7793300703384", "dun": "17793300703381", "factor": 12}, {"sku": "CDB H 30 D L", "nombre": "CANDADO DE HIERRO DORADO N? 30 ARO LARGO", "ean": "7793300703438", "dun": "17793300703435", "factor": 12}, {"sku": "CDB H 40", "nombre": "HIERRO - 3 LLAVES", "ean": "7793300413900", "dun": "17793300413907", "factor": 12}, {"sku": "CDB H 40 D", "nombre": "CANDADO DE HIERRO DORADO N? 40", "ean": "7793300703391", "dun": "17793300703398", "factor": 12}, {"sku": "CDB H 40 D L", "nombre": "CANDADO DE HIERRO DORADO N? 40 ARO LARGO", "ean": "7793300703445", "dun": "17793300703442", "factor": 12}, {"sku": "CDB H 50", "nombre": "CANDADO DE HIERRO ARO CEMENTADO 50MM", "ean": "7793300425989", "dun": "17793300425986", "factor": 6}, {"sku": "CDB H 50 D", "nombre": "CANDADO DE HIERRO DORADO N? 50", "ean": "7793300703407", "dun": "17793300703404", "factor": 6}, {"sku": "CDB H 50 D L", "nombre": "CANDADO DE HIERRO DORADO N? 50 ARO LARGO", "ean": "7793300703452", "dun": "17793300703459", "factor": 6}, {"sku": "CDB H 60", "nombre": "CANDADO DE HIERRO ARO CEMENTADO 60MM.", "ean": "7793300426566", "dun": "17793300426563", "factor": 6}, {"sku": "CDB H 60 D", "nombre": "CANDADO DE HIERRO DORADO N? 60", "ean": "7793300703414", "dun": "17793300703411", "factor": 6}, {"sku": "CDB H 60 D L", "nombre": "CANDADOS DE HIERRO DORADO N°60 ARO LARGO", "ean": "7793300703469", "dun": "17793300703466", "factor": 6}, {"sku": "CDB LIN 180", "nombre": "LINGA DE ACERO 1800 MM X 12 MM", "ean": "7793300702851", "dun": "17793300702858", "factor": 6}, {"sku": "CDB LIN A120 LV", "nombre": "LINGA DE SEGURIDAD", "ean": "7793300702868", "dun": "17793300702865", "factor": 6}, {"sku": "CDB LIN B CMB", "nombre": "LINGA DE SEGURIDAD CON COMBINACION", "ean": "7793300701465", "dun": "17793300701462", "factor": 10}, {"sku": "CDB LIN B LV", "nombre": "LINGA DE SEGURIDAD CON LLAVES", "ean": "7793300701458", "dun": "17793300701455", "factor": 10}, {"sku": "CDB MS 72 B", "nombre": "CANDADO MAXIMA SEGURIDAD", "ean": "7793300000391", "dun": "17793300000398", "factor": 3}, {"sku": "CDB T DISCO", "nombre": "CANDADO TRABA DISCO", "ean": "7793300701441", "dun": "17793300701448", "factor": 6}, {"sku": "CDB TD 5.5 F", "nombre": "TRABA DISCO DE 5.5 MM CON FUNDA", "ean": "7793300702875", "dun": "17793300702872", "factor": 12}, {"sku": "CDB WR 40", "nombre": "CANDADO REFORZADO WATER RESISTANT 40MM", "ean": "7793300704275", "dun": "27793300704279", "factor": 6}, {"sku": "CDB WR 40 L", "nombre": "CANDADO REFORZADO WATER RESISTANT 40 MM ARO LARGO", "ean": "7793300704282", "dun": null, "factor": null}, {"sku": "CDB WR 50", "nombre": "CANDADO REFORZADO WATER RESISTANT 50 MM", "ean": "7793300704299", "dun": null, "factor": null}, {"sku": "CDB WR 50 L", "nombre": "CANDADO REFORZADO WATER RESISTANT 50 MM ARO LARGO", "ean": "7793300704305", "dun": null, "factor": null}, {"sku": "CH ALM 9", "nombre": "SET DE LLAVES ALLEN 9 PIEZAS (MM)- CROMO VANADIO", "ean": "7793300422421", "dun": "17793300422428", "factor": 6}, {"sku": "CH TRX 9", "nombre": "SET DE LLAVES TORX 9 PIEZAS- CROMO VANADIO", "ean": "7793300422407", "dun": "17793300422404", "factor": 6}, {"sku": "CIA A-40 20", "nombre": "CIANOACR. - PLASTICOS Y GOMAS", "ean": "7793300432826", "dun": "17793300432823", "factor": 50}, {"sku": "CR0020000000207", "nombre": "SET ACCESORIOS BAÑO - 7 PIEZAS - NAPOLIOLI - 7 PIEZAS", "ean": null, "dun": null, "factor": null}, {"sku": "CR0020000000270", "nombre": "PERCHA AQUALAF DE METAL CROMADO - NAPOLI - GARANTÍA 5 AÑOS", "ean": null, "dun": null, "factor": null}, {"sku": "CR0020000005010", "nombre": "JUEGO DE GRIFERIA LAVATORIO BAÑO - LINEA AQ6000", "ean": null, "dun": null, "factor": null}, {"sku": "CR0020000019001", "nombre": "JUEGO GRIFERIA MESADA COCINA - LINEA AQ7000", "ean": null, "dun": null, "factor": null}, {"sku": "CR0020000019002", "nombre": "JUEGO GRIFERIA PARED  COCINA - LINEA AQ7000", "ean": null, "dun": null, "factor": null}, {"sku": "CR0020000020000", "nombre": "SET COMPLETO - GRIFERIAS  BAÑO - SET AQ8000", "ean": null, "dun": null, "factor": null}, {"sku": "CR0020000087010", "nombre": "GRIFERÍA PARA LAVATORIO AQUALAF REGULABLE - NAPOLI BAÑO", "ean": null, "dun": null, "factor": null}, {"sku": "CR0020000087020", "nombre": "GRIFERÍA BIDET AQUALAF LEVER CIERRE CERÁMICO - NAPOLI BAÑO", "ean": null, "dun": null, "factor": null}, {"sku": "CR0020000087030", "nombre": "GRIFERÍA PARA DUCHA AQUALAF CON TRANSFERENCIA - NAPOLI BAÑO", "ean": null, "dun": null, "factor": null}, {"sku": "CTA MCA 5B 3", "nombre": "CINTA METRICA SERIE 500 CON FRENO 3M.X16MM", "ean": "7793300701250", "dun": "17793300701257", "factor": 10}, {"sku": "CTA MCA 5B 5", "nombre": "CINTA METRICA SERIA 500 CON FRENO 5M X 19 MM", "ean": "7793300701243", "dun": "17793300701240", "factor": 10}, {"sku": "CTA MCA 5B 7,5", "nombre": "CINTA METRICA SERIE 500 CON FRENO 7.5M.X25MM", "ean": "7793300701236", "dun": "17793300701233", "factor": 10}, {"sku": "CTA MCA 5C 3", "nombre": "CINTA MÉTRICA 3 METROS X 19 MM DE ANCHO SERIE 500", "ean": "7793300704770", "dun": "17793300704777", "factor": 12}, {"sku": "CTA MCA 5C 5", "nombre": "CINTA MÉTRICA 5 METROS X 19 MM DE ANCHO SERIE 550", "ean": "7793300704763", "dun": "17793300704760", "factor": 12}, {"sku": "CTA MCA 5C 7,5", "nombre": "CINTA METRICA 7.5 METROS X 25 MM DE ANCHO SERIE 500", "ean": "7793300704756", "dun": "17793300704753", "factor": 12}, {"sku": "CTL SBD TR PR", "nombre": "CARTEL PARA STOPPER SBD TR PRECSION", "ean": "7793300709058", "dun": null, "factor": null}, {"sku": "DBL 30 B T", "nombre": "SUPRABOND DOBLADILLOS NUEVA F?RMULA", "ean": "7793300415362", "dun": "17793300415369", "factor": 24}, {"sku": "DES 7PH 0X50", "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO", "ean": "7793300419223", "dun": "17793300419220", "factor": 24}, {"sku": "DES 7PH 0X75", "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO", "ean": "7793300419247", "dun": "17793300419244", "factor": 24}, {"sku": "DES 7PH 1X50", "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO", "ean": "7793300419261", "dun": "17793300419268", "factor": 24}, {"sku": "DES 7PH 1X75", "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO", "ean": "7793300419285", "dun": "17793300419282", "factor": 24}, {"sku": "DES 7PH 2X100", "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO", "ean": "7793300419322", "dun": "17793300419329", "factor": 24}, {"sku": "DES 7PH 2X38", "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO", "ean": "7793300419308", "dun": "17793300419305", "factor": 24}, {"sku": "DES 7PH 3X125", "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO", "ean": "7793300419346", "dun": "17793300419343", "factor": 24}, {"sku": "DES 7PL 4X100", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300418929", "dun": "17793300418926", "factor": 24}, {"sku": "DES 7PL 4X125", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300418943", "dun": "17793300418940", "factor": 24}, {"sku": "DES 7PL 4X150", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300419162", "dun": "17793300419169", "factor": 24}, {"sku": "DES 7PL 4X75", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300418905", "dun": "17793300418902", "factor": 24}, {"sku": "DES 7PL 5X100", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300418981", "dun": "17793300418988", "factor": 24}, {"sku": "DES 7PL 5X125", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300419001", "dun": "17793300419008", "factor": 24}, {"sku": "DES 7PL 5X150", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300419025", "dun": "17793300419022", "factor": 24}, {"sku": "DES 7PL 5X75", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300418967", "dun": "17793300418964", "factor": 24}, {"sku": "DES 7PL 6X100", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300419063", "dun": "17793300419060", "factor": 24}, {"sku": "DES 7PL 6X150", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300419087", "dun": "17793300419084", "factor": 24}, {"sku": "DES 7PL 6X38", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300419049", "dun": "17793300419046", "factor": 24}, {"sku": "DES 7PL 8X100", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300419100", "dun": "17793300419107", "factor": 24}, {"sku": "DES 7PL 8X150", "nombre": "SERIE 700 - PLANO - CROMO VANADIO", "ean": "7793300419124", "dun": "17793300419121", "factor": 24}, {"sku": "DES 7RA 4X75", "nombre": "SERIE 700 - AISLADO- CROMO VANADIO", "ean": null, "dun": null, "factor": null}, {"sku": "DES 7RT 4X150", "nombre": "SERIE 700 - RECTO - CROMO VANADIO", "ean": "7793300419766", "dun": "17793300419763", "factor": 24}, {"sku": "DES 7RT 4X75", "nombre": "SERIE 700 - RECTO - CROMO VANADIO", "ean": "7793300419148", "dun": "17793300419145", "factor": 24}, {"sku": "DES 7RT 5X150", "nombre": "SERIE 700 - RECTO - CROMO VANADIO", "ean": "7793300421660", "dun": "17793300421667", "factor": 24}, {"sku": "DES 8 PHA 0X75", "nombre": "DS800 CROM VAN PHIL AISLADO #0X75MM", "ean": "7793300431782", "dun": "17793300431789", "factor": 8}, {"sku": "DES 8 ST 6", "nombre": "SET DE 6 DESTORN.SERIE 800 CROMO VANADIO", "ean": "7793300706033", "dun": "17793300706030", "factor": 6}, {"sku": "DES 8A ST 6", "nombre": "SET DE 6 DESTORNILLADORES AISLADOS SERIE 800", "ean": "7793300706460", "dun": "17793300706467", "factor": 6}, {"sku": "DES 8PHA 1X100", "nombre": "DS800 CROM VAN PHIL AISL #1X100MM", "ean": "7793300431805", "dun": "17793300431802", "factor": 8}, {"sku": "DES 8PHA 2X100", "nombre": "DS800 CROM VAN PHIL AISLADO #2X100MM", "ean": "7793300431829", "dun": "17793300431826", "factor": 8}, {"sku": "DES 8PHA 2X150", "nombre": "DS800 CROM VAN PHIL AISLADO #2X150MM", "ean": "7793300431843", "dun": "17793300431840", "factor": 8}, {"sku": "DES 8RA 4X100", "nombre": "DS800 CROM.VAN.RECT AISL 4X100MM", "ean": "7793300432161", "dun": "17793300432168", "factor": 8}, {"sku": "DES 8RA 5.5X125", "nombre": "DS800 CROM.VAN.RECT AISL 5.5X125MM.", "ean": "7793300432185", "dun": "17793300432182", "factor": 8}, {"sku": "DSA 4CP 115 1", "nombre": "DISCO ABRASIVO DE CORTE SERIE 400 115X1X22.2", "ean": "7793300703476", "dun": "17793300703473", "factor": 50}, {"sku": "DSA 4CP 115 1,6", "nombre": "DISCO ABRASIVO DE CORTE SERIE 400 115X1,6X22.2", "ean": "7793300703483", "dun": "17793300703480", "factor": 50}, {"sku": "DSA 4CP 180 1,6", "nombre": "DISCO ABRASIVO DE CORTE SERIE 400 180X1,6X22.2", "ean": "7793300703834", "dun": "17793300703831", "factor": 50}, {"sku": "DSD S400 115 C", "nombre": "DISCO DIAMANTADO SERIE 400 CONTINUO 115 MM", "ean": "7793300702585", "dun": "17793300702582", "factor": 10}, {"sku": "DSD S400 115 S", "nombre": "DISCO DIAMANTADO SERIE 400 SEGMENTADO 115 MM", "ean": "7793300702592", "dun": "17793300702599", "factor": 10}, {"sku": "DSD S400 115 T", "nombre": "DISCO DIAMANTADO SERIE 400 TURBO 115 MM", "ean": "7793300702608", "dun": "17793300702605", "factor": 10}, {"sku": "DSD S400 115 TF", "nombre": "DISCO DIAMANTADO SERIE 400 TURBO FINO 115 MM", "ean": "7793300702615", "dun": "17793300702612", "factor": 10}, {"sku": "DSD S400 180 S", "nombre": "DISCO DIAMANTADO SERIE 400 SEGMENTADO 180 MM", "ean": "7793300702639", "dun": "17793300702636", "factor": 10}, {"sku": "DSD S400 230 S", "nombre": "DISCO DIAMANTADO SERIE 400 SEGMENTADO 230 MM", "ean": "7793300702660", "dun": "17793300702667", "factor": 10}, {"sku": "DSD S80 115 C", "nombre": "DISCO DIAMANTADO SERIE 80 CONTINUO 115 MM", "ean": "7793300702486", "dun": "17793300702483", "factor": 10}, {"sku": "DSD S80 115 S", "nombre": "DISCO DIAMANTADO SERIE 80 SEGMENTADO115 MM", "ean": "7793300702493", "dun": "17793300702490", "factor": 10}, {"sku": "DSD S80 115 T", "nombre": "DISCO DIAMANTADO SERIE 80 TURBO115 MM", "ean": "7793300702509", "dun": "17793300702506", "factor": 10}, {"sku": "DSD S80 180 C", "nombre": "DISCO DIAMANTADO SERIE 80 CONTINUO 180 MM", "ean": "7793300702523", "dun": "17793300702520", "factor": 10}, {"sku": "DSD S80 180 S", "nombre": "DISCO DIAMANTADO SERIE 80 SEGMENTADO180 MM", "ean": "7793300702530", "dun": "17793300702537", "factor": 10}, {"sku": "DSD S80 180 T", "nombre": "DISCO DIAMANTADO SERIE 80 TURBO 180 MM", "ean": "7793300702547", "dun": "17793300702544", "factor": 10}, {"sku": "DSD S80 230 S", "nombre": "DISCO DIAMANTADO SERIE 80 SEGMENTADO 230 MM", "ean": "7793300702561", "dun": "17793300702568", "factor": 10}, {"sku": "EL PEL 6 A L", "nombre": "PELACABLES AUTOMATICO LATERAL SERIE 600", "ean": "7793300000452", "dun": "17793300000459", "factor": 10}, {"sku": "EPP PU 300 E", "nombre": "EPP PU 300 E", "ean": "7793300703841", "dun": "17793300703848", "factor": 12}, {"sku": "EPP PU 500 E", "nombre": "ESPUMA DE POLIUR. 500ML ECONOMY", "ean": "7793300000018", "dun": "17793300000015", "factor": 12}, {"sku": "EPP PU 500 P", "nombre": "ESPUMA DE POLIUR. 500ML PREMIUM", "ean": "7793300000032", "dun": "17793300000039", "factor": 12}, {"sku": "EPP PU 750 E", "nombre": "ESPUMA DE POLIUR. 750 ML ECONOMY", "ean": "7793300705319", "dun": "17793300705316", "factor": 12}, {"sku": "EPP PU 750 P", "nombre": "ESPUMA DE POLIUR. 750ML PREMIUM", "ean": "7793300000049", "dun": "17793300000046", "factor": 12}, {"sku": "ESL 100", "nombre": "SILICONA LIQUIDA DE 100 ML", "ean": "7793300702370", "dun": "17793300702377", "factor": 12}, {"sku": "ESL 30", "nombre": "SILICONA LIQUIDA DE 30 ML", "ean": "7793300702363", "dun": "17793300702360", "factor": 12}, {"sku": "ESP FX 1", "nombre": "FLEXIBLE - PULIDO ESPEJO", "ean": "7793300414785", "dun": "17793300414782", "factor": 12}, {"sku": "ESP FX 1,5", "nombre": "FLEXIBLE - PULIDO ESPEJO", "ean": "7793300270602", "dun": "17793300270609", "factor": 12}, {"sku": "ESP FX 2", "nombre": "FLEXIBLE - PULIDO ESPEJO", "ean": "7793300270701", "dun": "17793300270708", "factor": 12}, {"sku": "ESP FX 3", "nombre": "FLEXIBLE - PULIDO ESPEJO", "ean": "7793300270800", "dun": "17793300270807", "factor": 12}, {"sku": "ESP FX 4", "nombre": "ESPATULA FLEXIBLE 4- PULIDO ESPEJO", "ean": "7793300427983", "dun": "17793300427980", "factor": 12}, {"sku": "ESP FX 5", "nombre": "FLEXIBLE - PULIDO ESPEJO", "ean": "7793300414808", "dun": "17793300414805", "factor": 12}, {"sku": "ESP FX 6", "nombre": "ESPATULA FLEXIBLE 6- PULIDO ESPEJO", "ean": "7793300428003", "dun": "17793300428000", "factor": 12}, {"sku": "EX A", "nombre": "ERPOX ACERO - - JUEGO POTES 200 G", "ean": "7793300080201", "dun": "17793300080208", "factor": 12}, {"sku": "EX A 105", "nombre": "ERPOX ACERO - JUEGO POTES 105 G", "ean": "7793300704411", "dun": "17793300704418", "factor": 12}, {"sku": "EX BUL STD", "nombre": "EXHIBIDOR PANEL BULIT STANDARD (MADERA)", "ean": "7793300702943", "dun": null, "factor": null}, {"sku": "EX BUL STD SC", "nombre": "EXHIBIDOR PANEL MADERA SIN CARTEL", "ean": "7793300706699", "dun": null, "factor": null}, {"sku": "EX CDB 9", "nombre": "EXHIBIDOR PARA CANDADOS 9 GANCHOS", "ean": "7793300702783", "dun": null, "factor": null}, {"sku": "EX DSA TORRE", "nombre": "TORRE EXHIBIDORA DE DISCOS", "ean": "7793300703308", "dun": null, "factor": null}, {"sku": "EX DSD 8", "nombre": "EXHIBIDOR PARA DSD 8 GANCHOS", "ean": "7793300705371", "dun": null, "factor": null}, {"sku": "EX ERPOX T", "nombre": "TIRA EXHIBIDORA ERPOX", "ean": "7793300704466", "dun": null, "factor": null}, {"sku": "EX GEL M", "nombre": "EXHIBIDOR SOMERSET GEL MOSTRADOR", "ean": "7793300706804", "dun": null, "factor": null}, {"sku": "EX PZA M 6", "nombre": "EXHIBIDOR DE PINZAS MOSTRADOR 6 GANCHOS REVERSIBLE", "ean": "7793300709171", "dun": null, "factor": null}, {"sku": "EX SBD 5", "nombre": "EXHIBIDOR SUPRABOND DE METAL DE 5 GANCHOS", "ean": "7793300703209", "dun": "37790001001054", "factor": 1}, {"sku": "EX SBD MOST C", "nombre": "EXHIBIDOR SUPRABOND MOSTRADOR CARTON", "ean": "7793300705562", "dun": null, "factor": null}, {"sku": "EX SBD MOST G", "nombre": "GANCHOS EXHIBIDOR DE MOSTRADOR SUPRABOND", "ean": "7793300705593", "dun": "17793300705590", "factor": 112}, {"sku": "EX SBD PIE C", "nombre": "EXHIBIDOR DE PIE SUPRABOND DE CARTON", "ean": "7793300000599", "dun": null, "factor": null}, {"sku": "EX SBD PIE G", "nombre": "GANCHOS EXHIBIDOR DE PIE SUPRABOND DE CARTON", "ean": "7790001001054", "dun": null, "factor": null}, {"sku": "EX SBD PIEADH C", "nombre": "EXHIBIDOR DE PIE SUPRABOND CARTON", "ean": "7793300705555", "dun": "17793300705552", "factor": 1}, {"sku": "EX SBD PIEADHG", "nombre": "GANCHOS EXHIBIDOR SUPRABOND DE PIE DE CARTON", "ean": "7793300705586", "dun": "17793300705583", "factor": 112}, {"sku": "EX SBD PR T", "nombre": "EXHIBIDOR SBD TRANSPARENTE PRECISIÓN (TIRA)", "ean": "7793300709126", "dun": null, "factor": null}, {"sku": "EX SBD TR", "nombre": "EXHIBIDOR 5 GANCHOS SUPRABOND TRANSP.", "ean": "7790001001054", "dun": null, "factor": null}, {"sku": "EX SBD TR T", "nombre": "EXHIBIDOR TIRA SUPRABOND TRANSPARENTE", "ean": "7793300706477", "dun": null, "factor": null}, {"sku": "EX SLL M", "nombre": "EXHIBIDOR SELLADORES 8 CARTUCHO MOSTRADOR", "ean": "7793300707290", "dun": null, "factor": null}, {"sku": "EX SLT PIE", "nombre": "EXHIBIDOR DE PIE BURLETE  DE CARTON", "ean": "7793300701823", "dun": null, "factor": null}, {"sku": "EX SLT PIE G", "nombre": "GANCHOS EXHIBIDOR DE PIE BURLETE DE CARTON", "ean": "7793300701824", "dun": null, "factor": null}, {"sku": "EX SPX GENERICO", "nombre": "TIRA EXHIBIDORA SUPERPOX  GENERICO", "ean": "7793300705579", "dun": null, "factor": null}, {"sku": "EX SPX T", "nombre": "TIRA EXHIBIDORA SUPERPOX", "ean": "7793300704732", "dun": null, "factor": null}, {"sku": "EX ZAP 2 G", "nombre": "EXHIBIDOR ZAPATILLAS 2 GANCHOS", "ean": "7793300706064", "dun": null, "factor": null}, {"sku": "EXB", "nombre": "ERPOX BLANCO - JUEGO POTES 150 G.", "ean": "7793300080102", "dun": "17793300080109", "factor": 12}, {"sku": "EXB 80", "nombre": "ERPOX BLANCO - JUEGO POTES 80 G.", "ean": "7793300704428", "dun": "17793300704425", "factor": 12}, {"sku": "F0130290JA000", "nombre": "DREMEL 3000 MOTOTOOL CON 10 ACCESORIOS BLISTER", "ean": null, "dun": null, "factor": null}, {"sku": "GAS 125", "nombre": "SELLARROSCAS GAS", "ean": "7793300423022", "dun": "17793300423036", "factor": 12}, {"sku": "GAS 125 E", "nombre": "SELLADOR GAS 125 ML EXPORTACION", "ean": "", "dun": null, "factor": null}, {"sku": "GAS 25", "nombre": "SELLARROSCAS GAS", "ean": "7793300423060", "dun": "17793300423067", "factor": 50}, {"sku": "GAS 50", "nombre": "SELLARROSCAS GAS", "ean": "7793300423046", "dun": "17793300423043", "factor": 24}, {"sku": "GFX 25", "nombre": "GLUFIX - 100% SILICONA - TRANSPARENTE", "ean": "7793300424548", "dun": "17793300424545", "factor": 50}, {"sku": "GFX A S5 280 T", "nombre": "SILICONA ACÉTICA S-500 280 ML TRANSPARENTE", "ean": "7793300707191", "dun": "17793300707198", "factor": 24}, {"sku": "GFX AT S5 280 R", "nombre": "SILICONA ACÉTICA S-500 280 ML ROJA", "ean": "7793300708136", "dun": "17793300708133", "factor": 24}, {"sku": "GFX C 110 T", "nombre": "SILICONA NEUTRA CONSTRUCCI?N 110ML POMO TRANSPARENTE", "ean": "7793300430402", "dun": "17793300430409", "factor": 16}, {"sku": "GFX C 280 T", "nombre": "SILICONA 100% CONSTRUCCI?N NEUTRA - TRANSPARENTE", "ean": "7793300421622", "dun": "17793300421629", "factor": 12}, {"sku": "GFX J 110 R", "nombre": "SILICONA JUNTAS Y MOTORES 110ML POMO ROJO", "ean": "7793300430983", "dun": "17793300430980", "factor": 16}, {"sku": "GFX J 60 R", "nombre": "SILICONA JUNTAS Y MOTORES 60 ML POMO ROJO", "ean": "7793300000209", "dun": "17793300000206", "factor": 24}, {"sku": "GFX N S5 280 T", "nombre": "SILICONA NEUTRA S-500 280 ML TRANSPARENTE", "ean": "7793300707207", "dun": "17793300707204", "factor": 24}, {"sku": "GFX U 110 B", "nombre": "SILICONA UNIVERSAL 110ML POMO BLANCO", "ean": "7793300431508", "dun": "17793300431505", "factor": 16}, {"sku": "GFX U 110 T", "nombre": "SILICONA UNIVERSAL 110ML POMO TRANSPARENTE", "ean": "7793300430389", "dun": "17793300430386", "factor": 16}, {"sku": "GFX U 280 B", "nombre": "SILICONA UNIVERSAL - BLANCA", "ean": "7793300419643", "dun": "17793300419657", "factor": 12}, {"sku": "GFX U 280 N", "nombre": "SILICONA UNIVERSAL - NEGRA", "ean": "7793300419667", "dun": "17793300419671", "factor": 12}, {"sku": "GFX U 280 T", "nombre": "SILICONA UNIVERSAL - TRANSPARENTE", "ean": "7793300419407", "dun": "17793300419411", "factor": 12}, {"sku": "GFX U 60 B", "nombre": "SILICONA UNIVERSAL 60ML POMO BLANCO", "ean": "7793300000186", "dun": "17793300000183", "factor": 24}, {"sku": "GFX U 60 N", "nombre": "SILICONA UNIVERSAL 60ML POMO NEGRO", "ean": "7793300000193", "dun": "17793300000190", "factor": 24}, {"sku": "GFX U 60 T", "nombre": "SILICONA UNIVERSAL 60ML POMO TRANSPARENTE", "ean": "7793300000179", "dun": "17793300000176", "factor": 24}, {"sku": "GMX ACR 110 B", "nombre": "ACR?LICO PINTABLE BLANCO", "ean": "7793300430341", "dun": "17793300430348", "factor": 16}, {"sku": "GMX ACR 280 B", "nombre": "SELLADOR ACR?LICO PINTABLE - BLANCO", "ean": "7793300421646", "dun": "17793300421650", "factor": 12}, {"sku": "GMX CTO 280 G", "nombre": "SELLADOR ACRILICO REPARADOR DE CONCRETO Y CEMENTO", "ean": "7793300000162", "dun": "17793300000169", "factor": 12}, {"sku": "GMX J 280 T", "nombre": "SELLADOR ACR?LICO PREMIUM  JUNTAS Y FISURAS TRANSPARENTE", "ean": "7793300426429", "dun": "17793300426433", "factor": 12}, {"sku": "GMX M 280 N", "nombre": "SELLADOR MADERAS Y MUEBLES  280ML NOGAL", "ean": "7793300431249", "dun": "17793300431246", "factor": 12}, {"sku": "GMX M 280 P", "nombre": "SELLADOR MADERAS Y MUEBLES  280 ML PINO", "ean": "7793300431225", "dun": "17793300431222", "factor": 12}, {"sku": "ICJ01EXPRTC", "nombre": "CAJA EXHIBIDORA PARA PEGA RAT", "ean": "7793300706811", "dun": null, "factor": null}, {"sku": "ICJ01EXPRTCBASE", "nombre": "BASE INTERIOR PARA CAJA EXHIBIDORA PARA PEGA RAT", "ean": "7793300706828", "dun": null, "factor": null}, {"sku": "ICJ01EXSBDTRB", "nombre": "CAJA EXHIBIDORA SBD TR 50 BLISTER", "ean": "7793300706835", "dun": null, "factor": null}, {"sku": "ICJ01EXSBDTRBB", "nombre": "BASE CAJA EXHIBIDORA SBD TR 50 BLISTER", "ean": "7793300706842", "dun": null, "factor": null}, {"sku": "ICJ01MPXEXA12", "nombre": "CAJA EXHIBIDORA MASILLA ERPOX 10 MINUTOS 12 UNIDADES", "ean": "7793300707146", "dun": null, "factor": null}, {"sku": "ICJ01SPXSA16TE", "nombre": "CAJA EXHIBIDORA SUPERPOX TRANSPARENTE", "ean": "7793300707153", "dun": null, "factor": null}, {"sku": "ICJ01SPXSA25AE", "nombre": "CAJA EXHIBIDORA SUPERPOX", "ean": "7793300707160", "dun": null, "factor": null}, {"sku": "INF S2 230 P", "nombre": "INFLADOR SERIE 200", "ean": "7793300702417", "dun": "17793300702414", "factor": 1}, {"sku": "INF S2 430 MP", "nombre": "INFLADOR CON MANOMETRO SERIE 200", "ean": "7793300704435", "dun": "17793300704432", "factor": 1}, {"sku": "INF S6 225 A", "nombre": "INFLADOR SERIE 600", "ean": "7793300705128", "dun": "17793300705125", "factor": 50}, {"sku": "INF S6 240 TA", "nombre": "INFLADOR SERIE 600 DOBLE EXTENSION", "ean": "7793300703346", "dun": "17793300705125", "factor": 12}, {"sku": "INF S6 272 MA", "nombre": "INFLADOR CON MANOMETRO SERIE 600", "ean": "7793300702431", "dun": "17793300702438", "factor": 1}, {"sku": "INF S6 PIE MA", "nombre": "INFLADOR DE PIE SERIE 600", "ean": "7793300702462", "dun": "17793300702469", "factor": 1}, {"sku": "JD S6 PZA BY", "nombre": "TIJERA DE PODA BYPASS SERIE 600", "ean": "7793300702196", "dun": "17793300702193", "factor": 6}, {"sku": "JD S8 PZA BY", "nombre": "TIJERA DE PODA BYPASS SERIE 800", "ean": "7793300701946", "dun": null, "factor": null}, {"sku": "JD S8 TIJ PD A", "nombre": "TIJERA PARA CERCOS SERIE 800", "ean": "7793300701960", "dun": "17793300701974", "factor": 12}, {"sku": "KIT PRB", "nombre": "KIT REPARACION PARABRISAS", "ean": "7793300431300", "dun": "17793300431307", "factor": 5}, {"sku": "KIT R OP", "nombre": "KIT RESTAURADOR DE OPTICAS", "ean": "7793300706613", "dun": null, "factor": null}, {"sku": "LLC CV 1 1/2", "nombre": "LLAVE PARA CA?O 1 1/2 (38 MM)", "ean": "7793300429826", "dun": "17793300429823", "factor": 1}, {"sku": "LLV 7C KIT 5 R", "nombre": "KIT DE 5 LLAVES CRIQUET", "ean": "7793300702394", "dun": "17793300702391", "factor": 6}, {"sku": "LLV 8VA KIT 7 M", "nombre": "KIT LLAVES CRIQUET SERIE 800 MM", "ean": "7793300000537", "dun": "17793300000534", "factor": 6}, {"sku": "MBN VEN 1 B", "nombre": "VENDA L?QUIDA IMPERMEABILIZANTE - BLANCA", "ean": "7793300430365", "dun": null, "factor": null}, {"sku": "MBN VEN 1/2 B", "nombre": "VENDA L?QUIDA IMPERMEABILIZANTE - BLANCA", "ean": "7793300431041", "dun": null, "factor": null}, {"sku": "MKT AFI PBD", "nombre": "AFICHE PERBOND URUGUAY", "ean": "7793300706682", "dun": null, "factor": null}, {"sku": "MKT AFI SBDTRA3", "nombre": "AFICHE SUPRABOND TRANSPARENTE A3", "ean": "7790001001054", "dun": null, "factor": null}, {"sku": "MKT AFI SLT A3B", "nombre": "AFICHE BURLETES A3 BEBE", "ean": "7790001001054", "dun": null, "factor": null}, {"sku": "MKT AFI ZAP A3", "nombre": "AFICHE A3 ADHESIVO ZAPATILLAS", "ean": "7793300706378", "dun": null, "factor": null}, {"sku": "MKT ANOT SBD", "nombre": "ANOTADORES SUPRABOND", "ean": "7793300704855", "dun": null, "factor": null}, {"sku": "MKT BASE STOPP", "nombre": "BASE SOSTÉN STOPPER 5 CM", "ean": "7793300708358", "dun": "7792490288341", "factor": 15}, {"sku": "MKT CAL BLTCH", "nombre": "CALCO AUTOADHESIVO BULIT", "ean": "7793300706675", "dun": "17793300706675", "factor": 6}, {"sku": "MKT CAL SBDAS", "nombre": "CALCO AUTOADHESIVO SUPRABOND", "ean": "7793300706668", "dun": null, "factor": null}, {"sku": "MKT CAL SBDSP", "nombre": "CALCO AUTOADHESIVO SUPRABOND SIN PASTO", "ean": "7793300708327", "dun": null, "factor": null}, {"sku": "MKT CAL TR UTM", "nombre": "CALCO SBD TR UTM CORAZON 7,5 CM", "ean": "7793300705661", "dun": null, "factor": null}, {"sku": "MKT CARP TR5533", "nombre": "CARPETA CONTENEDORA SUPRABOND", "ean": "7793300706798", "dun": null, "factor": null}, {"sku": "MKT CM SBD LT", "nombre": "CALCO MICRO PERFORADOS SBD BLT", "ean": "7793300708334", "dun": null, "factor": null}, {"sku": "MKT CTL CTA", "nombre": "CARTEL PARA STOPPER CINTAS METRICAS SERIE 500", "ean": "7793300709218", "dun": null, "factor": null}, {"sku": "MKT CTL PRE BTL", "nombre": "CARTEL PORTA PRECIO BULIT", "ean": "7793300708259", "dun": "17793300708259", "factor": 5}, {"sku": "MKT CTL PRE SBD", "nombre": "CARTEL PORTA PRECIO SUPRABOND", "ean": "7793300708242", "dun": null, "factor": null}, {"sku": "MKT CTLBLT12080", "nombre": "CARTEL MOSTRADOR BULIT (GR) 120X80 CARRERAS", "ean": "7793300706767", "dun": null, "factor": null}, {"sku": "MKT CTLGFXS500", "nombre": "CTL GFX 500", "ean": "7793300707719", "dun": null, "factor": null}, {"sku": "MKT CTLMPX3030", "nombre": "CARTEL COLGANTE MASILLA ERPOX BRAZOS 30 CM", "ean": "7793300704541", "dun": null, "factor": null}, {"sku": "MKT CTLSBD2515", "nombre": "CARTEL PARA STOPPER SBD TR", "ean": "7793300707795", "dun": null, "factor": null}, {"sku": "MKT CTLSLL10080", "nombre": "CARTEL BAJO MOSTRADOR SELLADORES", "ean": "7793300706774", "dun": null, "factor": null}, {"sku": "MKT FLY ERPOX", "nombre": "FLYERS ERPOX CONSUMIDOR", "ean": "7793300706743", "dun": null, "factor": null}, {"sku": "MKT FLY UNO", "nombre": "FLYER ADHESIVO UNO", "ean": "7793300706750", "dun": null, "factor": null}, {"sku": "MKT FOLL SLL", "nombre": "FOLLETOS SELLADORES", "ean": "7793300706736", "dun": null, "factor": null}, {"sku": "MKT LAP SBD", "nombre": "LAPICERAS SUPRABOND", "ean": "7793300704848", "dun": null, "factor": null}, {"sku": "MKT MOV CDB", "nombre": "MOVIE LINEA CANDADOS", "ean": "7793300706651", "dun": "17793300706651", "factor": 10}, {"sku": "MKT MOV DSD", "nombre": "MOVIE DISCOS DIAMANTADOS", "ean": "7793300706644", "dun": null, "factor": null}, {"sku": "MKT MOV PZA", "nombre": "MOVIE LINEA PINZAS", "ean": "7793300707221", "dun": "17793300707221", "factor": 20}, {"sku": "MKT MOV SBD", "nombre": "MOVIE SUPRABOND GENÉRICO", "ean": "7793300706620", "dun": null, "factor": null}, {"sku": "MKT MOV SBD TO", "nombre": "MOVIE SUPRABOND TRANSPARENTE OVALADO", "ean": "7793300706637", "dun": null, "factor": null}, {"sku": "MKT MOVEXPSLL", "nombre": "MOVIE EXPERTO EN SELLADORES", "ean": "7793300707771", "dun": null, "factor": null}, {"sku": "MKT TCDB2515", "nombre": "CARTEL PARA STOPPER LINEA DE CANDADOS", "ean": "7793300707788", "dun": null, "factor": null}, {"sku": "MKT TIR EXH", "nombre": "TIRAS P/EXHIBIDORES", "ean": "7793300706859", "dun": null, "factor": null}, {"sku": "MKT TOTEM CDB", "nombre": "TOTEM CANDADOS BULIT", "ean": "7793300705616", "dun": "17793300705613", "factor": 10}, {"sku": "MKT TOTEM DSD", "nombre": "TOTEM DISCO DIAMANTADOS", "ean": "7793300708297", "dun": "17793300708294", "factor": 10}, {"sku": "MKT TOTEM PZA", "nombre": "TOTEM PINZAS Y ALICATE", "ean": "7793300708471", "dun": "17793300708478", "factor": 10}, {"sku": "MKT TOTEM SBDT", "nombre": "TOTEM SUPRABOND TRANSPARENTE", "ean": "7793300705623", "dun": "17793300705620", "factor": 10}, {"sku": "MKT TOTEM SLL", "nombre": "TOTEM SELLADORES", "ean": "7793300705609", "dun": "17793300705606", "factor": 10}, {"sku": "MKTBOLECOUTM", "nombre": "BOLSA ECOLOGICA UNI TU MUNDO", "ean": "7790001001054", "dun": null, "factor": null}, {"sku": "MOV SBD TR PR", "nombre": "MOVIE SUPRABOND TRANPARENTE PRECISION REDONDO", "ean": "7793300709041", "dun": "7793300700030", "factor": 30}, {"sku": "MPX EXA 10 100", "nombre": "MASILLA ERPOX 10 MIN 100 G", "ean": "7793300704251", "dun": "17793300704258", "factor": 18}, {"sku": "MTJ 150", "nombre": "ADHESIVO PARA MONTAJES POMO 150 GR", "ean": "7793300431607", "dun": "17793300431604", "factor": 16}, {"sku": "MTJ 400", "nombre": "ADHESIVO PARA MONTAJES CARTUCHOS 400 GR", "ean": "7793300426825", "dun": "17793300426822", "factor": 12}, {"sku": "NSS 10", "nombre": "90 SEGUNDOS - SOLDADURA INSTANT?NEA", "ean": "7793300425163", "dun": "17793300425184", "factor": 18}, {"sku": "PBD 125 E", "nombre": "PERBOND BLANCO 125 ML. EXPORTACION", "ean": "7793300110205", "dun": null, "factor": null}, {"sku": "PBD 125 M E", "nombre": "PERBOND MARR?N 125ML", "ean": "7793300110205", "dun": null, "factor": null}, {"sku": "PBD 25 T", "nombre": "PERBOND 25 CC BLANCO - POMOS EN TIRA", "ean": "7793300423589", "dun": "17793300423586", "factor": 50}, {"sku": "PBD 25 T M", "nombre": "PERBOND MARR?N 25ML TIRA", "ean": "7793300423589", "dun": "17793300423586", "factor": 50}, {"sku": "PBD 400", "nombre": "PERBOND - SELLADOR MULTIUSO - GRIS", "ean": "7793300110304", "dun": "17793300110301", "factor": 12}, {"sku": "PBD 400 B", "nombre": "PERBOND - SELLADOR MULTIUSO - BLANCO", "ean": "7793300416840", "dun": "17793300416847", "factor": 12}, {"sku": "PBD 50", "nombre": "PERBOND 50 CC BLANCO- POMO EN BLISTER", "ean": "7793300110106", "dun": "17793300110103", "factor": 24}, {"sku": "PBD 50 M", "nombre": "PERBOND MARR?N 50ML", "ean": "7793300110106", "dun": "17793300110103", "factor": 24}, {"sku": "PBD P 25 T", "nombre": "SELLADOR PERBOND PREMIUM TRANSPARENTE 25 CC.", "ean": "7793300426702", "dun": "17793300426709", "factor": 50}, {"sku": "PBD P 50", "nombre": "SELLADOR PERBOND PREMIUM TRANSPARENTE BLISTER", "ean": "7793300426726", "dun": "17793300426723", "factor": 24}, {"sku": "PHB BO 32", "nombre": "BOLSO PORTA HERRAMIENTAS BULIT 32CM DE ANCHO", "ean": "7793300707528", "dun": "17793300707525", "factor": 12}, {"sku": "PHB BO C 42", "nombre": "BOLSO PORTA HERRAMIENTAS BIULIT C/CORREA P/COLGAR. 42CM", "ean": "7793300707535", "dun": "17793300707532", "factor": 10}, {"sku": "PHB BO C BT 36", "nombre": "BOLSO PORTA HERRAMIENTAS BILIT C/CORREA P/COLGAR. BOLSILLO", "ean": "7793300707542", "dun": "17793300707549", "factor": 10}, {"sku": "PHB C 2CA", "nombre": "CINTURON CON 2 CARTUCHERAS PORTA HERRAMIENTAS", "ean": "7793300707511", "dun": "17793300707518", "factor": 20}, {"sku": "PHB MO 35", "nombre": "MOCHILA PORTA HERRAMIENTAS BULIT. 35CM DE ANCHO", "ean": "7793300707559", "dun": "17793300707556", "factor": 10}, {"sku": "PIN S2 1", "nombre": "PINCEL SERIE ECONOMY 1", "ean": "7793300427440", "dun": "17793300427447", "factor": 24}, {"sku": "PIN S2 1 1/2", "nombre": "PINCEL SERIE ECONOMY 1 1/2", "ean": "7793300427464", "dun": "17793300427461", "factor": 12}, {"sku": "PIN S2 1/2", "nombre": "PINCEL SERIE 200 1/2", "ean": "7793300701847", "dun": "17793300701844", "factor": 36}, {"sku": "PIN S2 2", "nombre": "PINCEL SERIE ECONOMY 2", "ean": "7793300427488", "dun": "17793300427485", "factor": 12}, {"sku": "PIN S2 3", "nombre": "PINCEL SERIE ECONOMY 3", "ean": "7793300427501", "dun": "17793300427508", "factor": 12}, {"sku": "PIN S2 4", "nombre": "PINCEL SERIE ECONOMY 4", "ean": "7793300427525", "dun": "17793300427522", "factor": 6}, {"sku": "PIN S2 SET 5", "nombre": "SET 5 S.ECONOMY 1/2,1,1 1/2,2,2 1/2", "ean": "7793300427563", "dun": "17793300427560", "factor": 72}, {"sku": "PRT L2 FP", "nombre": "PEGA RAT - TRAMPAS ADHESIVAS PARA LAUCHAS FLOWPACK", "ean": "7793300431263", "dun": "17793300706504", "factor": 20}, {"sku": "PRT R2 FP", "nombre": "PEGA RAT TRAMPA ADH. P/RATAS FLOWPACK", "ean": "7793300430501", "dun": "17793300430508", "factor": 6}, {"sku": "PSC 310 A", "nombre": "SELLADOR PISCINAS 310ML AZUL", "ean": "7793300431447", "dun": "17793300431444", "factor": 12}, {"sku": "PST GR", "nombre": "ECONOMY GRIS", "ean": "7793300413689", "dun": "17793300413686", "factor": 24}, {"sku": "PST PL 800", "nombre": "PISTOLA PORTACARTUCHOS SERIE 800", "ean": "7793300428768", "dun": "17793300428765", "factor": 12}, {"sku": "PTT 30", "nombre": "PEGATODO TRANSPARENTE", "ean": "7793300418080", "dun": "17793300418087", "factor": 24}, {"sku": "PVN 25 B", "nombre": "PEGOVIN - ADHESIVO PARA PLASTICOS|[BS 1 UN]", "ean": "7793300060104", "dun": "17793300060101", "factor": 24}, {"sku": "PZA AV R", "nombre": "TIPO AVIACI?N - CORTE RECTO", "ean": "7793300420045", "dun": "17793300420042", "factor": 6}, {"sku": "PZA E AL6", "nombre": "ALICATE SERIE 200 ECONOMY 6", "ean": "7793300423688", "dun": "17793300423685", "factor": 10}, {"sku": "PZA E AL7", "nombre": "ALICATE SERIE 200 ECONOMY 7", "ean": "7793300423701", "dun": "17793300423708", "factor": 5}, {"sku": "PZA E PS6", "nombre": "PINZA DE PUNTA SEMI REDONDA SERIE200 ECONOMY 6", "ean": "7793300423725", "dun": "17793300423722", "factor": 10}, {"sku": "PZA E PS8", "nombre": "PINZA DE PUNTA SEMI REDONDA SERIE200 ECONOMY 8", "ean": "7793300423749", "dun": "17793300423746", "factor": 5}, {"sku": "PZA E PU6", "nombre": "PINZA UNIVERSAL SERIE 200 ECONOMY 6", "ean": "7793300423626", "dun": "17793300423623", "factor": 5}, {"sku": "PZA E PU7", "nombre": "PINZA UNIVERSAL SERIE 200 ECONOMY 7", "ean": "7793300423640", "dun": "17793300423647", "factor": 5}, {"sku": "PZA E PU8", "nombre": "PINZA UNIVERSAL SERIE 200 ECONOMY 8", "ean": "7793300423664", "dun": "17793300423661", "factor": 5}, {"sku": "PZA FZ10", "nombre": "PINZA DE FUERZA. BOCA CURVA.", "ean": "7793300423947", "dun": "17793300423944", "factor": 6}, {"sku": "PZA FZA 6.5", "nombre": "PINZA DE FUERZA - MORDAZA PLANA -", "ean": "7793300424104", "dun": "17793300424101", "factor": 10}, {"sku": "PZA P8 AL6", "nombre": "ALICATE PROFESIONAL AISLADO - SERIE 800", "ean": "7793300425224", "dun": "17793300425221", "factor": 6}, {"sku": "PZA P8 AL7", "nombre": "ALICATE PROFESIONAL AISLADO - SERIE 800", "ean": "7793300425248", "dun": "17793300425245", "factor": 6}, {"sku": "PZA P8 PS6", "nombre": "PUNTA SEMIREDONDA PROFESIONAL AISLADA - SERIE 800", "ean": "7793300425361", "dun": "17793300425368", "factor": 6}, {"sku": "PZA P8 PU6", "nombre": "UNIVERSAL PROFESIONAL AISLADA - SERIE 800", "ean": "7793300425309", "dun": "17793300425306", "factor": 6}, {"sku": "PZA P8 PU7", "nombre": "UNIVERSAL PROFESIONAL AISLADA - SERIE 800", "ean": "7793300425323", "dun": "17793300425320", "factor": 6}, {"sku": "PZA S6 AJ10", "nombre": "LLAVE AJUSTABLE SERIE 600 10\"", "ean": "7793300701915", "dun": "17793300701912", "factor": 6}, {"sku": "PZA S6 AJ6", "nombre": "LLAVE AJUSTABLE SERIE 600 6", "ean": "7793300701892", "dun": "17793300701899", "factor": 6}, {"sku": "PZA S6 AJ8", "nombre": "LLAVE AJUSTABLE SERIE 600 8", "ean": "7793300701908", "dun": "17793300701905", "factor": 6}, {"sku": "PZA S6 AL6", "nombre": "ALICATE 6 SERIE 600", "ean": "7793300000063", "dun": "17793300000060", "factor": 6}, {"sku": "PZA S6 AL7", "nombre": "ALICATE EXTRA 7 SERIE 600", "ean": "7793300041912", "dun": "17793300041919", "factor": 6}, {"sku": "PZA S6 AL7 E", "nombre": "ALICATE EXTRA 7 SERIE 600", "ean": "7793300600003", "dun": "17793300600000", "factor": 6}, {"sku": "PZA S6 EAL 4.5", "nombre": "ALICATE SERIE 600 4 1/2", "ean": "7793300702080", "dun": "17793300702087", "factor": 10}, {"sku": "PZA S6 EAL 4.5F", "nombre": "ALICATE SERIE 600 4 1/2 CORTE FRONTAL", "ean": "7793300702097", "dun": "17793300702094", "factor": 10}, {"sku": "PZA S6 EPR 4.5", "nombre": "PINZA DE PUNTA REDONDA SERIE 600 4 1/2", "ean": "7793300702066", "dun": "17793300702063", "factor": 10}, {"sku": "PZA S6 EPS 4.5", "nombre": "PINZA DE PUNTA SEMI REDONDA SERIE 600 4 1/2", "ean": "7793300702073", "dun": "17793300702070", "factor": 10}, {"sku": "PZA S6 EPU 4.5", "nombre": "PINZA UNIVERSAL SERIE 600 4 1/2", "ean": "7793300702103", "dun": "17793300702100", "factor": 10}, {"sku": "PZA S6 PC6", "nombre": "PINZA PUNTA CURVA 6 SERIE 600", "ean": "7793300045798", "dun": "17793300045795", "factor": 6}, {"sku": "PZA S6 PC8", "nombre": "PINZA PUNTA CURVA 8 SERIE 600", "ean": "7793300040915", "dun": "17793300040912", "factor": 6}, {"sku": "PZA S6 PL 10", "nombre": "PINZA PICO DE LORO 10 SERIE 600", "ean": "7793300000087", "dun": "17793300000084", "factor": 5}, {"sku": "PZA S6 PL 6", "nombre": "PINZA PICO DE LORO 6 SERIE 600", "ean": "7793300000070", "dun": "17793300000077", "factor": 6}, {"sku": "PZA S6 PP6", "nombre": "PINZA PUNTA PLANA 6 SERIE 600", "ean": "7793300042445", "dun": "17793300042442", "factor": 6}, {"sku": "PZA S6 PR6", "nombre": "PINZA PUNTA REDONDA 6 SERIE 600", "ean": "7793300400917", "dun": "17793300400914", "factor": 6}, {"sku": "PZA S6 PS6", "nombre": "PINZA SEMI REDONDA 6 SERIE 600", "ean": "7793300041646", "dun": "17793300041643", "factor": 6}, {"sku": "PZA S6 PU6", "nombre": "PINZA UNIVERSAL 6 SERIE 600", "ean": "7793300600010", "dun": "17793300600017", "factor": 6}, {"sku": "PZA S6 PU7", "nombre": "PINZA UNIVERSAL 7 SERIE 600", "ean": "7793300045699", "dun": "17793300045696", "factor": 6}, {"sku": "PZA S6 PU8", "nombre": "PINZA UNIVERSAL 8 SERIE 600", "ean": "7793300040922", "dun": "17793300040929", "factor": 6}, {"sku": "PZA S6 SET 3", "nombre": "SET DE PINZAS 3 UNIDADES SERIE 600", "ean": "7793300706897", "dun": "17793300706894", "factor": 20}, {"sku": "PZA S6 TN A12", "nombre": "TENAZA ARMADOR 12 SERIE 600", "ean": "7793300000131", "dun": "17793300000138", "factor": 6}, {"sku": "PZA S6 TN A9", "nombre": "TENAZA ARMADOR 9 SERIE 600", "ean": "7793300000124", "dun": "17793300000121", "factor": 6}, {"sku": "PZA S6 TN AMC12", "nombre": "TENAZA ARMADOR MEDIO CORTE 12 SERIE 600", "ean": "7793300000155", "dun": "17793300000152", "factor": 6}, {"sku": "PZA S6 TN AMC9", "nombre": "TENAZA ARMADOR MEDIO CORTE 9 SERIE 600", "ean": "7793300000148", "dun": "17793300000145", "factor": 6}, {"sku": "PZA S6 TN7", "nombre": "TENAZA DE CARPINTERO  7 SERIE 600", "ean": "7793300000100", "dun": "17793300000107", "factor": 6}, {"sku": "PZA S6 TN8", "nombre": "TENAZA DE CARPINTERO 8 SERIE 600", "ean": "7793300000117", "dun": "17793300000114", "factor": 6}, {"sku": "PZA S7 PL 10 P", "nombre": "PINZA PICO DE LORO PROF. CROMO VANADIO 10 SERIE 700", "ean": "7793300000094", "dun": "17793300000091", "factor": 5}, {"sku": "PZA S8 SET 3", "nombre": "SET DE PINZAS 3 UNIDADES SERIE 800", "ean": "7793300706903", "dun": "17793300706900", "factor": 20}, {"sku": "RM 5INT", "nombre": "USO INTENSIVO - SERIE 500", "ean": "7793300415942", "dun": "17793300415949", "factor": 12}, {"sku": "RPM 250", "nombre": "REPELENTE PARA PALOMAS Y MURCI?LAGOS", "ean": "7793300430228", "dun": "17793300430225", "factor": 12}, {"sku": "RTR ESP", "nombre": "ADHESIVO ESPEJO RETROVISOR 0.4 ML", "ean": "7793300705753", "dun": "27793300705757", "factor": 25}, {"sku": "SBD 1/2 ST", "nombre": "F?RMULA SIN TOLUENO SBD 1/2 ST", "ean": "7793300417168", "dun": "17793300417165", "factor": 4}, {"sku": "SBD 1/4 ST", "nombre": "F?RMULA SIN TOLUENO SBD 1/4 ST", "ean": "7793300417144", "dun": "17793300417141", "factor": 6}, {"sku": "SBD 125 ST", "nombre": "F?RMULA SIN TOLUENO SBD 125 ST", "ean": "7793300417120", "dun": "17793300417120", "factor": 12}, {"sku": "SBD 25 BST", "nombre": "F?RMULA SIN TOLUENO SBD 25 BST", "ean": "7793300415904", "dun": "17793300415901", "factor": 24}, {"sku": "SBD 25 ST", "nombre": "F?RMULA SIN TOLUENO SBD 25 ST", "ean": "7793300423527", "dun": "17793300423524", "factor": 50}, {"sku": "SBD 50 ST", "nombre": "F?RMULA SIN TOLUENO SBD 50 ST", "ean": "7793300415928", "dun": "17793300415925", "factor": 24}, {"sku": "SBD T PR CL", "nombre": "CAJA EXHIBIDORA BLISTER 50 ML SUPRABOND PRECSION", "ean": "7793300709133", "dun": "7793300700133", "factor": 10}, {"sku": "SBD TR 1", "nombre": "ADHESIVO DE CONTACTO TRANSP. LATA  1 LT", "ean": "7793300427143", "dun": "17793300427140", "factor": 2}, {"sku": "SBD TR 1/2", "nombre": "ADHESIVO DE CONTACTO TRANSPARENTE LATA 500 ML", "ean": "7793300427129", "dun": "17793300427126", "factor": 4}, {"sku": "SBD TR 1/4", "nombre": "ADHESIVO DE CONTACTO TRANSPARENTE LATA 250 ML", "ean": "7793300427006", "dun": "17793300427003", "factor": 6}, {"sku": "SBD TR 100 E", "nombre": "ADHESIVO DE CONTACTO TRANSPARENTE ESTUCHE 100 ML", "ean": "7793300428447", "dun": "17793300428444", "factor": 12}, {"sku": "SBD TR 25 B", "nombre": "ADHESIVO DE CONTACTO TRANSPARENTE BLISTER 25 ML", "ean": "7793300426924", "dun": "17793300426921", "factor": 24}, {"sku": "SBD TR 25 T", "nombre": "ADHESIVO DE CONTACTO TRANSPARENTE TIRA 25 ML", "ean": "7793300426900", "dun": "17793300426907", "factor": 50}, {"sku": "SBD TR 50 B", "nombre": "ADHESIVO DE CONTACTO TRANSPARENTE BLISTER 50 ML", "ean": "7793300426962", "dun": "17793300426969", "factor": 24}, {"sku": "SBD TR 7 MP", "nombre": "SUPRABOND TRANSP.5 ML.MUEST.POMO S/VALOR CAJA 50 U", "ean": "7793300433144", "dun": "17793300748517", "factor": 600}, {"sku": "SBD TR PR 100 E", "nombre": "SUPRABOND ADHESIVO DE CONTACTO TRANPARENTE POMO 100 CC PRECISION", "ean": "7793300708860", "dun": "17793300708867", "factor": 12}, {"sku": "SBD TR PR 25 B", "nombre": "ADHESIVO DE CONTACTO TRANPARENTE BLISTER 25 PRECISION", "ean": "7793300708846", "dun": "17793300708843", "factor": 24}, {"sku": "SBD TR PR 50 B", "nombre": "ADHESIVO DE CONTACTO TRANPARENTE BLISTER 50 PRECISION", "ean": "7793300708853", "dun": "17793300708850", "factor": 24}, {"sku": "SBD U 60", "nombre": "ADHESIVO UNO 60 ML", "ean": "7793300702400", "dun": "17793300702407", "factor": 18}, {"sku": "SCR P 180 24", "nombre": "SIERRA CIRCULAR 24 DIENTES SERIE PLATEADA", "ean": "7793300433182", "dun": null, "factor": null}, {"sku": "SCR P 180 40", "nombre": "SIERRA CIRCULAR 40 DIENTES SERIE PLATEADA", "ean": "7793300433205", "dun": null, "factor": null}, {"sku": "SCR P 180 60", "nombre": "SIERRA CIRCULAR 60 DIENTES SERIE PLATEADA", "ean": "7793300433229", "dun": null, "factor": null}, {"sku": "SGC CBO 6 E", "nombre": "SOMERSET CEBO MATA CUCARACHAS EXTRA", "ean": "7793300707658", "dun": "17793300707655", "factor": 6}, {"sku": "SGC CBO 6 E E", "nombre": "SOMERSET CEBO MATA CUCARACHAS EXTRA", "ean": "7793300707658", "dun": "17793300707655", "factor": 6}, {"sku": "SGC E 12", "nombre": "SOMERSET GEL 12 GR EXTRA", "ean": "7793300424029", "dun": "17793300424026", "factor": 8}, {"sku": "SGC E 6", "nombre": "JERINGA SOMERSET GEL MATA CUCARACHA 6 G EXTRA", "ean": "7793300424005", "dun": "17793300424002", "factor": 12}, {"sku": "SGC H 12", "nombre": "SOMERSET GEL 12 GR", "ean": "7793300423367", "dun": "17793300423364", "factor": 8}, {"sku": "SGC H 12-L.5", "nombre": "SOMERSET GEL 12 GR", "ean": "7793300423367", "dun": "17793300423364", "factor": 8}, {"sku": "SGC H 6", "nombre": "JERINGA SOMERSET GEL MATA CUCARACHA 6 G", "ean": "7793300423343", "dun": "17793300423340", "factor": 12}, {"sku": "SIE S2 12", "nombre": "ARCO DE SIERRA SERIE 200", "ean": "7793300702134", "dun": "17793300702131", "factor": 6}, {"sku": "SLT D", "nombre": "AUTOADHESIVO - GOMA ESPUMA - DOBLE ESPESOR", "ean": "7793300160200", "dun": "17793300160207", "factor": 25}, {"sku": "SLT D 5 B I", "nombre": "BURL.DE GOMA AUTOADH.BCO.PERFIL D 5,2M", "ean": "7793300703964", "dun": "27793300703968", "factor": 24}, {"sku": "SLT D 5 M I", "nombre": "BURL. GOMA AUTOADH.MARRON.PERF.D 5,2M", "ean": "7793300703957", "dun": "27793300703951", "factor": 24}, {"sku": "SLT D M", "nombre": "AUTOADHESIVO- GOMA ESPUMA DOBLE ESPESOR - MARRON", "ean": "7793300427082", "dun": "17793300427089", "factor": 25}, {"sku": "SLT E 5 B I", "nombre": "BURL.DE GOMA AUTOADH.BCO.PERFIL", "ean": "7793300703926", "dun": "27793300703920", "factor": 24}, {"sku": "SLT E 5 M I", "nombre": "BURL.GOMA AUTOADH.MARRON.PERF.E 5,2M", "ean": "7793300703919", "dun": "27793300703913", "factor": 24}, {"sku": "SLT EA", "nombre": "AUTOADHESIVO - GOMA ESPUMA - EXTRA ANCHO", "ean": "7793300160309", "dun": "17793300160306", "factor": 15}, {"sku": "SLT EA M", "nombre": "BURLETE ESPUMA EXTRA ANCHO MARRON", "ean": "7793300427105", "dun": "17793300427102", "factor": 15}, {"sku": "SLT N", "nombre": "AUTOADHESIVO - GOMA ESPUMA - NORMAL", "ean": "7793300160101", "dun": "17793300160108", "factor": 36}, {"sku": "SLT P 5 B I", "nombre": "BURL.DE GOMA AUTOADH.BCO.PERFIL P", "ean": "7793300703940", "dun": "27793300703944", "factor": 24}, {"sku": "SLT P 5 M I", "nombre": "BURL. GOMA AUTOADH.MARRON.PERF.P 5,2M", "ean": "7793300703933", "dun": "27793300703937", "factor": 24}, {"sku": "SLT V I", "nombre": "BURLETE AUTOADHESIVO VINILO BLANCO", "ean": "7793300703643", "dun": "17793300703640", "factor": 12}, {"sku": "SLT V M I", "nombre": "BURLETE AUTOADHESIVO VINILO MARRON", "ean": "7793300703650", "dun": "17793300703657", "factor": 12}, {"sku": "SMZ 300 A", "nombre": "SELLADOR METALES ZINGUER?A - ALUMINIO", "ean": "7793300430969", "dun": "17793300430966", "factor": 12}, {"sku": "SMZ 50 A", "nombre": "SELLADOR DE METALES ZINGUERIA Y CANALETAS 50ML", "ean": "7793300704053", "dun": "17793300704050", "factor": 24}, {"sku": "SPS P49", "nombre": "SENSOPRES P49 4 LITROS", "ean": "7793300429963", "dun": "", "factor": null}, {"sku": "SPX SA 16 T E", "nombre": "SUPERPOX SUPERADHESIVO TRANSPARENTE ESTUCHE X 16 G", "ean": "7793300705227", "dun": "17793300705224", "factor": 18}, {"sku": "SPX SA 25 A E", "nombre": "SUPERPOX SUPERADHESIVO ACERO ESTUCHE X 25G", "ean": "7793300704701", "dun": "17793300704708", "factor": 18}, {"sku": "SPX SA NS 10 T E", "nombre": "SUPERPOX SUPERADHESIVO  90 SEG. TRANSPARENTE ESTUCHE X 10G", "ean": "7793300706880", "dun": "17793300706887", "factor": 18}, {"sku": "SR PD 350", "nombre": "SERRUCHO DE PODAR 350 MM.", "ean": "7793300420342", "dun": "17793300420349", "factor": 10}, {"sku": "TOT SBDTP M", "nombre": "MINI TOTEM SUPRABOND TRANPARENTE PRECSION MOSTRADOR", "ean": "7793300708976", "dun": null, "factor": null}, {"sku": "TPC A 18 T", "nombre": "PROTECTOR DE PVC TRANSPARENTE 18 MM X 12 UNIDADES", "ean": "7793300000483", "dun": "17793300000480", "factor": 12}, {"sku": "TPC BC", "nombre": "CIRCULAR - BLANCA - ESPESOR 5 MM", "ean": "7793300170209", "dun": "17793300170206", "factor": 36}, {"sku": "TPC F 20 M", "nombre": "FIELTRO CIRCULAR 20 MM X 32 UNIDADES MARRON", "ean": "7793300050006", "dun": "17793300050003", "factor": 12}, {"sku": "TPC F 30 M", "nombre": "FIELTRO CIRCULAR 30 MM X 18 UNIDADES MARRON", "ean": "7793300050013", "dun": "17793300050010", "factor": 12}, {"sku": "TPC SM", "nombre": "CIRCULAR - S?MIL MADERA - ESPESOR 5 MM", "ean": "7793300170407", "dun": "17793300170404", "factor": 36}, {"sku": "TPR BC", "nombre": "RECTANGULAR - BLANCA - DE 8.5 X 3CM / ESPESOR 5MM", "ean": "7793300170100", "dun": "17793300170107", "factor": 36}, {"sku": "TPR F 20 M", "nombre": "FIELTRO RECTANGULAR 20 MM X 32 UNIDADES MARRON", "ean": "7793300050020", "dun": "17793300050027", "factor": 12}, {"sku": "TPR F 30 M", "nombre": "FIELTRO RECTANGULAR 30 MM X 18 UNIDADES MARRON", "ean": "7793300050037", "dun": "17793300050034", "factor": 12}, {"sku": "TPR SM", "nombre": "RECTANGULAR - S?MIL MADERA - 8.5 X 3CM / ESPESOR 5MM", "ean": "7793300170308", "dun": "17793300170305", "factor": 36}, {"sku": "ZAP 10 B", "nombre": "ADHESIVO ZAPATILLAS SUPRABOND 10 G BLISTER", "ean": "7793300705869", "dun": "17793300705866", "factor": 24}, {"sku": "ZNO", "nombre": "AUTOADHESIVO - GRIS - 92 CM.", "ean": "7793300210103", "dun": "17793300210100", "factor": 24}, {"sku": "ZNO B", "nombre": "AUTOADHESIVO - BLANCO - 92 CM.", "ean": "7793300416864", "dun": "17793300416861", "factor": 24}, {"sku": "ZNO B I", "nombre": "ZOCALO AUTOADHESIVO BLANCO 100 CM IMPORTADO", "ean": "7793300708464", "dun": "17793300708461", "factor": 48}, {"sku": "ZNO D B", "nombre": "Z?CALO DOBLE DE 95 CM- BLANCO", "ean": "7793300705166", "dun": "17793300705163", "factor": 24}, {"sku": "ZNO D B 120", "nombre": "Z?CALO DOBLE EXTRA LARGO DE 120 CM- BLANCO", "ean": "7793300705197", "dun": "17793300705194", "factor": 24}, {"sku": "ZNO D EA B", "nombre": "Z?CALO DOBLE EXTRA ANCHO DE 95 CM- BLANCO", "ean": "7793300705517", "dun": "17793300705514", "factor": 24}, {"sku": "ZNO D EA G", "nombre": "Z?CALO DOBLE EXTRA ANCHO DE 95 CM- GRIS", "ean": "7793300705463", "dun": "17793300705460", "factor": 24}, {"sku": "ZNO D EA M", "nombre": "Z?CALO DOBLE EXTRA ANCHO DE 95 CM- MARRON", "ean": "7793300705531", "dun": "17793300705538", "factor": 24}, {"sku": "ZNO D G", "nombre": "Z?CALO DOBLE DE 95 CM- GRIS", "ean": "7793300701403", "dun": "27793300701407", "factor": 24}, {"sku": "ZNO D G 120", "nombre": "Z?CALO DOBLE EXTRA LARGO DE 120 CM- GRIS", "ean": "7793300705180", "dun": "17793300705187", "factor": 24}, {"sku": "ZNO D M", "nombre": "Z?CALO DOBLE DE 95 CM- MARRON", "ean": "7793300705173", "dun": "17793300705170", "factor": 24}, {"sku": "ZNO D M 120", "nombre": "Z?CALO DOBLE EXTRA LARGO DE 120 CM- MARRON", "ean": "7793300705203", "dun": "17793300705200", "factor": 24}, {"sku": "ZNO D N", "nombre": "Z?CALO DOBLE DE 95 CM- NEGRO", "ean": "7793300705425", "dun": "17793300705422", "factor": 24}, {"sku": "ZNO M I", "nombre": "ZOCALO AUTOADHESIVO MARRON 100 CM IMPORTADO", "ean": "7793300708457", "dun": "17793300708454", "factor": 48}, {"sku": "ZNO SM", "nombre": "AUTOADHESIVO - S?MIL MADERA - 92 CM.", "ean": "7793300420182", "dun": "17793300420189", "factor": 24}]
+[
+  {
+    "sku": "06008C9000-000",
+    "nombre": "CORTA CERCOS GHE 18V-60 S/B",
+    "ean": "4059952654836",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "06008D1000-000",
+    "nombre": "DESBROZADORA GFR 18V-23 S/B",
+    "ean": "4059952654874",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "0600910FN-000",
+    "nombre": "HIDROLAVADORA GHP 4-50 2.200W 173 BAR",
+    "ean": "4053423251661",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "06012B80E2-000",
+    "nombre": "TALADRO PERCUTOR BOSCH GSB 13 RE 127V",
+    "ean": null,
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "06019F40E3-000",
+    "nombre": "TALADRO ATORNILLADOR INALÁMBRICO DE 12V GSR 1000 SMART",
+    "ean": "4059952582559",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "1600A015TJ-000",
+    "nombre": "CARGADOR RÁPIDO 18V 8A GAL 1880 CV 220V",
+    "ean": "3165140946834",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "AFX CA 25X5 N",
+    "nombre": "CINTA ANTIDESLIZANTE AUTOADHESIVA AFIX 25 MM X 5 M NEGRA",
+    "ean": "7793300706026",
+    "dun": "17793300706023",
+    "factor": 24
+  },
+  {
+    "sku": "AFX MP 1X2,2 N",
+    "nombre": "MOSQUITERO AUTOADHESICO PARA PUERTAS AFIX",
+    "ean": "7793300707665",
+    "dun": "17793300707662",
+    "factor": 15
+  },
+  {
+    "sku": "AFX MV 1,3X1,6 N",
+    "nombre": "MOSQUITERO AUTOADHESICO PARA VENTANA AFIX 130X160 CM. NEGRO",
+    "ean": "7793300707672",
+    "dun": "17793300707679",
+    "factor": 15
+  },
+  {
+    "sku": "AFX MV 1X1,2 N",
+    "nombre": "MOSQUITERO AUTOADHESICO PARA VENTANAS AFIX",
+    "ean": "7793300707689",
+    "dun": "17793300707686",
+    "factor": 15
+  },
+  {
+    "sku": "AFX MV 2X2 N",
+    "nombre": "MOSQUITERO AUTOADHESICO PARA VENTANA AFIX 200X200 CM. NEGRO",
+    "ean": "7793300707696",
+    "dun": "17793300707693",
+    "factor": 15
+  },
+  {
+    "sku": "AFX P R33 B",
+    "nombre": "PERCHAS AUTOADHESIVAS REMOVIBLES 33 MM BLANCAS X 5 U.",
+    "ean": "7793300707818",
+    "dun": "17793300707815",
+    "factor": 144
+  },
+  {
+    "sku": "AFX P R80 BO",
+    "nombre": "PERCHAS AUTOADHESIVAS REMOVIBLES 80 MM BLANCAS X 2 U.",
+    "ean": "7793300707825",
+    "dun": "17793300707822",
+    "factor": 144
+  },
+  {
+    "sku": "AFX P R80 TO",
+    "nombre": "PERCHAS AUTOADHESIVAS REMOVIBLES 80 MM TRANSPARENTES X 2 U.",
+    "ean": "7793300707832",
+    "dun": "17793300707839",
+    "factor": 144
+  },
+  {
+    "sku": "AFX P18 AR",
+    "nombre": "PERCHAS RECTANGULARES X 5 U. 18MM A. INOXIDABLE",
+    "ean": "7793300050136",
+    "dun": "17793300050133",
+    "factor": 12
+  },
+  {
+    "sku": "AFX P35 BO",
+    "nombre": "PERCHAS AUTOADHESIVAS OVAL X 5 U. 35MM BLANCO",
+    "ean": "7793300050075",
+    "dun": "17793300050072",
+    "factor": 12
+  },
+  {
+    "sku": "AFX P35 TO",
+    "nombre": "PERCHAS AUTOADHESIVAS OVAL X 5 U. 35MM TRANSPARENTE",
+    "ean": "7793300050129",
+    "dun": "17793300050126",
+    "factor": 12
+  },
+  {
+    "sku": "AFX P49 AR",
+    "nombre": "PERCHAS RECTANGULARES X 2 U. 49MM A. INOXIDABLE",
+    "ean": "7793300050143",
+    "dun": "17793300050140",
+    "factor": 12
+  },
+  {
+    "sku": "AFX P54 BO",
+    "nombre": "PERCHAS AUTOADHESIVAS OVAL X 3 U. 54MM BLANCO",
+    "ean": "7793300050068",
+    "dun": "17793300050065",
+    "factor": 12
+  },
+  {
+    "sku": "AFX P54 TO",
+    "nombre": "PERCHAS AUTOADHESIVAS OVAL X 3 U. 54MM TRANSPARENTE",
+    "ean": "7793300050181",
+    "dun": "17793300050188",
+    "factor": 12
+  },
+  {
+    "sku": "AFX P66 BO",
+    "nombre": "PERCHA AUTOADHESIVA OVAL X 1 U. 66MM BLANCO",
+    "ean": "7793300050105",
+    "dun": "17793300050102",
+    "factor": 12
+  },
+  {
+    "sku": "AFX PC 1 20",
+    "nombre": "AFIX PRACTI CLAVO 20 UNIDADES C/SUJETADOR",
+    "ean": "7793300706408",
+    "dun": "17793300706405",
+    "factor": 12
+  },
+  {
+    "sku": "AFX PEA 4 T",
+    "nombre": "PORTA ESTANTES AUTOADHESIVOS AFIX TRANSPARENTE X 4U.",
+    "ean": "7793300705807",
+    "dun": "17793300705804",
+    "factor": 12
+  },
+  {
+    "sku": "AFX RUE 4 AI",
+    "nombre": "RUEDAS AUTOADHESIVAS AFIX ACERO INOX. X 4 U.",
+    "ean": "7793300705791",
+    "dun": "17793300705798",
+    "factor": 12
+  },
+  {
+    "sku": "AFX S E",
+    "nombre": "GANCHO AUTOADHESIVO SUJETA ESCOBAS ARO BLANCO",
+    "ean": "7793300050082",
+    "dun": "17793300050089",
+    "factor": 12
+  },
+  {
+    "sku": "AFX VA 2",
+    "nombre": "ABROJO SUJETADOR AUTOADHESIVO 20 MM X 2 M",
+    "ean": "7793300050044",
+    "dun": "17793300050041",
+    "factor": 12
+  },
+  {
+    "sku": "AFX W 16",
+    "nombre": "AUTOADHESIVO DOBLE FAZ EN PLACA",
+    "ean": "7793300220102",
+    "dun": "17793300220109",
+    "factor": 40
+  },
+  {
+    "sku": "AFX W R2",
+    "nombre": "AUTOADHESIVO DOBLE FAZ EN ROLLO",
+    "ean": "7793300413566",
+    "dun": "17793300413563",
+    "factor": 40
+  },
+  {
+    "sku": "AFX ZP 7X5 B",
+    "nombre": "ZOCALO AUTOADHESIVO PARA VENTANA AFIX",
+    "ean": "7793300709072",
+    "dun": "17793300709079",
+    "factor": 32
+  },
+  {
+    "sku": "ARN FL 1X3 B",
+    "nombre": "ADHESIVO FLASH 1 G X 3 UNIDADES BLISTER",
+    "ean": "7793300704367",
+    "dun": "17793300704364",
+    "factor": 25
+  },
+  {
+    "sku": "ARN FL 2 B",
+    "nombre": "ADHESIVO FLASH 2 G BLISTER",
+    "ean": "7793300704350",
+    "dun": "17793300704357",
+    "factor": 50
+  },
+  {
+    "sku": "ARN FL 2 T",
+    "nombre": "ADHESIVO FLASH 2 G TIRA",
+    "ean": "7793300704343",
+    "dun": "17793300704340",
+    "factor": 70
+  },
+  {
+    "sku": "ARN FL 3G T",
+    "nombre": "ADHESIVO FLASH GEL 3 G TIRA",
+    "ean": "7793300704329",
+    "dun": "17793300704326",
+    "factor": 70
+  },
+  {
+    "sku": "C CTR 3 G R",
+    "nombre": "CUTTER REFORZADO GRANDE SERIE 300",
+    "ean": "7793300425866",
+    "dun": "17793300425863",
+    "factor": 12
+  },
+  {
+    "sku": "C CTR 5 G",
+    "nombre": "CUTTER REFORZADO A ROSCA CON REPUESTO SERIE 500",
+    "ean": "7793300425927",
+    "dun": "17793300425924",
+    "factor": 24
+  },
+  {
+    "sku": "C CTR 5A G",
+    "nombre": "CUTTER REFORFADO AUTOM?TICO GRANDE SERIE 500",
+    "ean": "7793300425903",
+    "dun": "17793300425900",
+    "factor": 12
+  },
+  {
+    "sku": "C CTR 8A G",
+    "nombre": "CUTTER PROFESIONAL AUTOM?TICO SERIE 800",
+    "ean": "7793300425941",
+    "dun": "17793300425948",
+    "factor": 12
+  },
+  {
+    "sku": "C CTR C H CRP",
+    "nombre": "CUTTER CHICO -  C/ 5 REPUESTOS",
+    "ean": "7793300415409",
+    "dun": "17793300415406",
+    "factor": 24
+  },
+  {
+    "sku": "C CTR C/R",
+    "nombre": "REPUESTO CUTTER - CHICO - 10 UNIDADES",
+    "ean": "7793300423886",
+    "dun": "17793300423883",
+    "factor": 60
+  },
+  {
+    "sku": "C CTR G H",
+    "nombre": "CUTTER GRANDE - HOBBY",
+    "ean": "7793300415423",
+    "dun": "17793300415420",
+    "factor": 36
+  },
+  {
+    "sku": "C CTR G/R",
+    "nombre": "REPUESTO CUTTER - GRANDE - 5 UNIDADES",
+    "ean": "7793300423909",
+    "dun": "17793300423906",
+    "factor": 30
+  },
+  {
+    "sku": "C CTR P4",
+    "nombre": "CUTTER PROFESIONAL METALICO - 4 POSICIONES",
+    "ean": "7793300414860",
+    "dun": "17793300414867",
+    "factor": 12
+  },
+  {
+    "sku": "C CTR PR",
+    "nombre": "REPUESTO CUTTER PROFESIONAL - 5 UNIDADES",
+    "ean": "7793300418882",
+    "dun": "17793300418889",
+    "factor": 50
+  },
+  {
+    "sku": "C CTR SBD C",
+    "nombre": "CUTTER CORTA PICOS CARTUCHOS SUPTABOND",
+    "ean": "7793300000513",
+    "dun": "17793300000510",
+    "factor": 12
+  },
+  {
+    "sku": "C HM F30 UN 41",
+    "nombre": "BARRAS ADH.UNIV 0,74X30CMX41 UNIDADES",
+    "ean": "7793300704206",
+    "dun": "17793300704203",
+    "factor": 5
+  },
+  {
+    "sku": "C HM G30 UT 17",
+    "nombre": "BARRAS ADHESIVAS ULTRA TRANSPARENTE 17 UNIDADES 1,12 X 30 CM",
+    "ean": "7793300704220",
+    "dun": "17793300704227",
+    "factor": 6
+  },
+  {
+    "sku": "C HM HX GL 12",
+    "nombre": "BARRAS ADHESIVAS GLITTER X 12 UNIDADES",
+    "ean": "7793300703889",
+    "dun": "17793300703886",
+    "factor": 18
+  },
+  {
+    "sku": "C PHX 100",
+    "nombre": "MODELO HX 100 - POTENCIA 10 WATTS",
+    "ean": "7793300417083",
+    "dun": "17793300417080",
+    "factor": 12
+  },
+  {
+    "sku": "C PHX 200 R",
+    "nombre": "PISTOLA HOT MELT MODELO HX 200 ROSA",
+    "ean": "7793300701878",
+    "dun": "17793300701875",
+    "factor": 12
+  },
+  {
+    "sku": "C PX 2100",
+    "nombre": "MOD. PX 2100 PROFESIONAL",
+    "ean": "7793300230316",
+    "dun": "17793300230313",
+    "factor": 6
+  },
+  {
+    "sku": "C PX 300",
+    "nombre": "MODELO PX 300 - POTENCIA 40 WATTS",
+    "ean": "7793300230309",
+    "dun": "17793300230306",
+    "factor": 12
+  },
+  {
+    "sku": "CAB",
+    "nombre": "ABROCHADORA ENGRAMPADORA 2 EN 1",
+    "ean": "7793300292345",
+    "dun": "17793300292342",
+    "factor": 10
+  },
+  {
+    "sku": "CAB 2",
+    "nombre": "ABROCHADORA ENGRAMPADORA 2 EN 1",
+    "ean": "7793300708396",
+    "dun": "17793300708393",
+    "factor": 12
+  },
+  {
+    "sku": "CAB CP 15",
+    "nombre": "CLAVOS 15MMX500 MOD.PRO.POT.REGULAB",
+    "ean": "7793300424302",
+    "dun": "17793300424309",
+    "factor": 300
+  },
+  {
+    "sku": "CAB INT 2",
+    "nombre": "ENGRAMPADORA USO INTENSIVO- ACERO NEGRA",
+    "ean": "7793300705784",
+    "dun": "17793300705781",
+    "factor": 6
+  },
+  {
+    "sku": "CAB P12 N",
+    "nombre": "GRAMPAS P12 -12MM.X 1000",
+    "ean": "7793300418806",
+    "dun": "17793300418803",
+    "factor": 5
+  },
+  {
+    "sku": "CAB P8 N",
+    "nombre": "GRAMPAS P8 -8MM.X 1000",
+    "ean": "7793300418783",
+    "dun": "17793300418780",
+    "factor": 5
+  },
+  {
+    "sku": "CAB PRO",
+    "nombre": "ENGRAMPADORA PROFESIONAL-AC.CROMADO",
+    "ean": "7793300294561",
+    "dun": "17793300294568",
+    "factor": 6
+  },
+  {
+    "sku": "CAB PRO PR",
+    "nombre": "ENGRAMP.PROF.POT.REG.ACEP.CLAV/GRAM",
+    "ean": "7793300419742",
+    "dun": "17793300419749",
+    "factor": 6
+  },
+  {
+    "sku": "CAB PRO PR GM",
+    "nombre": "ENGRAMP.PROF.POT.REG.ACEP.CLAV/GRAM.METAL.GATILLO",
+    "ean": "7793300707115",
+    "dun": "17793300707112",
+    "factor": 10
+  },
+  {
+    "sku": "CAB PRO PR GP",
+    "nombre": "ENGRAMP.PROF.POT.REG.ACEP.CLAV/GRAM.PLAS.GATILLO",
+    "ean": "7793300707108",
+    "dun": "17793300707105",
+    "factor": 10
+  },
+  {
+    "sku": "CAD 1/4 1",
+    "nombre": "CADENA MAXIMA SEGURIDAD ACERO CEMENTADO 1M",
+    "ean": "7793300702318",
+    "dun": "17793300427263",
+    "factor": 6
+  },
+  {
+    "sku": "CAD 3/8 1",
+    "nombre": "CADENA MAXIMA SEGURIDAD ACERO CEMENTADO 1M",
+    "ean": "7793300702295",
+    "dun": "17793300427300",
+    "factor": 6
+  },
+  {
+    "sku": "CAD 3/8 1.5",
+    "nombre": "CADENA MAXIMA SEGURIDAD ACERO CEMENTADO 1.5 METROS",
+    "ean": "7793300705159",
+    "dun": "17793300705156",
+    "factor": 8
+  },
+  {
+    "sku": "CALP SBD TR PR",
+    "nombre": "CALCO PISO SUPRABOND TRANPARENTE PRECISION",
+    "ean": "7793300709034",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CAS BI L B",
+    "nombre": "CASCO DE BICICLETA, TALLE LARGE, BLANCO",
+    "ean": "7793300707740",
+    "dun": "17793300707747",
+    "factor": 10
+  },
+  {
+    "sku": "CAS BI L N",
+    "nombre": "CASCO DE BICICLETA, TALLE LARGE, NEGRO",
+    "ean": "7793300707757",
+    "dun": "17793300707754",
+    "factor": 10
+  },
+  {
+    "sku": "CAS BI L R",
+    "nombre": "CASCO DE BICICLETA, TALLE LARGE, ROJO",
+    "ean": "7793300707764",
+    "dun": "17793300707761",
+    "factor": 10
+  },
+  {
+    "sku": "CAS BI M B",
+    "nombre": "CASCO CICLISTA TALLE MEDIUM BLANCO",
+    "ean": "7793300707702",
+    "dun": "17793300707709",
+    "factor": 10
+  },
+  {
+    "sku": "CAS BI M N",
+    "nombre": "CASCO DE BICICLETA,TALLE MEDIUM, NEGRO",
+    "ean": "7793300707726",
+    "dun": "17793300707723",
+    "factor": 10
+  },
+  {
+    "sku": "CAS BI M R",
+    "nombre": "CASCO DE BICICLETA,TALLE MEDIUM, ROJO",
+    "ean": "7793300707733",
+    "dun": "17793300707730",
+    "factor": 10
+  },
+  {
+    "sku": "CCO TJ 500",
+    "nombre": "TIJERA CORTA CA?OS. SERIE 500",
+    "ean": "7793300701076",
+    "dun": "17793300701073",
+    "factor": 10
+  },
+  {
+    "sku": "CCO TJ 600",
+    "nombre": "TIJERA CORTA CA?OS.  SERIE 600",
+    "ean": "7793300701069",
+    "dun": "17793300701066",
+    "factor": 10
+  },
+  {
+    "sku": "CDB AR 30",
+    "nombre": "CANDADO REF. ACERO NIQUELADO 30 MM",
+    "ean": "7793300426184",
+    "dun": "17793300426181",
+    "factor": 12
+  },
+  {
+    "sku": "CDB AR 30 L",
+    "nombre": "CANDADO REF. ACERO NIQUELADO 30 MM ARO LARGO",
+    "ean": "7793300426269",
+    "dun": "17793300426266",
+    "factor": 12
+  },
+  {
+    "sku": "CDB AR 40",
+    "nombre": "CANDADO REF. ACERO NIQUELADO 40 MM",
+    "ean": "7793300426207",
+    "dun": "17793300426204",
+    "factor": 12
+  },
+  {
+    "sku": "CDB AR 40 L",
+    "nombre": "CANDADO REF. ACERO NIQUELADO 40 MM ARO LARGO",
+    "ean": "7793300426283",
+    "dun": "17793300426280",
+    "factor": 12
+  },
+  {
+    "sku": "CDB AR 40X2",
+    "nombre": "CANDADO REFORZADO ACERO NIQUELADO 40 MM. X 2 UNIDADES",
+    "ean": "7793300427068",
+    "dun": "17793300427065",
+    "factor": 6
+  },
+  {
+    "sku": "CDB AR 40X4",
+    "nombre": "CANDADO REF. ACERO NIQUELADO 40 MM X 4 UN",
+    "ean": "7793300705395",
+    "dun": "17793300705392",
+    "factor": 4
+  },
+  {
+    "sku": "CDB AR 50",
+    "nombre": "CANDADO REF. ACERO NIQUELADO 50 MM",
+    "ean": "7793300426221",
+    "dun": "17793300426228",
+    "factor": 6
+  },
+  {
+    "sku": "CDB AR 50 L",
+    "nombre": "CANDADO REF. ACERO NIQUELADO 50 MM ARO LARGO",
+    "ean": "7793300426306",
+    "dun": "17793300426303",
+    "factor": 6
+  },
+  {
+    "sku": "CDB AR 60",
+    "nombre": "CANDADO REF. ACERO NIQUELADO 60 MM",
+    "ean": "7793300426245",
+    "dun": "17793300426242",
+    "factor": 6
+  },
+  {
+    "sku": "CDB AR 80P",
+    "nombre": "CANDADO REFORZADO ACERO NIQUELADO 80 MM PERNO HORIZONTAL APERTURA",
+    "ean": "7793300707351",
+    "dun": "17793300707358",
+    "factor": 6
+  },
+  {
+    "sku": "CDB AS 40",
+    "nombre": "CANDADO REFORZADO ALTA SEGURIDAD ACERO NIQUELADO 40 MM",
+    "ean": "7793300428225",
+    "dun": "17793300428222",
+    "factor": 6
+  },
+  {
+    "sku": "CDB AS 50",
+    "nombre": "CANDADO REFORZADO ALTA SEGURIDAD ACERO NIQUELADO 50 MM",
+    "ean": "7793300428249",
+    "dun": "17793300428246",
+    "factor": 6
+  },
+  {
+    "sku": "CDB B 25",
+    "nombre": "REFORZADO - 3 LLAVES",
+    "ean": "7793300260122",
+    "dun": "17793300260129",
+    "factor": 12
+  },
+  {
+    "sku": "CDB BR 30",
+    "nombre": "REFORZADO - DOBLE TRABA - 3 LLAVES",
+    "ean": "7793300417489",
+    "dun": "17793300417486",
+    "factor": 12
+  },
+  {
+    "sku": "CDB BR 40",
+    "nombre": "REFORZADO - DOBLE TRABA - 3 LLAVES",
+    "ean": "7793300417526",
+    "dun": "17793300417523",
+    "factor": 12
+  },
+  {
+    "sku": "CDB BR 50",
+    "nombre": "REFORZADO - DOBLE TRABA - 3 LLAVES",
+    "ean": "7793300417564",
+    "dun": "17793300417561",
+    "factor": 6
+  },
+  {
+    "sku": "CDB BS 20",
+    "nombre": "BRONCE STANDARD - 3 LLAVES",
+    "ean": "7793300413924",
+    "dun": "17793300413921",
+    "factor": 12
+  },
+  {
+    "sku": "CDB BS 30",
+    "nombre": "BRONCE STANDARD - 3 LLAVES",
+    "ean": "7793300413948",
+    "dun": "17793300413945",
+    "factor": 12
+  },
+  {
+    "sku": "CDB BS 40",
+    "nombre": "BRONCE STANDARD - 3 LLAVES",
+    "ean": "7793300413962",
+    "dun": "17793300413969",
+    "factor": 12
+  },
+  {
+    "sku": "CDB C3 20 AR",
+    "nombre": "CANDADO DE ALEACION ALUMINIO 3 COMB. 20 MM ROJO",
+    "ean": "7793300000308",
+    "dun": "17793300000305",
+    "factor": 12
+  },
+  {
+    "sku": "CDB C3 30 AR",
+    "nombre": "CANDADO DE ALEACION ALUMINIO 3 COMB. 30 MM ROJO",
+    "ean": "7793300000322",
+    "dun": "17793300000329",
+    "factor": 12
+  },
+  {
+    "sku": "CDB C3 35 TSA A",
+    "nombre": "CANDADO DE COMBINACION TSA CON ARO",
+    "ean": "7793300703360",
+    "dun": "17793300703367",
+    "factor": 50
+  },
+  {
+    "sku": "CDB C3 35 TSA C",
+    "nombre": "CANDADO DE COMBINACION TSA CON CABLE",
+    "ean": "7793300703377",
+    "dun": "17793300703374",
+    "factor": 50
+  },
+  {
+    "sku": "CDB C4 40 AR",
+    "nombre": "CANDADO DE ALEACION ALUMINIO 3 COMB. 40 MM ROJO",
+    "ean": "7793300000346",
+    "dun": "17793300000343",
+    "factor": 12
+  },
+  {
+    "sku": "CDB C4 PP",
+    "nombre": "CANDADO DE ALEACION 4 COMB. PERSIANAS",
+    "ean": "7793300000384",
+    "dun": "27793300000388",
+    "factor": 6
+  },
+  {
+    "sku": "CDB C5 65 CA",
+    "nombre": "CANDADO DE ALEACION 5 COMB.",
+    "ean": "7793300000360",
+    "dun": "27793300000364",
+    "factor": 6
+  },
+  {
+    "sku": "CDB C5 65 CR",
+    "nombre": "CANDADO DE ALEACION 5 COMBINACIONES 65 MM ROJO",
+    "ean": "7793300000353",
+    "dun": "27793300000357",
+    "factor": 6
+  },
+  {
+    "sku": "CDB CAD 10 1 C",
+    "nombre": "CADENA MAXIMA SEGURIDAD CON CANDADO",
+    "ean": "7793300701427",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CDB H 30",
+    "nombre": "HIERRO - 3 LLAVES",
+    "ean": "7793300413887",
+    "dun": "17793300413884",
+    "factor": 12
+  },
+  {
+    "sku": "CDB H 30 D",
+    "nombre": "CANDADO DE HIERRO DORADO N? 30",
+    "ean": "7793300703384",
+    "dun": "17793300703381",
+    "factor": 12
+  },
+  {
+    "sku": "CDB H 30 D L",
+    "nombre": "CANDADO DE HIERRO DORADO N? 30 ARO LARGO",
+    "ean": "7793300703438",
+    "dun": "17793300703435",
+    "factor": 12
+  },
+  {
+    "sku": "CDB H 40",
+    "nombre": "HIERRO - 3 LLAVES",
+    "ean": "7793300413900",
+    "dun": "17793300413907",
+    "factor": 12
+  },
+  {
+    "sku": "CDB H 40 D",
+    "nombre": "CANDADO DE HIERRO DORADO N? 40",
+    "ean": "7793300703391",
+    "dun": "17793300703398",
+    "factor": 12
+  },
+  {
+    "sku": "CDB H 40 D L",
+    "nombre": "CANDADO DE HIERRO DORADO N? 40 ARO LARGO",
+    "ean": "7793300703445",
+    "dun": "17793300703442",
+    "factor": 12
+  },
+  {
+    "sku": "CDB H 50",
+    "nombre": "CANDADO DE HIERRO ARO CEMENTADO 50MM",
+    "ean": "7793300425989",
+    "dun": "17793300425986",
+    "factor": 6
+  },
+  {
+    "sku": "CDB H 50 D",
+    "nombre": "CANDADO DE HIERRO DORADO N? 50",
+    "ean": "7793300703407",
+    "dun": "17793300703404",
+    "factor": 6
+  },
+  {
+    "sku": "CDB H 50 D L",
+    "nombre": "CANDADO DE HIERRO DORADO N? 50 ARO LARGO",
+    "ean": "7793300703452",
+    "dun": "17793300703459",
+    "factor": 6
+  },
+  {
+    "sku": "CDB H 60",
+    "nombre": "CANDADO DE HIERRO ARO CEMENTADO 60MM.",
+    "ean": "7793300426566",
+    "dun": "17793300426563",
+    "factor": 6
+  },
+  {
+    "sku": "CDB H 60 D",
+    "nombre": "CANDADO DE HIERRO DORADO N? 60",
+    "ean": "7793300703414",
+    "dun": "17793300703411",
+    "factor": 6
+  },
+  {
+    "sku": "CDB H 60 D L",
+    "nombre": "CANDADOS DE HIERRO DORADO N°60 ARO LARGO",
+    "ean": "7793300703469",
+    "dun": "17793300703466",
+    "factor": 6
+  },
+  {
+    "sku": "CDB LIN 180",
+    "nombre": "LINGA DE ACERO 1800 MM X 12 MM",
+    "ean": "7793300702851",
+    "dun": "17793300702858",
+    "factor": 6
+  },
+  {
+    "sku": "CDB LIN A120 LV",
+    "nombre": "LINGA DE SEGURIDAD",
+    "ean": "7793300702868",
+    "dun": "17793300702865",
+    "factor": 6
+  },
+  {
+    "sku": "CDB LIN B CMB",
+    "nombre": "LINGA DE SEGURIDAD CON COMBINACION",
+    "ean": "7793300701465",
+    "dun": "17793300701462",
+    "factor": 10
+  },
+  {
+    "sku": "CDB LIN B LV",
+    "nombre": "LINGA DE SEGURIDAD CON LLAVES",
+    "ean": "7793300701458",
+    "dun": "17793300701455",
+    "factor": 10
+  },
+  {
+    "sku": "CDB MS 72 B",
+    "nombre": "CANDADO MAXIMA SEGURIDAD",
+    "ean": "7793300000391",
+    "dun": "17793300000398",
+    "factor": 3
+  },
+  {
+    "sku": "CDB T DISCO",
+    "nombre": "CANDADO TRABA DISCO",
+    "ean": "7793300701441",
+    "dun": "17793300701448",
+    "factor": 6
+  },
+  {
+    "sku": "CDB TD 5.5 F",
+    "nombre": "TRABA DISCO DE 5.5 MM CON FUNDA",
+    "ean": "7793300702875",
+    "dun": "17793300702872",
+    "factor": 12
+  },
+  {
+    "sku": "CDB WR 40",
+    "nombre": "CANDADO REFORZADO WATER RESISTANT 40MM",
+    "ean": "7793300704275",
+    "dun": "27793300704279",
+    "factor": 6
+  },
+  {
+    "sku": "CDB WR 40 L",
+    "nombre": "CANDADO REFORZADO WATER RESISTANT 40 MM ARO LARGO",
+    "ean": "7793300704282",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CDB WR 50",
+    "nombre": "CANDADO REFORZADO WATER RESISTANT 50 MM",
+    "ean": "7793300704299",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CDB WR 50 L",
+    "nombre": "CANDADO REFORZADO WATER RESISTANT 50 MM ARO LARGO",
+    "ean": "7793300704305",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CH ALM 9",
+    "nombre": "SET DE LLAVES ALLEN 9 PIEZAS (MM)- CROMO VANADIO",
+    "ean": "7793300422421",
+    "dun": "17793300422428",
+    "factor": 6
+  },
+  {
+    "sku": "CH TRX 9",
+    "nombre": "SET DE LLAVES TORX 9 PIEZAS- CROMO VANADIO",
+    "ean": "7793300422407",
+    "dun": "17793300422404",
+    "factor": 6
+  },
+  {
+    "sku": "CIA A-40 20",
+    "nombre": "CIANOACR. - PLASTICOS Y GOMAS",
+    "ean": "7793300432826",
+    "dun": "17793300432823",
+    "factor": 50
+  },
+  {
+    "sku": "CR0020000000207",
+    "nombre": "SET ACCESORIOS BAÑO - 7 PIEZAS - NAPOLIOLI - 7 PIEZAS",
+    "ean": "7794880016925",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CR0020000000270",
+    "nombre": "PERCHA AQUALAF DE METAL CROMADO - NAPOLI - GARANTÍA 5 AÑOS",
+    "ean": "7794880016888",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CR0020000005010",
+    "nombre": "JUEGO DE GRIFERIA LAVATORIO BAÑO - LINEA AQ6000",
+    "ean": "7794880000559",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CR0020000019001",
+    "nombre": "JUEGO GRIFERIA MESADA COCINA - LINEA AQ7000",
+    "ean": "7794880001747",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CR0020000019002",
+    "nombre": "JUEGO GRIFERIA PARED  COCINA - LINEA AQ7000",
+    "ean": "7794880001754",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CR0020000020000",
+    "nombre": "SET COMPLETO - GRIFERIAS  BAÑO - SET AQ8000",
+    "ean": "7794880009941",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CR0020000087010",
+    "nombre": "GRIFERÍA PARA LAVATORIO AQUALAF REGULABLE - NAPOLI BAÑO",
+    "ean": "7794880015430",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CR0020000087020",
+    "nombre": "GRIFERÍA BIDET AQUALAF LEVER CIERRE CERÁMICO - NAPOLI BAÑO",
+    "ean": "7794880015447",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CR0020000087030",
+    "nombre": "GRIFERÍA PARA DUCHA AQUALAF CON TRANSFERENCIA - NAPOLI BAÑO",
+    "ean": "7794880015454",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "CTA MCA 5B 3",
+    "nombre": "CINTA METRICA SERIE 500 CON FRENO 3M.X16MM",
+    "ean": "7793300701250",
+    "dun": "17793300701257",
+    "factor": 10
+  },
+  {
+    "sku": "CTA MCA 5B 5",
+    "nombre": "CINTA METRICA SERIA 500 CON FRENO 5M X 19 MM",
+    "ean": "7793300701243",
+    "dun": "17793300701240",
+    "factor": 10
+  },
+  {
+    "sku": "CTA MCA 5B 7,5",
+    "nombre": "CINTA METRICA SERIE 500 CON FRENO 7.5M.X25MM",
+    "ean": "7793300701236",
+    "dun": "17793300701233",
+    "factor": 10
+  },
+  {
+    "sku": "CTA MCA 5C 3",
+    "nombre": "CINTA MÉTRICA 3 METROS X 19 MM DE ANCHO SERIE 500",
+    "ean": "7793300704770",
+    "dun": "17793300704777",
+    "factor": 12
+  },
+  {
+    "sku": "CTA MCA 5C 5",
+    "nombre": "CINTA MÉTRICA 5 METROS X 19 MM DE ANCHO SERIE 550",
+    "ean": "7793300704763",
+    "dun": "17793300704760",
+    "factor": 12
+  },
+  {
+    "sku": "CTA MCA 5C 7,5",
+    "nombre": "CINTA METRICA 7.5 METROS X 25 MM DE ANCHO SERIE 500",
+    "ean": "7793300704756",
+    "dun": "17793300704753",
+    "factor": 12
+  },
+  {
+    "sku": "CTL SBD TR PR",
+    "nombre": "CARTEL PARA STOPPER SBD TR PRECSION",
+    "ean": "7793300709058",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "DBL 30 B T",
+    "nombre": "SUPRABOND DOBLADILLOS NUEVA F?RMULA",
+    "ean": "7793300415362",
+    "dun": "17793300415369",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PH 0X50",
+    "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO",
+    "ean": "7793300419223",
+    "dun": "17793300419220",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PH 0X75",
+    "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO",
+    "ean": "7793300419247",
+    "dun": "17793300419244",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PH 1X50",
+    "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO",
+    "ean": "7793300419261",
+    "dun": "17793300419268",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PH 1X75",
+    "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO",
+    "ean": "7793300419285",
+    "dun": "17793300419282",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PH 2X100",
+    "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO",
+    "ean": "7793300419322",
+    "dun": "17793300419329",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PH 2X38",
+    "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO",
+    "ean": "7793300419308",
+    "dun": "17793300419305",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PH 3X125",
+    "nombre": "SERIE 700 - PHILIPS - CROMO VANADIO",
+    "ean": "7793300419346",
+    "dun": "17793300419343",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 4X100",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300418929",
+    "dun": "17793300418926",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 4X125",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300418943",
+    "dun": "17793300418940",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 4X150",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300419162",
+    "dun": "17793300419169",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 4X75",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300418905",
+    "dun": "17793300418902",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 5X100",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300418981",
+    "dun": "17793300418988",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 5X125",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300419001",
+    "dun": "17793300419008",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 5X150",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300419025",
+    "dun": "17793300419022",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 5X75",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300418967",
+    "dun": "17793300418964",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 6X100",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300419063",
+    "dun": "17793300419060",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 6X150",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300419087",
+    "dun": "17793300419084",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 6X38",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300419049",
+    "dun": "17793300419046",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 8X100",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300419100",
+    "dun": "17793300419107",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7PL 8X150",
+    "nombre": "SERIE 700 - PLANO - CROMO VANADIO",
+    "ean": "7793300419124",
+    "dun": "17793300419121",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7RA 4X75",
+    "nombre": "SERIE 700 - AISLADO- CROMO VANADIO",
+    "ean": null,
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "DES 7RT 4X150",
+    "nombre": "SERIE 700 - RECTO - CROMO VANADIO",
+    "ean": "7793300419766",
+    "dun": "17793300419763",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7RT 4X75",
+    "nombre": "SERIE 700 - RECTO - CROMO VANADIO",
+    "ean": "7793300419148",
+    "dun": "17793300419145",
+    "factor": 24
+  },
+  {
+    "sku": "DES 7RT 5X150",
+    "nombre": "SERIE 700 - RECTO - CROMO VANADIO",
+    "ean": "7793300421660",
+    "dun": "17793300421667",
+    "factor": 24
+  },
+  {
+    "sku": "DES 8 PHA 0X75",
+    "nombre": "DS800 CROM VAN PHIL AISLADO #0X75MM",
+    "ean": "7793300431782",
+    "dun": "17793300431789",
+    "factor": 8
+  },
+  {
+    "sku": "DES 8 ST 6",
+    "nombre": "SET DE 6 DESTORN.SERIE 800 CROMO VANADIO",
+    "ean": "7793300706033",
+    "dun": "17793300706030",
+    "factor": 6
+  },
+  {
+    "sku": "DES 8A ST 6",
+    "nombre": "SET DE 6 DESTORNILLADORES AISLADOS SERIE 800",
+    "ean": "7793300706460",
+    "dun": "17793300706467",
+    "factor": 6
+  },
+  {
+    "sku": "DES 8PHA 1X100",
+    "nombre": "DS800 CROM VAN PHIL AISL #1X100MM",
+    "ean": "7793300431805",
+    "dun": "17793300431802",
+    "factor": 8
+  },
+  {
+    "sku": "DES 8PHA 2X100",
+    "nombre": "DS800 CROM VAN PHIL AISLADO #2X100MM",
+    "ean": "7793300431829",
+    "dun": "17793300431826",
+    "factor": 8
+  },
+  {
+    "sku": "DES 8PHA 2X150",
+    "nombre": "DS800 CROM VAN PHIL AISLADO #2X150MM",
+    "ean": "7793300431843",
+    "dun": "17793300431840",
+    "factor": 8
+  },
+  {
+    "sku": "DES 8RA 4X100",
+    "nombre": "DS800 CROM.VAN.RECT AISL 4X100MM",
+    "ean": "7793300432161",
+    "dun": "17793300432168",
+    "factor": 8
+  },
+  {
+    "sku": "DES 8RA 5.5X125",
+    "nombre": "DS800 CROM.VAN.RECT AISL 5.5X125MM.",
+    "ean": "7793300432185",
+    "dun": "17793300432182",
+    "factor": 8
+  },
+  {
+    "sku": "DSA 4CP 115 1",
+    "nombre": "DISCO ABRASIVO DE CORTE SERIE 400 115X1X22.2",
+    "ean": "7793300703476",
+    "dun": "17793300703473",
+    "factor": 50
+  },
+  {
+    "sku": "DSA 4CP 115 1,6",
+    "nombre": "DISCO ABRASIVO DE CORTE SERIE 400 115X1,6X22.2",
+    "ean": "7793300703483",
+    "dun": "17793300703480",
+    "factor": 50
+  },
+  {
+    "sku": "DSA 4CP 180 1,6",
+    "nombre": "DISCO ABRASIVO DE CORTE SERIE 400 180X1,6X22.2",
+    "ean": "7793300703834",
+    "dun": "17793300703831",
+    "factor": 50
+  },
+  {
+    "sku": "DSD S400 115 C",
+    "nombre": "DISCO DIAMANTADO SERIE 400 CONTINUO 115 MM",
+    "ean": "7793300702585",
+    "dun": "17793300702582",
+    "factor": 10
+  },
+  {
+    "sku": "DSD S400 115 S",
+    "nombre": "DISCO DIAMANTADO SERIE 400 SEGMENTADO 115 MM",
+    "ean": "7793300702592",
+    "dun": "17793300702599",
+    "factor": 10
+  },
+  {
+    "sku": "DSD S400 115 T",
+    "nombre": "DISCO DIAMANTADO SERIE 400 TURBO 115 MM",
+    "ean": "7793300702608",
+    "dun": "17793300702605",
+    "factor": 10
+  },
+  {
+    "sku": "DSD S400 115 TF",
+    "nombre": "DISCO DIAMANTADO SERIE 400 TURBO FINO 115 MM",
+    "ean": "7793300702615",
+    "dun": "17793300702612",
+    "factor": 10
+  },
+  {
+    "sku": "DSD S400 180 S",
+    "nombre": "DISCO DIAMANTADO SERIE 400 SEGMENTADO 180 MM",
+    "ean": "7793300702639",
+    "dun": "17793300702636",
+    "factor": 10
+  },
+  {
+    "sku": "DSD S400 230 S",
+    "nombre": "DISCO DIAMANTADO SERIE 400 SEGMENTADO 230 MM",
+    "ean": "7793300702660",
+    "dun": "17793300702667",
+    "factor": 10
+  },
+  {
+    "sku": "DSD S80 115 C",
+    "nombre": "DISCO DIAMANTADO SERIE 80 CONTINUO 115 MM",
+    "ean": "7793300702486",
+    "dun": "17793300702483",
+    "factor": 10
+  },
+  {
+    "sku": "DSD S80 115 S",
+    "nombre": "DISCO DIAMANTADO SERIE 80 SEGMENTADO115 MM",
+    "ean": "7793300702493",
+    "dun": "17793300702490",
+    "factor": 10
+  },
+  {
+    "sku": "DSD S80 115 T",
+    "nombre": "DISCO DIAMANTADO SERIE 80 TURBO115 MM",
+    "ean": "7793300702509",
+    "dun": "17793300702506",
+    "factor": 10
+  },
+  {
+    "sku": "DSD S80 180 C",
+    "nombre": "DISCO DIAMANTADO SERIE 80 CONTINUO 180 MM",
+    "ean": "7793300702523",
+    "dun": "17793300702520",
+    "factor": 10
+  },
+  {
+    "sku": "DSD S80 180 S",
+    "nombre": "DISCO DIAMANTADO SERIE 80 SEGMENTADO180 MM",
+    "ean": "7793300702530",
+    "dun": "17793300702537",
+    "factor": 10
+  },
+  {
+    "sku": "DSD S80 180 T",
+    "nombre": "DISCO DIAMANTADO SERIE 80 TURBO 180 MM",
+    "ean": "7793300702547",
+    "dun": "17793300702544",
+    "factor": 10
+  },
+  {
+    "sku": "DSD S80 230 S",
+    "nombre": "DISCO DIAMANTADO SERIE 80 SEGMENTADO 230 MM",
+    "ean": "7793300702561",
+    "dun": "17793300702568",
+    "factor": 10
+  },
+  {
+    "sku": "EL PEL 6 A L",
+    "nombre": "PELACABLES AUTOMATICO LATERAL SERIE 600",
+    "ean": "7793300000452",
+    "dun": "17793300000459",
+    "factor": 10
+  },
+  {
+    "sku": "EPP PU 300 E",
+    "nombre": "EPP PU 300 E",
+    "ean": "7793300703841",
+    "dun": "17793300703848",
+    "factor": 12
+  },
+  {
+    "sku": "EPP PU 500 E",
+    "nombre": "ESPUMA DE POLIUR. 500ML ECONOMY",
+    "ean": "7793300000018",
+    "dun": "17793300000015",
+    "factor": 12
+  },
+  {
+    "sku": "EPP PU 500 P",
+    "nombre": "ESPUMA DE POLIUR. 500ML PREMIUM",
+    "ean": "7793300000032",
+    "dun": "17793300000039",
+    "factor": 12
+  },
+  {
+    "sku": "EPP PU 750 E",
+    "nombre": "ESPUMA DE POLIUR. 750 ML ECONOMY",
+    "ean": "7793300705319",
+    "dun": "17793300705316",
+    "factor": 12
+  },
+  {
+    "sku": "EPP PU 750 P",
+    "nombre": "ESPUMA DE POLIUR. 750ML PREMIUM",
+    "ean": "7793300000049",
+    "dun": "17793300000046",
+    "factor": 12
+  },
+  {
+    "sku": "ESL 100",
+    "nombre": "SILICONA LIQUIDA DE 100 ML",
+    "ean": "7793300702370",
+    "dun": "17793300702377",
+    "factor": 12
+  },
+  {
+    "sku": "ESL 30",
+    "nombre": "SILICONA LIQUIDA DE 30 ML",
+    "ean": "7793300702363",
+    "dun": "17793300702360",
+    "factor": 12
+  },
+  {
+    "sku": "ESP FX 1",
+    "nombre": "FLEXIBLE - PULIDO ESPEJO",
+    "ean": "7793300414785",
+    "dun": "17793300414782",
+    "factor": 12
+  },
+  {
+    "sku": "ESP FX 1,5",
+    "nombre": "FLEXIBLE - PULIDO ESPEJO",
+    "ean": "7793300270602",
+    "dun": "17793300270609",
+    "factor": 12
+  },
+  {
+    "sku": "ESP FX 2",
+    "nombre": "FLEXIBLE - PULIDO ESPEJO",
+    "ean": "7793300270701",
+    "dun": "17793300270708",
+    "factor": 12
+  },
+  {
+    "sku": "ESP FX 3",
+    "nombre": "FLEXIBLE - PULIDO ESPEJO",
+    "ean": "7793300270800",
+    "dun": "17793300270807",
+    "factor": 12
+  },
+  {
+    "sku": "ESP FX 4",
+    "nombre": "ESPATULA FLEXIBLE 4- PULIDO ESPEJO",
+    "ean": "7793300427983",
+    "dun": "17793300427980",
+    "factor": 12
+  },
+  {
+    "sku": "ESP FX 5",
+    "nombre": "FLEXIBLE - PULIDO ESPEJO",
+    "ean": "7793300414808",
+    "dun": "17793300414805",
+    "factor": 12
+  },
+  {
+    "sku": "ESP FX 6",
+    "nombre": "ESPATULA FLEXIBLE 6- PULIDO ESPEJO",
+    "ean": "7793300428003",
+    "dun": "17793300428000",
+    "factor": 12
+  },
+  {
+    "sku": "EX A",
+    "nombre": "ERPOX ACERO - - JUEGO POTES 200 G",
+    "ean": "7793300080201",
+    "dun": "17793300080208",
+    "factor": 12
+  },
+  {
+    "sku": "EX A 105",
+    "nombre": "ERPOX ACERO - JUEGO POTES 105 G",
+    "ean": "7793300704411",
+    "dun": "17793300704418",
+    "factor": 12
+  },
+  {
+    "sku": "EX BUL STD",
+    "nombre": "EXHIBIDOR PANEL BULIT STANDARD (MADERA)",
+    "ean": "7793300702943",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX BUL STD SC",
+    "nombre": "EXHIBIDOR PANEL MADERA SIN CARTEL",
+    "ean": "7793300706699",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX CDB 9",
+    "nombre": "EXHIBIDOR PARA CANDADOS 9 GANCHOS",
+    "ean": "7793300702783",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX DSA TORRE",
+    "nombre": "TORRE EXHIBIDORA DE DISCOS",
+    "ean": "7793300703308",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX DSD 8",
+    "nombre": "EXHIBIDOR PARA DSD 8 GANCHOS",
+    "ean": "7793300705371",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX ERPOX T",
+    "nombre": "TIRA EXHIBIDORA ERPOX",
+    "ean": "7793300704466",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX GEL M",
+    "nombre": "EXHIBIDOR SOMERSET GEL MOSTRADOR",
+    "ean": "7793300706804",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX PZA M 6",
+    "nombre": "EXHIBIDOR DE PINZAS MOSTRADOR 6 GANCHOS REVERSIBLE",
+    "ean": "7793300709171",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX SBD 5",
+    "nombre": "EXHIBIDOR SUPRABOND DE METAL DE 5 GANCHOS",
+    "ean": "7793300703209",
+    "dun": "37790001001054",
+    "factor": 1
+  },
+  {
+    "sku": "EX SBD MOST C",
+    "nombre": "EXHIBIDOR SUPRABOND MOSTRADOR CARTON",
+    "ean": "7793300705562",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX SBD MOST G",
+    "nombre": "GANCHOS EXHIBIDOR DE MOSTRADOR SUPRABOND",
+    "ean": "7793300705593",
+    "dun": "17793300705590",
+    "factor": 112
+  },
+  {
+    "sku": "EX SBD PIE C",
+    "nombre": "EXHIBIDOR DE PIE SUPRABOND DE CARTON",
+    "ean": "7793300000599",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX SBD PIE G",
+    "nombre": "GANCHOS EXHIBIDOR DE PIE SUPRABOND DE CARTON",
+    "ean": "7790001001054",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX SBD PIEADH C",
+    "nombre": "EXHIBIDOR DE PIE SUPRABOND CARTON",
+    "ean": "7793300705555",
+    "dun": "17793300705552",
+    "factor": 1
+  },
+  {
+    "sku": "EX SBD PIEADHG",
+    "nombre": "GANCHOS EXHIBIDOR SUPRABOND DE PIE DE CARTON",
+    "ean": "7793300705586",
+    "dun": "17793300705583",
+    "factor": 112
+  },
+  {
+    "sku": "EX SBD PR T",
+    "nombre": "EXHIBIDOR SBD TRANSPARENTE PRECISIÓN (TIRA)",
+    "ean": "7793300709126",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX SBD TR",
+    "nombre": "EXHIBIDOR 5 GANCHOS SUPRABOND TRANSP.",
+    "ean": "7790001001054",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX SBD TR T",
+    "nombre": "EXHIBIDOR TIRA SUPRABOND TRANSPARENTE",
+    "ean": "7793300706477",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX SLL M",
+    "nombre": "EXHIBIDOR SELLADORES 8 CARTUCHO MOSTRADOR",
+    "ean": "7793300707290",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX SLT PIE",
+    "nombre": "EXHIBIDOR DE PIE BURLETE  DE CARTON",
+    "ean": "7793300701823",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX SLT PIE G",
+    "nombre": "GANCHOS EXHIBIDOR DE PIE BURLETE DE CARTON",
+    "ean": "7793300701824",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX SPX GENERICO",
+    "nombre": "TIRA EXHIBIDORA SUPERPOX  GENERICO",
+    "ean": "7793300705579",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX SPX T",
+    "nombre": "TIRA EXHIBIDORA SUPERPOX",
+    "ean": "7793300704732",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EX ZAP 2 G",
+    "nombre": "EXHIBIDOR ZAPATILLAS 2 GANCHOS",
+    "ean": "7793300706064",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "EXB",
+    "nombre": "ERPOX BLANCO - JUEGO POTES 150 G.",
+    "ean": "7793300080102",
+    "dun": "17793300080109",
+    "factor": 12
+  },
+  {
+    "sku": "EXB 80",
+    "nombre": "ERPOX BLANCO - JUEGO POTES 80 G.",
+    "ean": "7793300704428",
+    "dun": "17793300704425",
+    "factor": 12
+  },
+  {
+    "sku": "F0130290JA000",
+    "nombre": "DREMEL 3000 MOTOTOOL CON 10 ACCESORIOS BLISTER",
+    "ean": "7891009804224",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "GAS 125 E",
+    "nombre": "SELLADOR GAS 125 ML EXPORTACION",
+    "ean": "7793300423022",
+    "dun": "17793300423036",
+    "factor": 15
+  },
+  {
+    "sku": "GAS 25",
+    "nombre": "SELLARROSCAS GAS",
+    "ean": "7793300423060",
+    "dun": "17793300423067",
+    "factor": 50
+  },
+  {
+    "sku": "GAS 50",
+    "nombre": "SELLARROSCAS GAS",
+    "ean": "7793300423046",
+    "dun": "17793300423043",
+    "factor": 24
+  },
+  {
+    "sku": "GFX 25",
+    "nombre": "GLUFIX - 100% SILICONA - TRANSPARENTE",
+    "ean": "7793300424548",
+    "dun": "17793300424545",
+    "factor": 50
+  },
+  {
+    "sku": "GFX A S5 280 T",
+    "nombre": "SILICONA ACÉTICA S-500 280 ML TRANSPARENTE",
+    "ean": "7793300707191",
+    "dun": "17793300707198",
+    "factor": 24
+  },
+  {
+    "sku": "GFX AT S5 280 R",
+    "nombre": "SILICONA ACÉTICA S-500 280 ML ROJA",
+    "ean": "7793300708136",
+    "dun": "17793300708133",
+    "factor": 24
+  },
+  {
+    "sku": "GFX C 110 T",
+    "nombre": "SILICONA NEUTRA CONSTRUCCI?N 110ML POMO TRANSPARENTE",
+    "ean": "7793300430402",
+    "dun": "17793300430409",
+    "factor": 16
+  },
+  {
+    "sku": "GFX C 280 T",
+    "nombre": "SILICONA 100% CONSTRUCCI?N NEUTRA - TRANSPARENTE",
+    "ean": "7793300421622",
+    "dun": "17793300421629",
+    "factor": 12
+  },
+  {
+    "sku": "GFX J 110 R",
+    "nombre": "SILICONA JUNTAS Y MOTORES 110ML POMO ROJO",
+    "ean": "7793300430983",
+    "dun": "17793300430980",
+    "factor": 16
+  },
+  {
+    "sku": "GFX J 60 R",
+    "nombre": "SILICONA JUNTAS Y MOTORES 60 ML POMO ROJO",
+    "ean": "7793300000209",
+    "dun": "17793300000206",
+    "factor": 24
+  },
+  {
+    "sku": "GFX N S5 280 T",
+    "nombre": "SILICONA NEUTRA S-500 280 ML TRANSPARENTE",
+    "ean": "7793300707207",
+    "dun": "17793300707204",
+    "factor": 24
+  },
+  {
+    "sku": "GFX U 110 B",
+    "nombre": "SILICONA UNIVERSAL 110ML POMO BLANCO",
+    "ean": "7793300431508",
+    "dun": "17793300431505",
+    "factor": 16
+  },
+  {
+    "sku": "GFX U 110 T",
+    "nombre": "SILICONA UNIVERSAL 110ML POMO TRANSPARENTE",
+    "ean": "7793300430389",
+    "dun": "17793300430386",
+    "factor": 16
+  },
+  {
+    "sku": "GFX U 280 B",
+    "nombre": "SILICONA UNIVERSAL - BLANCA",
+    "ean": "7793300419643",
+    "dun": "17793300419657",
+    "factor": 12
+  },
+  {
+    "sku": "GFX U 280 N",
+    "nombre": "SILICONA UNIVERSAL - NEGRA",
+    "ean": "7793300419667",
+    "dun": "17793300419671",
+    "factor": 12
+  },
+  {
+    "sku": "GFX U 280 T",
+    "nombre": "SILICONA UNIVERSAL - TRANSPARENTE",
+    "ean": "7793300419407",
+    "dun": "17793300419411",
+    "factor": 12
+  },
+  {
+    "sku": "GFX U 60 B",
+    "nombre": "SILICONA UNIVERSAL 60ML POMO BLANCO",
+    "ean": "7793300000186",
+    "dun": "17793300000183",
+    "factor": 24
+  },
+  {
+    "sku": "GFX U 60 N",
+    "nombre": "SILICONA UNIVERSAL 60ML POMO NEGRO",
+    "ean": "7793300000193",
+    "dun": "17793300000190",
+    "factor": 24
+  },
+  {
+    "sku": "GFX U 60 T",
+    "nombre": "SILICONA UNIVERSAL 60ML POMO TRANSPARENTE",
+    "ean": "7793300000179",
+    "dun": "17793300000176",
+    "factor": 24
+  },
+  {
+    "sku": "GMX ACR 110 B",
+    "nombre": "ACR?LICO PINTABLE BLANCO",
+    "ean": "7793300430341",
+    "dun": "17793300430348",
+    "factor": 16
+  },
+  {
+    "sku": "GMX ACR 280 B",
+    "nombre": "SELLADOR ACR?LICO PINTABLE - BLANCO",
+    "ean": "7793300421646",
+    "dun": "17793300421650",
+    "factor": 12
+  },
+  {
+    "sku": "GMX CTO 280 G",
+    "nombre": "SELLADOR ACRILICO REPARADOR DE CONCRETO Y CEMENTO",
+    "ean": "7793300000162",
+    "dun": "17793300000169",
+    "factor": 12
+  },
+  {
+    "sku": "GMX J 280 T",
+    "nombre": "SELLADOR ACR?LICO PREMIUM  JUNTAS Y FISURAS TRANSPARENTE",
+    "ean": "7793300426429",
+    "dun": "17793300426433",
+    "factor": 12
+  },
+  {
+    "sku": "GMX M 280 N",
+    "nombre": "SELLADOR MADERAS Y MUEBLES  280ML NOGAL",
+    "ean": "7793300431249",
+    "dun": "17793300431246",
+    "factor": 12
+  },
+  {
+    "sku": "GMX M 280 P",
+    "nombre": "SELLADOR MADERAS Y MUEBLES  280 ML PINO",
+    "ean": "7793300431225",
+    "dun": "17793300431222",
+    "factor": 12
+  },
+  {
+    "sku": "ICJ01EXPRTC",
+    "nombre": "CAJA EXHIBIDORA PARA PEGA RAT",
+    "ean": "7793300706811",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "ICJ01EXPRTCBASE",
+    "nombre": "BASE INTERIOR PARA CAJA EXHIBIDORA PARA PEGA RAT",
+    "ean": "7793300706828",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "ICJ01EXSBDTRB",
+    "nombre": "CAJA EXHIBIDORA SBD TR 50 BLISTER",
+    "ean": "7793300706835",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "ICJ01EXSBDTRBB",
+    "nombre": "BASE CAJA EXHIBIDORA SBD TR 50 BLISTER",
+    "ean": "7793300706842",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "ICJ01MPXEXA12",
+    "nombre": "CAJA EXHIBIDORA MASILLA ERPOX 10 MINUTOS 12 UNIDADES",
+    "ean": "7793300707146",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "ICJ01SPXSA16TE",
+    "nombre": "CAJA EXHIBIDORA SUPERPOX TRANSPARENTE",
+    "ean": "7793300707153",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "ICJ01SPXSA25AE",
+    "nombre": "CAJA EXHIBIDORA SUPERPOX",
+    "ean": "7793300707160",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "INF S2 230 P",
+    "nombre": "INFLADOR SERIE 200",
+    "ean": "7793300702417",
+    "dun": "17793300702414",
+    "factor": 1
+  },
+  {
+    "sku": "INF S2 430 MP",
+    "nombre": "INFLADOR CON MANOMETRO SERIE 200",
+    "ean": "7793300704435",
+    "dun": "17793300704432",
+    "factor": 1
+  },
+  {
+    "sku": "INF S6 225 A",
+    "nombre": "INFLADOR SERIE 600",
+    "ean": "7793300705128",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "INF S6 240 TA",
+    "nombre": "INFLADOR SERIE 600 DOBLE EXTENSION",
+    "ean": "7793300703346",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "INF S6 272 MA",
+    "nombre": "INFLADOR CON MANOMETRO SERIE 600",
+    "ean": "7793300702431",
+    "dun": "17793300702438",
+    "factor": 1
+  },
+  {
+    "sku": "INF S6 PIE MA",
+    "nombre": "INFLADOR DE PIE SERIE 600",
+    "ean": "7793300702462",
+    "dun": "17793300702469",
+    "factor": 1
+  },
+  {
+    "sku": "JD S6 PZA BY",
+    "nombre": "TIJERA DE PODA BYPASS SERIE 600",
+    "ean": "7793300702196",
+    "dun": "17793300702193",
+    "factor": 6
+  },
+  {
+    "sku": "JD S8 PZA BY",
+    "nombre": "TIJERA DE PODA BYPASS SERIE 800",
+    "ean": "7793300701946",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "JD S8 TIJ PD A",
+    "nombre": "TIJERA PARA CERCOS SERIE 800",
+    "ean": "7793300701960",
+    "dun": "17793300701974",
+    "factor": 12
+  },
+  {
+    "sku": "KIT PRB",
+    "nombre": "KIT REPARACION PARABRISAS",
+    "ean": "7793300431300",
+    "dun": "17793300431307",
+    "factor": 5
+  },
+  {
+    "sku": "KIT R OP",
+    "nombre": "KIT RESTAURADOR DE OPTICAS",
+    "ean": "7793300706613",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "LLC CV 1 1/2",
+    "nombre": "LLAVE PARA CA?O 1 1/2 (38 MM)",
+    "ean": "7793300429826",
+    "dun": "17793300429823",
+    "factor": 1
+  },
+  {
+    "sku": "LLV 7C KIT 5 R",
+    "nombre": "KIT DE 5 LLAVES CRIQUET",
+    "ean": "7793300702394",
+    "dun": "17793300702391",
+    "factor": 6
+  },
+  {
+    "sku": "LLV 8VA KIT 7 M",
+    "nombre": "KIT LLAVES CRIQUET SERIE 800 MM",
+    "ean": "7793300000537",
+    "dun": "17793300000534",
+    "factor": 6
+  },
+  {
+    "sku": "MBN VEN 1 B",
+    "nombre": "VENDA L?QUIDA IMPERMEABILIZANTE - BLANCA",
+    "ean": "7793300430365",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MBN VEN 1/2 B",
+    "nombre": "VENDA L?QUIDA IMPERMEABILIZANTE - BLANCA",
+    "ean": "7793300431041",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT AFI PBD",
+    "nombre": "AFICHE PERBOND URUGUAY",
+    "ean": "7793300706682",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT AFI SBDTRA3",
+    "nombre": "AFICHE SUPRABOND TRANSPARENTE A3",
+    "ean": "7790001001054",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT AFI SLT A3B",
+    "nombre": "AFICHE BURLETES A3 BEBE",
+    "ean": "7790001001054",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT AFI ZAP A3",
+    "nombre": "AFICHE A3 ADHESIVO ZAPATILLAS",
+    "ean": "7793300706378",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT ANOT SBD",
+    "nombre": "ANOTADORES SUPRABOND",
+    "ean": "7793300704855",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT BASE STOPP",
+    "nombre": "BASE SOSTÉN STOPPER 5 CM",
+    "ean": "7793300708358",
+    "dun": "7792490288341",
+    "factor": 15
+  },
+  {
+    "sku": "MKT CAL BLTCH",
+    "nombre": "CALCO AUTOADHESIVO BULIT",
+    "ean": "7793300706675",
+    "dun": "17793300706675",
+    "factor": 6
+  },
+  {
+    "sku": "MKT CAL SBDAS",
+    "nombre": "CALCO AUTOADHESIVO SUPRABOND",
+    "ean": "7793300706668",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT CAL SBDSP",
+    "nombre": "CALCO AUTOADHESIVO SUPRABOND SIN PASTO",
+    "ean": "7793300708327",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT CAL TR UTM",
+    "nombre": "CALCO SBD TR UTM CORAZON 7,5 CM",
+    "ean": "7793300705661",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT CARP TR5533",
+    "nombre": "CARPETA CONTENEDORA SUPRABOND",
+    "ean": "7793300706798",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT CM SBD LT",
+    "nombre": "CALCO MICRO PERFORADOS SBD BLT",
+    "ean": "7793300708334",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT CTL CTA",
+    "nombre": "CARTEL PARA STOPPER CINTAS METRICAS SERIE 500",
+    "ean": "7793300709218",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT CTL PRE BTL",
+    "nombre": "CARTEL PORTA PRECIO BULIT",
+    "ean": "7793300708259",
+    "dun": "17793300708259",
+    "factor": 5
+  },
+  {
+    "sku": "MKT CTL PRE SBD",
+    "nombre": "CARTEL PORTA PRECIO SUPRABOND",
+    "ean": "7793300708242",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT CTLBLT12080",
+    "nombre": "CARTEL MOSTRADOR BULIT (GR) 120X80 CARRERAS",
+    "ean": "7793300706767",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT CTLGFXS500",
+    "nombre": "CTL GFX 500",
+    "ean": "7793300707719",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT CTLMPX3030",
+    "nombre": "CARTEL COLGANTE MASILLA ERPOX BRAZOS 30 CM",
+    "ean": "7793300704541",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT CTLSBD2515",
+    "nombre": "CARTEL PARA STOPPER SBD TR",
+    "ean": "7793300707795",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT CTLSLL10080",
+    "nombre": "CARTEL BAJO MOSTRADOR SELLADORES",
+    "ean": "7793300706774",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT FLY ERPOX",
+    "nombre": "FLYERS ERPOX CONSUMIDOR",
+    "ean": "7793300706743",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT FLY UNO",
+    "nombre": "FLYER ADHESIVO UNO",
+    "ean": "7793300706750",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT FOLL SLL",
+    "nombre": "FOLLETOS SELLADORES",
+    "ean": "7793300706736",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT LAP SBD",
+    "nombre": "LAPICERAS SUPRABOND",
+    "ean": "7793300704848",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT MOV CDB",
+    "nombre": "MOVIE LINEA CANDADOS",
+    "ean": "7793300706651",
+    "dun": "17793300706651",
+    "factor": 10
+  },
+  {
+    "sku": "MKT MOV DSD",
+    "nombre": "MOVIE DISCOS DIAMANTADOS",
+    "ean": "7793300706644",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT MOV PZA",
+    "nombre": "MOVIE LINEA PINZAS",
+    "ean": "7793300707221",
+    "dun": "17793300707221",
+    "factor": 20
+  },
+  {
+    "sku": "MKT MOV SBD",
+    "nombre": "MOVIE SUPRABOND GENÉRICO",
+    "ean": "7793300706620",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT MOV SBD TO",
+    "nombre": "MOVIE SUPRABOND TRANSPARENTE OVALADO",
+    "ean": "7793300706637",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT MOVEXPSLL",
+    "nombre": "MOVIE EXPERTO EN SELLADORES",
+    "ean": "7793300707771",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT TCDB2515",
+    "nombre": "CARTEL PARA STOPPER LINEA DE CANDADOS",
+    "ean": "7793300707788",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT TIR EXH",
+    "nombre": "TIRAS P/EXHIBIDORES",
+    "ean": "7793300706859",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MKT TOTEM CDB",
+    "nombre": "TOTEM CANDADOS BULIT",
+    "ean": "7793300705616",
+    "dun": "17793300705613",
+    "factor": 10
+  },
+  {
+    "sku": "MKT TOTEM DSD",
+    "nombre": "TOTEM DISCO DIAMANTADOS",
+    "ean": "7793300708297",
+    "dun": "17793300708294",
+    "factor": 10
+  },
+  {
+    "sku": "MKT TOTEM PZA",
+    "nombre": "TOTEM PINZAS Y ALICATE",
+    "ean": "7793300708471",
+    "dun": "17793300708478",
+    "factor": 10
+  },
+  {
+    "sku": "MKT TOTEM SBDT",
+    "nombre": "TOTEM SUPRABOND TRANSPARENTE",
+    "ean": "7793300705623",
+    "dun": "17793300705620",
+    "factor": 10
+  },
+  {
+    "sku": "MKT TOTEM SLL",
+    "nombre": "TOTEM SELLADORES",
+    "ean": "7793300705609",
+    "dun": "17793300705606",
+    "factor": 10
+  },
+  {
+    "sku": "MKTBOLECOUTM",
+    "nombre": "BOLSA ECOLOGICA UNI TU MUNDO",
+    "ean": "7790001001054",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "MOV SBD TR PR",
+    "nombre": "MOVIE SUPRABOND TRANPARENTE PRECISION REDONDO",
+    "ean": "7793300709041",
+    "dun": "7793300700030",
+    "factor": 30
+  },
+  {
+    "sku": "MPX EXA 10 100",
+    "nombre": "MASILLA ERPOX 10 MIN 100 G",
+    "ean": "7793300704251",
+    "dun": "17793300704258",
+    "factor": 18
+  },
+  {
+    "sku": "MTJ 150",
+    "nombre": "ADHESIVO PARA MONTAJES POMO 150 GR",
+    "ean": "7793300431607",
+    "dun": "17793300431604",
+    "factor": 16
+  },
+  {
+    "sku": "MTJ 400",
+    "nombre": "ADHESIVO PARA MONTAJES CARTUCHOS 400 GR",
+    "ean": "7793300426825",
+    "dun": "17793300426822",
+    "factor": 12
+  },
+  {
+    "sku": "NSS 10",
+    "nombre": "90 SEGUNDOS - SOLDADURA INSTANT?NEA",
+    "ean": "7793300425163",
+    "dun": "17793300425184",
+    "factor": 18
+  },
+  {
+    "sku": "PBD 125 E",
+    "nombre": "PERBOND BLANCO 125 ML. EXPORTACION",
+    "ean": "9999999999991",
+    "dun": "66666666666661",
+    "factor": 15
+  },
+  {
+    "sku": "PBD 125 M E",
+    "nombre": "PERBOND MARR?N 125ML",
+    "ean": "7793300110205",
+    "dun": "17793300428062",
+    "factor": 15
+  },
+  {
+    "sku": "PBD 25 T",
+    "nombre": "PERBOND 25 CC BLANCO - POMOS EN TIRA",
+    "ean": "9999999999992",
+    "dun": "66666666666662",
+    "factor": 50
+  },
+  {
+    "sku": "PBD 25 T M",
+    "nombre": "PERBOND MARR?N 25ML TIRA",
+    "ean": "7793300423589",
+    "dun": "17793300423586",
+    "factor": 50
+  },
+  {
+    "sku": "PBD 400",
+    "nombre": "PERBOND - SELLADOR MULTIUSO - GRIS",
+    "ean": "7793300110304",
+    "dun": "17793300110301",
+    "factor": 12
+  },
+  {
+    "sku": "PBD 400 B",
+    "nombre": "PERBOND - SELLADOR MULTIUSO - BLANCO",
+    "ean": "7793300416840",
+    "dun": "17793300416847",
+    "factor": 12
+  },
+  {
+    "sku": "PBD 50",
+    "nombre": "PERBOND 50 CC BLANCO- POMO EN BLISTER",
+    "ean": "9999999999993",
+    "dun": "66666666666663",
+    "factor": 24
+  },
+  {
+    "sku": "PBD 50 M",
+    "nombre": "PERBOND MARR?N 50ML",
+    "ean": "7793300110106",
+    "dun": "17793300110103",
+    "factor": 24
+  },
+  {
+    "sku": "PBD P 25 T",
+    "nombre": "SELLADOR PERBOND PREMIUM TRANSPARENTE 25 CC.",
+    "ean": "7793300426702",
+    "dun": "17793300426709",
+    "factor": 50
+  },
+  {
+    "sku": "PBD P 50",
+    "nombre": "SELLADOR PERBOND PREMIUM TRANSPARENTE BLISTER",
+    "ean": "7793300426726",
+    "dun": "17793300426723",
+    "factor": 24
+  },
+  {
+    "sku": "PHB BO 32",
+    "nombre": "BOLSO PORTA HERRAMIENTAS BULIT 32CM DE ANCHO",
+    "ean": "7793300707528",
+    "dun": "17793300707525",
+    "factor": 12
+  },
+  {
+    "sku": "PHB BO C 42",
+    "nombre": "BOLSO PORTA HERRAMIENTAS BIULIT C/CORREA P/COLGAR. 42CM",
+    "ean": "7793300707535",
+    "dun": "17793300707532",
+    "factor": 10
+  },
+  {
+    "sku": "PHB BO C BT 36",
+    "nombre": "BOLSO PORTA HERRAMIENTAS BILIT C/CORREA P/COLGAR. BOLSILLO",
+    "ean": "7793300707542",
+    "dun": "17793300707549",
+    "factor": 10
+  },
+  {
+    "sku": "PHB C 2CA",
+    "nombre": "CINTURON CON 2 CARTUCHERAS PORTA HERRAMIENTAS",
+    "ean": "7793300707511",
+    "dun": "17793300707518",
+    "factor": 20
+  },
+  {
+    "sku": "PHB MO 35",
+    "nombre": "MOCHILA PORTA HERRAMIENTAS BULIT. 35CM DE ANCHO",
+    "ean": "7793300707559",
+    "dun": "17793300707556",
+    "factor": 10
+  },
+  {
+    "sku": "PIN S2 1",
+    "nombre": "PINCEL SERIE ECONOMY 1",
+    "ean": "7793300427440",
+    "dun": "17793300427447",
+    "factor": 24
+  },
+  {
+    "sku": "PIN S2 1 1/2",
+    "nombre": "PINCEL SERIE ECONOMY 1 1/2",
+    "ean": "7793300427464",
+    "dun": "17793300427461",
+    "factor": 12
+  },
+  {
+    "sku": "PIN S2 1/2",
+    "nombre": "PINCEL SERIE 200 1/2",
+    "ean": "7793300701847",
+    "dun": "17793300701844",
+    "factor": 36
+  },
+  {
+    "sku": "PIN S2 2",
+    "nombre": "PINCEL SERIE ECONOMY 2",
+    "ean": "7793300427488",
+    "dun": "17793300427485",
+    "factor": 12
+  },
+  {
+    "sku": "PIN S2 3",
+    "nombre": "PINCEL SERIE ECONOMY 3",
+    "ean": "7793300427501",
+    "dun": "17793300427508",
+    "factor": 12
+  },
+  {
+    "sku": "PIN S2 4",
+    "nombre": "PINCEL SERIE ECONOMY 4",
+    "ean": "7793300427525",
+    "dun": "17793300427522",
+    "factor": 6
+  },
+  {
+    "sku": "PIN S2 SET 5",
+    "nombre": "SET 5 S.ECONOMY 1/2,1,1 1/2,2,2 1/2",
+    "ean": "7793300427563",
+    "dun": "17793300427560",
+    "factor": 72
+  },
+  {
+    "sku": "PRT L2 FP",
+    "nombre": "PEGA RAT - TRAMPAS ADHESIVAS PARA LAUCHAS FLOWPACK",
+    "ean": "7793300431263",
+    "dun": "17793300706504",
+    "factor": 20
+  },
+  {
+    "sku": "PRT R2 FP",
+    "nombre": "PEGA RAT TRAMPA ADH. P/RATAS FLOWPACK",
+    "ean": "7793300430501",
+    "dun": "17793300430508",
+    "factor": 6
+  },
+  {
+    "sku": "PSC 310 A",
+    "nombre": "SELLADOR PISCINAS 310ML AZUL",
+    "ean": "7793300431447",
+    "dun": "17793300431444",
+    "factor": 12
+  },
+  {
+    "sku": "PST GR",
+    "nombre": "ECONOMY GRIS",
+    "ean": "7793300413689",
+    "dun": "17793300413686",
+    "factor": 24
+  },
+  {
+    "sku": "PST PL 800",
+    "nombre": "PISTOLA PORTACARTUCHOS SERIE 800",
+    "ean": "7793300428768",
+    "dun": "17793300428765",
+    "factor": 12
+  },
+  {
+    "sku": "PTT 30",
+    "nombre": "PEGATODO TRANSPARENTE",
+    "ean": "7793300418080",
+    "dun": "17793300418087",
+    "factor": 24
+  },
+  {
+    "sku": "PVN 25 B",
+    "nombre": "PEGOVIN - ADHESIVO PARA PLASTICOS|[BS 1 UN]",
+    "ean": "7793300060104",
+    "dun": "17793300060101",
+    "factor": 24
+  },
+  {
+    "sku": "PZA AV R",
+    "nombre": "TIPO AVIACI?N - CORTE RECTO",
+    "ean": "7793300420045",
+    "dun": "17793300420042",
+    "factor": 6
+  },
+  {
+    "sku": "PZA E AL6",
+    "nombre": "ALICATE SERIE 200 ECONOMY 6",
+    "ean": "7793300423688",
+    "dun": "17793300423685",
+    "factor": 10
+  },
+  {
+    "sku": "PZA E AL7",
+    "nombre": "ALICATE SERIE 200 ECONOMY 7",
+    "ean": "7793300423701",
+    "dun": "17793300423708",
+    "factor": 5
+  },
+  {
+    "sku": "PZA E PS6",
+    "nombre": "PINZA DE PUNTA SEMI REDONDA SERIE200 ECONOMY 6",
+    "ean": "7793300423725",
+    "dun": "17793300423722",
+    "factor": 10
+  },
+  {
+    "sku": "PZA E PS8",
+    "nombre": "PINZA DE PUNTA SEMI REDONDA SERIE200 ECONOMY 8",
+    "ean": "7793300423749",
+    "dun": "17793300423746",
+    "factor": 5
+  },
+  {
+    "sku": "PZA E PU6",
+    "nombre": "PINZA UNIVERSAL SERIE 200 ECONOMY 6",
+    "ean": "7793300423626",
+    "dun": "17793300423623",
+    "factor": 5
+  },
+  {
+    "sku": "PZA E PU7",
+    "nombre": "PINZA UNIVERSAL SERIE 200 ECONOMY 7",
+    "ean": "7793300423640",
+    "dun": "17793300423647",
+    "factor": 5
+  },
+  {
+    "sku": "PZA E PU8",
+    "nombre": "PINZA UNIVERSAL SERIE 200 ECONOMY 8",
+    "ean": "7793300423664",
+    "dun": "17793300423661",
+    "factor": 5
+  },
+  {
+    "sku": "PZA FZ10",
+    "nombre": "PINZA DE FUERZA. BOCA CURVA.",
+    "ean": "7793300423947",
+    "dun": "17793300423944",
+    "factor": 6
+  },
+  {
+    "sku": "PZA FZA 6.5",
+    "nombre": "PINZA DE FUERZA - MORDAZA PLANA -",
+    "ean": "7793300424104",
+    "dun": "17793300424101",
+    "factor": 10
+  },
+  {
+    "sku": "PZA P8 AL6",
+    "nombre": "ALICATE PROFESIONAL AISLADO - SERIE 800",
+    "ean": "7793300425224",
+    "dun": "17793300425221",
+    "factor": 6
+  },
+  {
+    "sku": "PZA P8 AL7",
+    "nombre": "ALICATE PROFESIONAL AISLADO - SERIE 800",
+    "ean": "7793300425248",
+    "dun": "17793300425245",
+    "factor": 6
+  },
+  {
+    "sku": "PZA P8 PS6",
+    "nombre": "PUNTA SEMIREDONDA PROFESIONAL AISLADA - SERIE 800",
+    "ean": "7793300425361",
+    "dun": "17793300425368",
+    "factor": 6
+  },
+  {
+    "sku": "PZA P8 PU6",
+    "nombre": "UNIVERSAL PROFESIONAL AISLADA - SERIE 800",
+    "ean": "7793300425309",
+    "dun": "17793300425306",
+    "factor": 6
+  },
+  {
+    "sku": "PZA P8 PU7",
+    "nombre": "UNIVERSAL PROFESIONAL AISLADA - SERIE 800",
+    "ean": "7793300425323",
+    "dun": "17793300425320",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 AJ10",
+    "nombre": "LLAVE AJUSTABLE SERIE 600 10\"",
+    "ean": "7793300701915",
+    "dun": "17793300701912",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 AJ6",
+    "nombre": "LLAVE AJUSTABLE SERIE 600 6",
+    "ean": "7793300701892",
+    "dun": "17793300701899",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 AJ8",
+    "nombre": "LLAVE AJUSTABLE SERIE 600 8",
+    "ean": "7793300701908",
+    "dun": "17793300701905",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 AL6",
+    "nombre": "ALICATE 6 SERIE 600",
+    "ean": "7793300000063",
+    "dun": "17793300000060",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 AL7",
+    "nombre": "ALICATE EXTRA 7 SERIE 600",
+    "ean": "7793300041912",
+    "dun": "17793300041919",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 AL7 E",
+    "nombre": "ALICATE EXTRA 7 SERIE 600",
+    "ean": "7793300600003",
+    "dun": "17793300600000",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 EAL 4.5",
+    "nombre": "ALICATE SERIE 600 4 1/2",
+    "ean": "7793300702080",
+    "dun": "17793300702087",
+    "factor": 10
+  },
+  {
+    "sku": "PZA S6 EAL 4.5F",
+    "nombre": "ALICATE SERIE 600 4 1/2 CORTE FRONTAL",
+    "ean": "7793300702097",
+    "dun": "17793300702094",
+    "factor": 10
+  },
+  {
+    "sku": "PZA S6 EPR 4.5",
+    "nombre": "PINZA DE PUNTA REDONDA SERIE 600 4 1/2",
+    "ean": "7793300702066",
+    "dun": "17793300702063",
+    "factor": 10
+  },
+  {
+    "sku": "PZA S6 EPS 4.5",
+    "nombre": "PINZA DE PUNTA SEMI REDONDA SERIE 600 4 1/2",
+    "ean": "7793300702073",
+    "dun": "17793300702070",
+    "factor": 10
+  },
+  {
+    "sku": "PZA S6 EPU 4.5",
+    "nombre": "PINZA UNIVERSAL SERIE 600 4 1/2",
+    "ean": "7793300702103",
+    "dun": "17793300702100",
+    "factor": 10
+  },
+  {
+    "sku": "PZA S6 PC6",
+    "nombre": "PINZA PUNTA CURVA 6 SERIE 600",
+    "ean": "7793300045798",
+    "dun": "17793300045795",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 PC8",
+    "nombre": "PINZA PUNTA CURVA 8 SERIE 600",
+    "ean": "7793300040915",
+    "dun": "17793300040912",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 PL 10",
+    "nombre": "PINZA PICO DE LORO 10 SERIE 600",
+    "ean": "7793300000087",
+    "dun": "17793300000084",
+    "factor": 5
+  },
+  {
+    "sku": "PZA S6 PL 6",
+    "nombre": "PINZA PICO DE LORO 6 SERIE 600",
+    "ean": "7793300000070",
+    "dun": "17793300000077",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 PP6",
+    "nombre": "PINZA PUNTA PLANA 6 SERIE 600",
+    "ean": "7793300042445",
+    "dun": "17793300042442",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 PR6",
+    "nombre": "PINZA PUNTA REDONDA 6 SERIE 600",
+    "ean": "7793300400917",
+    "dun": "17793300400914",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 PS6",
+    "nombre": "PINZA SEMI REDONDA 6 SERIE 600",
+    "ean": "7793300041646",
+    "dun": "17793300041643",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 PU6",
+    "nombre": "PINZA UNIVERSAL 6 SERIE 600",
+    "ean": "7793300600010",
+    "dun": "17793300600017",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 PU7",
+    "nombre": "PINZA UNIVERSAL 7 SERIE 600",
+    "ean": "7793300045699",
+    "dun": "17793300045696",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 PU8",
+    "nombre": "PINZA UNIVERSAL 8 SERIE 600",
+    "ean": "7793300040922",
+    "dun": "17793300040929",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 SET 3",
+    "nombre": "SET DE PINZAS 3 UNIDADES SERIE 600",
+    "ean": "7793300706897",
+    "dun": "17793300706894",
+    "factor": 20
+  },
+  {
+    "sku": "PZA S6 TN A12",
+    "nombre": "TENAZA ARMADOR 12 SERIE 600",
+    "ean": "7793300000131",
+    "dun": "17793300000138",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 TN A9",
+    "nombre": "TENAZA ARMADOR 9 SERIE 600",
+    "ean": "7793300000124",
+    "dun": "17793300000121",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 TN AMC12",
+    "nombre": "TENAZA ARMADOR MEDIO CORTE 12 SERIE 600",
+    "ean": "7793300000155",
+    "dun": "17793300000152",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 TN AMC9",
+    "nombre": "TENAZA ARMADOR MEDIO CORTE 9 SERIE 600",
+    "ean": "7793300000148",
+    "dun": "17793300000145",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 TN7",
+    "nombre": "TENAZA DE CARPINTERO  7 SERIE 600",
+    "ean": "7793300000100",
+    "dun": "17793300000107",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S6 TN8",
+    "nombre": "TENAZA DE CARPINTERO 8 SERIE 600",
+    "ean": "7793300000117",
+    "dun": "17793300000114",
+    "factor": 6
+  },
+  {
+    "sku": "PZA S7 PL 10 P",
+    "nombre": "PINZA PICO DE LORO PROF. CROMO VANADIO 10 SERIE 700",
+    "ean": "7793300000094",
+    "dun": "17793300000091",
+    "factor": 5
+  },
+  {
+    "sku": "PZA S8 SET 3",
+    "nombre": "SET DE PINZAS 3 UNIDADES SERIE 800",
+    "ean": "7793300706903",
+    "dun": "17793300706900",
+    "factor": 20
+  },
+  {
+    "sku": "RM 5INT",
+    "nombre": "USO INTENSIVO - SERIE 500",
+    "ean": "7793300415942",
+    "dun": "17793300415949",
+    "factor": 12
+  },
+  {
+    "sku": "RPM 250",
+    "nombre": "REPELENTE PARA PALOMAS Y MURCI?LAGOS",
+    "ean": "7793300430228",
+    "dun": "17793300430225",
+    "factor": 12
+  },
+  {
+    "sku": "RTR ESP",
+    "nombre": "ADHESIVO ESPEJO RETROVISOR 0.4 ML",
+    "ean": "7793300705753",
+    "dun": "27793300705757",
+    "factor": 25
+  },
+  {
+    "sku": "SBD 1/2 ST",
+    "nombre": "F?RMULA SIN TOLUENO SBD 1/2 ST",
+    "ean": "7793300417168",
+    "dun": "17793300417165",
+    "factor": 4
+  },
+  {
+    "sku": "SBD 1/4 ST",
+    "nombre": "F?RMULA SIN TOLUENO SBD 1/4 ST",
+    "ean": "7793300417144",
+    "dun": "17793300417141",
+    "factor": 6
+  },
+  {
+    "sku": "SBD 125 ST",
+    "nombre": "F?RMULA SIN TOLUENO SBD 125 ST",
+    "ean": "7793300417120",
+    "dun": "17793300417120",
+    "factor": 12
+  },
+  {
+    "sku": "SBD 25 BST",
+    "nombre": "F?RMULA SIN TOLUENO SBD 25 BST",
+    "ean": "7793300415904",
+    "dun": "17793300415901",
+    "factor": 24
+  },
+  {
+    "sku": "SBD 25 ST",
+    "nombre": "F?RMULA SIN TOLUENO SBD 25 ST",
+    "ean": "7793300423527",
+    "dun": "17793300423524",
+    "factor": 50
+  },
+  {
+    "sku": "SBD 50 ST",
+    "nombre": "F?RMULA SIN TOLUENO SBD 50 ST",
+    "ean": "7793300415928",
+    "dun": "17793300415925",
+    "factor": 24
+  },
+  {
+    "sku": "SBD T PR CL",
+    "nombre": "CAJA EXHIBIDORA BLISTER 50 ML SUPRABOND PRECSION",
+    "ean": "7793300709133",
+    "dun": "7793300700133",
+    "factor": 10
+  },
+  {
+    "sku": "SBD TR 1",
+    "nombre": "ADHESIVO DE CONTACTO TRANSP. LATA  1 LT",
+    "ean": "7793300427143",
+    "dun": "17793300427140",
+    "factor": 2
+  },
+  {
+    "sku": "SBD TR 1/2",
+    "nombre": "ADHESIVO DE CONTACTO TRANSPARENTE LATA 500 ML",
+    "ean": "7793300427129",
+    "dun": "17793300427126",
+    "factor": 4
+  },
+  {
+    "sku": "SBD TR 1/4",
+    "nombre": "ADHESIVO DE CONTACTO TRANSPARENTE LATA 250 ML",
+    "ean": "7793300427006",
+    "dun": "17793300427003",
+    "factor": 6
+  },
+  {
+    "sku": "SBD TR 100 E",
+    "nombre": "ADHESIVO DE CONTACTO TRANSPARENTE ESTUCHE 100 ML",
+    "ean": "7793300428447",
+    "dun": "17793300428444",
+    "factor": 12
+  },
+  {
+    "sku": "SBD TR 25 B",
+    "nombre": "ADHESIVO DE CONTACTO TRANSPARENTE BLISTER 25 ML",
+    "ean": "7793300426924",
+    "dun": "17793300426921",
+    "factor": 24
+  },
+  {
+    "sku": "SBD TR 25 T",
+    "nombre": "ADHESIVO DE CONTACTO TRANSPARENTE TIRA 25 ML",
+    "ean": "7793300426900",
+    "dun": "17793300426907",
+    "factor": 50
+  },
+  {
+    "sku": "SBD TR 50 B",
+    "nombre": "ADHESIVO DE CONTACTO TRANSPARENTE BLISTER 50 ML",
+    "ean": "7793300426962",
+    "dun": "17793300426969",
+    "factor": 24
+  },
+  {
+    "sku": "SBD TR 7 MP",
+    "nombre": "SUPRABOND TRANSP.5 ML.MUEST.POMO S/VALOR CAJA 50 U",
+    "ean": "7793300433144",
+    "dun": "17793300748517",
+    "factor": 600
+  },
+  {
+    "sku": "SBD TR PR 100 E",
+    "nombre": "SUPRABOND ADHESIVO DE CONTACTO TRANPARENTE POMO 100 CC PRECISION",
+    "ean": "7793300708860",
+    "dun": "17793300708867",
+    "factor": 12
+  },
+  {
+    "sku": "SBD TR PR 25 B",
+    "nombre": "ADHESIVO DE CONTACTO TRANPARENTE BLISTER 25 PRECISION",
+    "ean": "7793300708846",
+    "dun": "17793300708843",
+    "factor": 24
+  },
+  {
+    "sku": "SBD TR PR 50 B",
+    "nombre": "ADHESIVO DE CONTACTO TRANPARENTE BLISTER 50 PRECISION",
+    "ean": "7793300708853",
+    "dun": "17793300708850",
+    "factor": 24
+  },
+  {
+    "sku": "SBD U 60",
+    "nombre": "ADHESIVO UNO 60 ML",
+    "ean": "7793300702400",
+    "dun": "17793300702407",
+    "factor": 18
+  },
+  {
+    "sku": "SCR P 180 24",
+    "nombre": "SIERRA CIRCULAR 24 DIENTES SERIE PLATEADA",
+    "ean": "7793300433182",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "SCR P 180 40",
+    "nombre": "SIERRA CIRCULAR 40 DIENTES SERIE PLATEADA",
+    "ean": "7793300433205",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "SCR P 180 60",
+    "nombre": "SIERRA CIRCULAR 60 DIENTES SERIE PLATEADA",
+    "ean": "7793300433229",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "SGC CBO 6 E",
+    "nombre": "SOMERSET CEBO MATA CUCARACHAS EXTRA",
+    "ean": "7793300707658",
+    "dun": "17793300707655",
+    "factor": 6
+  },
+  {
+    "sku": "SGC CBO 6 E E",
+    "nombre": "SOMERSET CEBO MATA CUCARACHAS EXTRA",
+    "ean": "7793300707658",
+    "dun": "17793300707655",
+    "factor": 6
+  },
+  {
+    "sku": "SGC E 12",
+    "nombre": "SOMERSET GEL 12 GR EXTRA",
+    "ean": "7793300424029",
+    "dun": "17793300424026",
+    "factor": 8
+  },
+  {
+    "sku": "SGC E 6",
+    "nombre": "JERINGA SOMERSET GEL MATA CUCARACHA 6 G EXTRA",
+    "ean": "7793300424005",
+    "dun": "17793300424002",
+    "factor": 12
+  },
+  {
+    "sku": "SGC E 6 L.5K01",
+    "nombre": "JERINGA SOMERSET GEL MATA CUCARACHA 6 G EXTRA",
+    "ean": "7793300424005",
+    "dun": "17793300424002",
+    "factor": 12
+  },
+  {
+    "sku": "SGC H 12",
+    "nombre": "SOMERSET GEL 12 GR",
+    "ean": "7793300423367",
+    "dun": "17793300423364",
+    "factor": 8
+  },
+  {
+    "sku": "SGC H 12-L.5",
+    "nombre": "SOMERSET GEL 12 GR",
+    "ean": "7793300423367",
+    "dun": "17793300423364",
+    "factor": 8
+  },
+  {
+    "sku": "SGC H 6",
+    "nombre": "JERINGA SOMERSET GEL MATA CUCARACHA 6 G",
+    "ean": "7793300423343",
+    "dun": "17793300423340",
+    "factor": 12
+  },
+  {
+    "sku": "SIE S2 12",
+    "nombre": "ARCO DE SIERRA SERIE 200",
+    "ean": "7793300702134",
+    "dun": "17793300702131",
+    "factor": 6
+  },
+  {
+    "sku": "SLT D",
+    "nombre": "AUTOADHESIVO - GOMA ESPUMA - DOBLE ESPESOR",
+    "ean": "7793300160200",
+    "dun": "17793300160207",
+    "factor": 25
+  },
+  {
+    "sku": "SLT D 5 B I",
+    "nombre": "BURL.DE GOMA AUTOADH.BCO.PERFIL D 5,2M",
+    "ean": "7793300703964",
+    "dun": "27793300703968",
+    "factor": 24
+  },
+  {
+    "sku": "SLT D 5 M I",
+    "nombre": "BURL. GOMA AUTOADH.MARRON.PERF.D 5,2M",
+    "ean": "7793300703957",
+    "dun": "27793300703951",
+    "factor": 24
+  },
+  {
+    "sku": "SLT D M",
+    "nombre": "AUTOADHESIVO- GOMA ESPUMA DOBLE ESPESOR - MARRON",
+    "ean": "7793300427082",
+    "dun": "17793300427089",
+    "factor": 25
+  },
+  {
+    "sku": "SLT E 5 B I",
+    "nombre": "BURL.DE GOMA AUTOADH.BCO.PERFIL",
+    "ean": "7793300703926",
+    "dun": "27793300703920",
+    "factor": 24
+  },
+  {
+    "sku": "SLT E 5 M I",
+    "nombre": "BURL.GOMA AUTOADH.MARRON.PERF.E 5,2M",
+    "ean": "7793300703919",
+    "dun": "27793300703913",
+    "factor": 24
+  },
+  {
+    "sku": "SLT EA",
+    "nombre": "AUTOADHESIVO - GOMA ESPUMA - EXTRA ANCHO",
+    "ean": "7793300160309",
+    "dun": "17793300160306",
+    "factor": 15
+  },
+  {
+    "sku": "SLT EA M",
+    "nombre": "BURLETE ESPUMA EXTRA ANCHO MARRON",
+    "ean": "7793300427105",
+    "dun": "17793300427102",
+    "factor": 15
+  },
+  {
+    "sku": "SLT N",
+    "nombre": "AUTOADHESIVO - GOMA ESPUMA - NORMAL",
+    "ean": "7793300160101",
+    "dun": "17793300160108",
+    "factor": 36
+  },
+  {
+    "sku": "SLT P 5 B I",
+    "nombre": "BURL.DE GOMA AUTOADH.BCO.PERFIL P",
+    "ean": "7793300703940",
+    "dun": "27793300703944",
+    "factor": 24
+  },
+  {
+    "sku": "SLT P 5 M I",
+    "nombre": "BURL. GOMA AUTOADH.MARRON.PERF.P 5,2M",
+    "ean": "7793300703933",
+    "dun": "27793300703937",
+    "factor": 24
+  },
+  {
+    "sku": "SLT V I",
+    "nombre": "BURLETE AUTOADHESIVO VINILO BLANCO",
+    "ean": "7793300703643",
+    "dun": "17793300703640",
+    "factor": 12
+  },
+  {
+    "sku": "SLT V M I",
+    "nombre": "BURLETE AUTOADHESIVO VINILO MARRON",
+    "ean": "7793300703650",
+    "dun": "17793300703657",
+    "factor": 12
+  },
+  {
+    "sku": "SMZ 300 A",
+    "nombre": "SELLADOR METALES ZINGUER?A - ALUMINIO",
+    "ean": "7793300430969",
+    "dun": "17793300430966",
+    "factor": 12
+  },
+  {
+    "sku": "SMZ 50 A",
+    "nombre": "SELLADOR DE METALES ZINGUERIA Y CANALETAS 50ML",
+    "ean": "7793300704053",
+    "dun": "17793300704050",
+    "factor": 24
+  },
+  {
+    "sku": "SPS P49",
+    "nombre": "SENSOPRES P49 4 LITROS",
+    "ean": "7793300429963",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "SPX SA 16 T E",
+    "nombre": "SUPERPOX SUPERADHESIVO TRANSPARENTE ESTUCHE X 16 G",
+    "ean": "7793300705227",
+    "dun": "17793300705224",
+    "factor": 18
+  },
+  {
+    "sku": "SPX SA 25 A E",
+    "nombre": "SUPERPOX SUPERADHESIVO ACERO ESTUCHE X 25G",
+    "ean": "7793300704701",
+    "dun": "17793300704708",
+    "factor": 18
+  },
+  {
+    "sku": "SPX SA NS 10 T E",
+    "nombre": "SUPERPOX SUPERADHESIVO  90 SEG. TRANSPARENTE ESTUCHE X 10G",
+    "ean": "7793300706880",
+    "dun": "17793300706887",
+    "factor": 18
+  },
+  {
+    "sku": "SR PD 350",
+    "nombre": "SERRUCHO DE PODAR 350 MM.",
+    "ean": "7793300420342",
+    "dun": "17793300420349",
+    "factor": 10
+  },
+  {
+    "sku": "TOT SBDTP M",
+    "nombre": "MINI TOTEM SUPRABOND TRANPARENTE PRECSION MOSTRADOR",
+    "ean": "7793300708976",
+    "dun": null,
+    "factor": null
+  },
+  {
+    "sku": "TPC A 18 T",
+    "nombre": "PROTECTOR DE PVC TRANSPARENTE 18 MM X 12 UNIDADES",
+    "ean": "7793300000483",
+    "dun": "17793300000480",
+    "factor": 12
+  },
+  {
+    "sku": "TPC BC",
+    "nombre": "CIRCULAR - BLANCA - ESPESOR 5 MM",
+    "ean": "7793300170209",
+    "dun": "17793300170206",
+    "factor": 36
+  },
+  {
+    "sku": "TPC F 20 M",
+    "nombre": "FIELTRO CIRCULAR 20 MM X 32 UNIDADES MARRON",
+    "ean": "7793300050006",
+    "dun": "17793300050003",
+    "factor": 12
+  },
+  {
+    "sku": "TPC F 30 M",
+    "nombre": "FIELTRO CIRCULAR 30 MM X 18 UNIDADES MARRON",
+    "ean": "7793300050013",
+    "dun": "17793300050010",
+    "factor": 12
+  },
+  {
+    "sku": "TPC SM",
+    "nombre": "CIRCULAR - S?MIL MADERA - ESPESOR 5 MM",
+    "ean": "7793300170407",
+    "dun": "17793300170404",
+    "factor": 36
+  },
+  {
+    "sku": "TPR BC",
+    "nombre": "RECTANGULAR - BLANCA - DE 8.5 X 3CM / ESPESOR 5MM",
+    "ean": "7793300170100",
+    "dun": "17793300170107",
+    "factor": 36
+  },
+  {
+    "sku": "TPR F 20 M",
+    "nombre": "FIELTRO RECTANGULAR 20 MM X 32 UNIDADES MARRON",
+    "ean": "7793300050020",
+    "dun": "17793300050027",
+    "factor": 12
+  },
+  {
+    "sku": "TPR F 30 M",
+    "nombre": "FIELTRO RECTANGULAR 30 MM X 18 UNIDADES MARRON",
+    "ean": "7793300050037",
+    "dun": "17793300050034",
+    "factor": 12
+  },
+  {
+    "sku": "TPR SM",
+    "nombre": "RECTANGULAR - S?MIL MADERA - 8.5 X 3CM / ESPESOR 5MM",
+    "ean": "7793300170308",
+    "dun": "17793300170305",
+    "factor": 36
+  },
+  {
+    "sku": "ZAP 10 B",
+    "nombre": "ADHESIVO ZAPATILLAS SUPRABOND 10 G BLISTER",
+    "ean": "7793300705869",
+    "dun": "17793300705866",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO",
+    "nombre": "AUTOADHESIVO - GRIS - 92 CM.",
+    "ean": "7793300210103",
+    "dun": "17793300210100",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO B",
+    "nombre": "AUTOADHESIVO - BLANCO - 92 CM.",
+    "ean": "7793300416864",
+    "dun": "17793300416861",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO B I",
+    "nombre": "ZOCALO AUTOADHESIVO BLANCO 100 CM IMPORTADO",
+    "ean": "7793300708464",
+    "dun": "17793300708461",
+    "factor": 48
+  },
+  {
+    "sku": "ZNO D B",
+    "nombre": "Z?CALO DOBLE DE 95 CM- BLANCO",
+    "ean": "7793300705166",
+    "dun": "17793300705163",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO D B 120",
+    "nombre": "Z?CALO DOBLE EXTRA LARGO DE 120 CM- BLANCO",
+    "ean": "7793300705197",
+    "dun": "17793300705194",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO D EA B",
+    "nombre": "Z?CALO DOBLE EXTRA ANCHO DE 95 CM- BLANCO",
+    "ean": "7793300705517",
+    "dun": "17793300705514",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO D EA G",
+    "nombre": "Z?CALO DOBLE EXTRA ANCHO DE 95 CM- GRIS",
+    "ean": "7793300705463",
+    "dun": "17793300705460",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO D EA M",
+    "nombre": "Z?CALO DOBLE EXTRA ANCHO DE 95 CM- MARRON",
+    "ean": "7793300705531",
+    "dun": "17793300705538",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO D G",
+    "nombre": "Z?CALO DOBLE DE 95 CM- GRIS",
+    "ean": "7793300701403",
+    "dun": "27793300701407",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO D G 120",
+    "nombre": "Z?CALO DOBLE EXTRA LARGO DE 120 CM- GRIS",
+    "ean": "7793300705180",
+    "dun": "17793300705187",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO D M",
+    "nombre": "Z?CALO DOBLE DE 95 CM- MARRON",
+    "ean": "7793300705173",
+    "dun": "17793300705170",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO D M 120",
+    "nombre": "Z?CALO DOBLE EXTRA LARGO DE 120 CM- MARRON",
+    "ean": "7793300705203",
+    "dun": "17793300705200",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO D N",
+    "nombre": "Z?CALO DOBLE DE 95 CM- NEGRO",
+    "ean": "7793300705425",
+    "dun": "17793300705422",
+    "factor": 24
+  },
+  {
+    "sku": "ZNO M I",
+    "nombre": "ZOCALO AUTOADHESIVO MARRON 100 CM IMPORTADO",
+    "ean": "7793300708457",
+    "dun": "17793300708454",
+    "factor": 48
+  },
+  {
+    "sku": "ZNO SM",
+    "nombre": "AUTOADHESIVO - S?MIL MADERA - 92 CM.",
+    "ean": "7793300420182",
+    "dun": "17793300420189",
+    "factor": 24
+  }
+]

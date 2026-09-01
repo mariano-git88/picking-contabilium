@@ -100,6 +100,21 @@ La pantalla lista arriba del pedido los SKU que no se pueden escanear, para
 pasárselos a quien mantiene el catálogo, y el armado viaja al buzón con
 `contadoAMano` por item.
 
+**Cómo se actualiza el catálogo embebido:**
+
+```
+npm run catalogo    # regenera products.json desde la planilla maestra
+```
+
+No parsea la planilla por su cuenta: levanta el servidor y le postea el
+`.xlsx` a `/api/catalogo`, o sea **el mismo parser que usa el botón "Subir
+tabla"** del depósito. Parsear por afuera es la forma de que el catálogo
+embebido y el que sube el depósito terminen distintos, y ya pasó: leyendo el
+`.xlsx` con otra herramienta, dos celdas con fórmula (`=+F428`) entraron como
+texto y esos dos productos quedaron con el DUN roto y sin factor. **Un DUN sin
+factor no falla: escanear la caja cerrada suma 1 unidad en vez de 24, en
+silencio.** Por eso el script aborta si encuentra alguno.
+
 **Por qué el catálogo es una planilla y no la API** (medido el 1/9/2026):
 Contabilium expone `CodigoBarras` en `/api/conceptos/search`, pero lo tiene
 cargado en **7 de 598 productos** — los 463 EAN que usa el depósito viven solo
