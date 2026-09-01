@@ -63,6 +63,27 @@ hace cualquiera; **autorizar un pedido que sale incompleto y administrar
 usuarios, solo un supervisor**. Lo pidió Gabriel Parodi (2026-08-10): cerrar un
 pedido con menos es lo que después dispara la factura por menos.
 
+**El paquete trae un supervisor ya creado.** Así ninguna instalación queda sin
+alguien que pueda autorizar un faltante. Viaja en `usuario-inicial.json`, al
+lado del `.exe`, y **ya viene hasheado** (scrypt, mismo formato que
+`hashPassword()`): la contraseña en claro no está ni en el repo —que es
+**público**— ni en el disco de la PC del depósito.
+
+La contraseña en claro vive **solo en la máquina desde la que se arma el
+paquete**, en `supervisor-inicial.json` (gitignoreado):
+
+```json
+{ "usuario": "GABI", "password": "...", "rol": "supervisor" }
+```
+
+`npm run paquete` lo lee, calcula el hash y falla si el archivo no está.
+Para cambiar la contraseña: editar ese archivo y volver a armar el paquete.
+
+**Solo crea lo que falta.** Si el usuario ya existe, no lo toca: una
+actualización nunca le pisa la contraseña a alguien que ya la cambió. Y si la
+instalación ya tenía otros usuarios, el aviso de "faltan definir los roles"
+sigue apareciendo — que exista GABI no decide quién es operario.
+
 **La app no adivina quién es supervisor.** Al actualizar desde una versión sin
 roles, **todos quedan supervisores** —exactamente lo que podían hacer antes— y
 `config.json` marca `rolesDefinidos: false`. La pantalla de Usuarios avisa que

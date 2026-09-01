@@ -14,6 +14,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const crypto = require('crypto');
 
 const RAIZ = path.join(__dirname, '..');
 const { version } = require(path.join(RAIZ, 'package.json'));
@@ -26,6 +27,22 @@ const ARCHIVOS = [
   [path.join(RAIZ, 'assets', 'logo_suprabond.png'), path.join('assets', 'logo_suprabond.png')],
   [path.join(RAIZ, 'buzon-sa.json'), 'buzon-sa.json'],
 ];
+
+// Supervisor inicial: la contraseña en claro vive SOLO acá (gitignoreado) y
+// nunca sale de esta máquina. Al paquete va el hash, así no queda en el repo
+// —que es público— ni en el disco de la PC del depósito.
+const SUP_LOCAL = path.join(RAIZ, 'supervisor-inicial.json');
+if (!fs.existsSync(SUP_LOCAL)) {
+  console.error(`Falta ${SUP_LOCAL}.\n`
+    + 'Es el supervisor que viene creado en el paquete. Formato:\n'
+    + '  { "usuario": "GABI", "password": "...", "rol": "supervisor" }');
+  process.exit(1);
+}
+const sup = JSON.parse(fs.readFileSync(SUP_LOCAL, 'utf8'));
+if (!sup.usuario || !sup.password) {
+  console.error(`${SUP_LOCAL} tiene que traer "usuario" y "password".`);
+  process.exit(1);
+}
 
 const faltan = ARCHIVOS.filter(([origen]) => !fs.existsSync(origen)).map(([o]) => o);
 if (faltan.length) {
@@ -48,6 +65,17 @@ for (const [origen, destino] of ARCHIVOS) {
 // le llegaban a nadie.
 const SHEET_ID = '1b7-f7TRNlgGT8fODUPftn2q4ZFFkdW0r6866N8N83rA';
 fs.writeFileSync(path.join(SALIDA, 'buzon-sheet.txt'), SHEET_ID + '\n');
+
+// Hash del supervisor inicial. Tiene que coincidir con hashPassword() de
+// server-standalone.js: scrypt, 64 bytes, salt de 16 bytes en hex.
+const salt = crypto.randomBytes(16).toString('hex');
+const hash = crypto.scryptSync(sup.password, salt, 64).toString('hex');
+fs.writeFileSync(path.join(SALIDA, 'usuario-inicial.json'), JSON.stringify({
+  usuario: sup.usuario,
+  salt,
+  hash,
+  rol: sup.rol === 'operario' ? 'operario' : 'supervisor',
+}, null, 2) + '\n');
 
 fs.writeFileSync(path.join(SALIDA, 'LEEME.txt'), `ACTUALIZACION DE LA APP DE PICKING  -  version ${version}
 =====================================================
@@ -80,6 +108,7 @@ Son 4 cosas y tienen que quedar las 4 SUELTAS, al lado del programa:
     PickingContabilium.exe
     buzon-sa.json
     buzon-sheet.txt
+    usuario-inicial.json
     assets  (una carpeta)
 
 OJO CON ESTO: cuando Windows pregunta donde extraer, propone crear una

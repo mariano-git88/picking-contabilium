@@ -24,3 +24,7 @@ bin/
 Thumbs.db
 
 dist/.verificacion-*
+
+# Supervisor que viaja en el paquete (contrasena)
+supervisor-inicial.json
+usuario-inicial.json

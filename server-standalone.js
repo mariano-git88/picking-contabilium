@@ -778,6 +778,43 @@ function cambiarRol(usuario, rol) {
   return nuevo;
 }
 
+// El paquete de actualización puede traer un supervisor ya creado, para que
+// ninguna instalación quede sin alguien que pueda autorizar un faltante.
+//
+// Viaja en `usuario-inicial.json`, al lado del .exe, y **ya viene hasheado**:
+// la contraseña en claro no queda ni en el repo (que es público) ni en el
+// disco de la PC del depósito. El archivo lo genera `npm run paquete`.
+//
+// Solo CREA lo que falta: si el usuario ya existe no lo toca, así una
+// actualización nunca le pisa la contraseña a alguien que ya la cambió.
+function crearUsuarioInicialSiHaceFalta() {
+  let inicial;
+  try {
+    inicial = JSON.parse(fs.readFileSync(path.join(APP_DIR, 'usuario-inicial.json'), 'utf8'));
+  } catch {
+    return;
+  }
+  if (!inicial || !inicial.usuario || !inicial.salt || !inicial.hash) return;
+
+  const usuarios = leerUsuarios();
+  if (usuarios.some(u => u.usuario.toLowerCase() === String(inicial.usuario).toLowerCase())) return;
+
+  const habiaUsuarios = usuarios.length > 0;
+  usuarios.push({
+    usuario: String(inicial.usuario),
+    salt: String(inicial.salt),
+    hash: String(inicial.hash),
+    rol: inicial.rol === 'operario' ? 'operario' : 'supervisor'
+  });
+  guardarUsuarios(usuarios);
+  console.log(`  ℹ Usuario ${inicial.usuario} creado como supervisor (venía en el paquete).`);
+
+  // Instalación nueva: es el único usuario y es supervisor, no hay nada que
+  // definir. Si ya había usuarios, sigue faltando decidir quién es quién —
+  // que exista GABI no lo resuelve.
+  if (!habiaUsuarios) marcarRolesDefinidos();
+}
+
 function eliminarUsuario(usuario) {
   const usuarios = leerUsuarios();
   const u = usuarios.find(x => x.usuario.toLowerCase() === String(usuario || '').toLowerCase());
@@ -2166,6 +2203,7 @@ server.listen(PORT, HOST, () => {
   cargarArmadosInicial();
   cargarClientesDesdeDiscoSiExiste();
   migrarRolesSiHaceFalta();
+  crearUsuarioInicialSiHaceFalta();
 
   console.log('==================================================');
   console.log(' Lista de Picking - Contabilium');
