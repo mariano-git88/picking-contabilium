@@ -439,6 +439,7 @@
       <div class="fila">
         <span id="usuario-actual-nombre">Usuario</span>
         <button class="secondary btn-chico" id="btnAbrirUsuarios">Usuarios</button>
+        <button class="secondary btn-chico" id="btnAbrirCredenciales">Credenciales</button>
         <button class="secondary btn-chico" id="btnLogout">Salir</button>
       </div>
     </div>
@@ -482,7 +483,7 @@
 <div id="pantalla-principal">
 
 <div class="card" id="setup-card" style="display:none">
-  <h2 style="margin-top:0;font-size:16px">Primera vez: conectá tu cuenta de Contabilium</h2>
+  <h2 style="margin-top:0;font-size:16px" id="setup-titulo">Primera vez: conectá tu cuenta de Contabilium</h2>
   <div class="form-row">
     <div class="field" style="flex:1;min-width:220px">
       <label for="setupClientId">Email de tu cuenta Contabilium</label>
@@ -1241,6 +1242,7 @@
   }
 
   $('btnAbrirUsuarios').addEventListener('click', abrirPantallaUsuarios);
+  $('btnAbrirCredenciales').addEventListener('click', abrirCredenciales);
   $('btnVolverPrincipalUsuarios').addEventListener('click', volverDeUsuarios);
   $('btnAbrirAyuda').addEventListener('click', abrirPantallaAyuda);
   $('btnVolverPrincipalAyuda').addEventListener('click', volverDeAyuda);
@@ -1260,6 +1262,22 @@
 
   $('fechaHasta').value = hoyISO();
   $('fechaDesde').value = haceDiasISO(7);
+
+  // Las credenciales se pueden volver a escribir SIEMPRE, no solo la primera
+  // vez. Si las guardadas dejan de servir, la pantalla principal se muestra
+  // igual (porque hay credenciales, aunque estén mal) y antes no quedaba
+  // ningún lugar donde corregirlas.
+  function abrirCredenciales() {
+    $('setup-titulo').textContent = 'Credenciales de Contabilium';
+    $('setup-card').style.display = 'block';
+    $('setup-status').textContent = '';
+    apiFetch('/api/config')
+      .then(r => r.json())
+      .then(d => { $('setupClientId').value = d.clientId || ''; })
+      .catch(() => {});
+    $('setupClientSecret').value = '';
+    $('setup-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   async function verificarConfig() {
     try {

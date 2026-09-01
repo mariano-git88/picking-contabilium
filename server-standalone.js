@@ -218,6 +218,12 @@ const LOGO_PATH = path.join(APP_DIR, 'assets', 'logo_suprabond.png');
 const TEMP_DIR = path.join(os.tmpdir(), 'picking-contabilium-etiquetas');
 
 const BASE_URL = 'https://rest.contabilium.com.uy';
+
+// Contabilium UY está detrás de Cloudflare y hay que identificarse: sin
+// User-Agent propio, Cloudflare puede contestar una página HTML de error en
+// vez de la API, y el mensaje que llega es un 400 que parece "credenciales
+// mal". Los demás proyectos de GSU ya mandan el suyo.
+const USER_AGENT = 'GSU-Picking/1.0';
 const PORT = 3000;
 
 // Por defecto la app escucha SOLO en la propia PC. Si en el depósito la
@@ -885,12 +891,47 @@ async function getToken() {
 
   const resp = await fetch(`${BASE_URL}/token`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': USER_AGENT
+    },
     body
   });
 
   if (!resp.ok) {
-    throw new Error(`No se pudo autenticar con Contabilium (${resp.status}). Revisá tus credenciales.`);
+    // El cuerpo de la respuesta suele decir el motivo real (invalid_client,
+    // por ejemplo). Sin eso, "revisá tus credenciales" no le dice a nadie
+    // qué revisar, y encima el formulario para corregirlas estaba escondido.
+    // El cuerpo puede ser JSON (el motivo real, tipo invalid_client) o una
+    // página HTML de Cloudflare. Pegar el HTML en pantalla no ayuda a nadie.
+    let detalle = '';
+    try {
+      const txt = (await resp.text()).trim();
+      if (/^\s*</.test(txt)) {
+        detalle = ' La respuesta no vino de la API sino de Cloudflare, el portero del sitio.';
+      } else if (txt) {
+        detalle = ` ${txt.slice(0, 160)}`;
+      }
+    } catch { /* da igual */ }
+
+    if (resp.status === 429) {
+      throw new Error(
+        'Contabilium está rechazando por exceso de pedidos (429). ' +
+        'Esperá un minuto y volvé a intentar.'
+      );
+    }
+
+    // La caché puede tener un token viejo de credenciales que ya no sirven.
+    cachedToken = null;
+    tokenExpiresAt = 0;
+
+    if (resp.status === 400 || resp.status === 401) {
+      throw new Error(
+        `Contabilium rechazó el email o la API Key (${resp.status}).${detalle} ` +
+        `Corregilas con el botón "Credenciales", arriba a la izquierda.`
+      );
+    }
+    throw new Error(`No se pudo autenticar con Contabilium (${resp.status}).${detalle}`);
   }
 
   const data = await resp.json();
@@ -917,7 +958,9 @@ async function authedFetch(url, { intentos = REINTENTOS_MAX } = {}) {
     let resp;
     try {
       const token = await getToken();
-      resp = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+      resp = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}`, 'User-Agent': USER_AGENT }
+      });
     } catch (err) {
       ultimoError = new Error(`No se pudo contactar a Contabilium: ${err.message}`);
       if (intento === intentos) throw ultimoError;
@@ -1792,6 +1835,9 @@ const server = http.createServer(async (req, res) => {
       const cfg = leerConfig();
       return sendJSON(res, 200, {
         configurado: !!(cfg && cfg.clientId && cfg.clientSecret),
+        // Para poder reeditar sin tener que acordarse cuál se cargó. La API
+        // Key NO se devuelve nunca: se vuelve a escribir entera.
+        clientId: (cfg && cfg.clientId) || '',
         printerName: cfg ? (cfg.printerName || '') : '',
         sheetId: sheetIdDelBuzon()
       });
@@ -1803,13 +1849,19 @@ const server = http.createServer(async (req, res) => {
       if (!clientId || !clientSecret) {
         return sendJSON(res, 400, { error: 'Faltan datos' });
       }
+      // OJO: hay que conservar el resto del config. Acá viven también los
+      // usuarios, sus roles y el sheetId del buzón: guardar solo estos tres
+      // campos borraba todo lo demás, y este es justo el botón que se toca
+      // cuando algo anda mal.
       const cfgAnterior = leerConfig() || {};
       guardarConfig({
+        ...cfgAnterior,
         clientId,
         clientSecret,
         printerName: printerName !== undefined ? printerName : cfgAnterior.printerName
       });
       cachedToken = null;
+      tokenExpiresAt = 0;
       return sendJSON(res, 200, { ok: true });
     }
 
