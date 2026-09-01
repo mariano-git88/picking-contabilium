@@ -30,3 +30,7 @@ supervisor-inicial.json
 usuario-inicial.json
 contabilium.json
 contabilium-credenciales.json
+
+# Capturas que se dejan en la carpeta para mostrar un problema
+assets/*.png
+!assets/logo_suprabond.png
