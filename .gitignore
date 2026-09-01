@@ -28,3 +28,5 @@ dist/.verificacion-*
 # Supervisor que viaja en el paquete (contrasena)
 supervisor-inicial.json
 usuario-inicial.json
+contabilium.json
+contabilium-credenciales.json

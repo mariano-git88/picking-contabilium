@@ -56,6 +56,35 @@ remoto, no por mail ni por WhatsApp.
 - `products.json` — catálogo EAN/DUN por defecto (se puede actualizar desde la app)
 - `assets/logo_suprabond.png` — logo usado en las etiquetas
 
+## La instalación no pide escribir nada
+
+Todo lo que la app necesita viaja en el paquete, al lado del `.exe`:
+
+| Archivo | Qué es |
+|---|---|
+| `contabilium.json` | email + API Key de Contabilium |
+| `buzon-sa.json` | Service Account del buzón |
+| `buzon-sheet.txt` | dirección de la planilla del buzón |
+| `usuario-inicial.json` | supervisor de fábrica, ya hasheado |
+
+Ninguno está en git. Los genera `npm run paquete` a partir de archivos locales
+(`contabilium-credenciales.json`, `supervisor-inicial.json`), y falla si
+alguno falta.
+
+**Por qué no se piden por pantalla:** ya se erró. En el depósito alguien puso
+el usuario de la app (`GABI`) en el campo "Email de tu cuenta Contabilium", la
+app lo guardó sin chequear, y recién fallaba al buscar órdenes con un error que
+parecía de otra cosa. Un secreto que hay que copiar a mano es el paso más fácil
+de errar y el más difícil de diagnosticar.
+
+**Se arregla solo.** Al arrancar, si las credenciales guardadas **no
+funcionan**, la app adopta las del paquete. Una instalación que quedó con
+basura adentro se recupera con solo actualizar.
+
+**Y si igual alguien las escribe a mano**, se prueban contra Contabilium
+**antes** de guardarlas: si no andan, no se guarda nada y el mensaje dice por
+qué. Guardar algo que no funciona y enterarse después es lo que hay que evitar.
+
 ## Usuarios y roles
 
 Cada usuario es **operario** o **supervisor**. Armar, escanear e imprimir lo

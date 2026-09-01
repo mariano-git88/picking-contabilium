@@ -26,6 +26,7 @@ const ARCHIVOS = [
   [path.join(DIST, 'PickingContabilium.exe'), 'PickingContabilium.exe'],
   [path.join(RAIZ, 'assets', 'logo_suprabond.png'), path.join('assets', 'logo_suprabond.png')],
   [path.join(RAIZ, 'buzon-sa.json'), 'buzon-sa.json'],
+  [path.join(RAIZ, 'contabilium-credenciales.json'), 'contabilium.json'],
 ];
 
 // Supervisor inicial: la contraseña en claro vive SOLO acá (gitignoreado) y
@@ -41,6 +42,22 @@ if (!fs.existsSync(SUP_LOCAL)) {
 const sup = JSON.parse(fs.readFileSync(SUP_LOCAL, 'utf8'));
 if (!sup.usuario || !sup.password) {
   console.error(`${SUP_LOCAL} tiene que traer "usuario" y "password".`);
+  process.exit(1);
+}
+
+// Credenciales de Contabilium: viajan en el paquete para que en el depósito
+// no haya que tipear un email y una API Key. Ese paso ya se erró una vez —
+// quedó el usuario de la app en el campo del email y la app lo guardó igual.
+const CRED_LOCAL = path.join(RAIZ, 'contabilium-credenciales.json');
+if (!fs.existsSync(CRED_LOCAL)) {
+  console.error(`Falta ${CRED_LOCAL}.\n`
+    + 'Son las credenciales de Contabilium que van adentro del paquete:\n'
+    + '  { "clientId": "email@…", "clientSecret": "API Key" }');
+  process.exit(1);
+}
+const cred = JSON.parse(fs.readFileSync(CRED_LOCAL, 'utf8'));
+if (!cred.clientId || !cred.clientSecret) {
+  console.error(`${CRED_LOCAL} tiene que traer "clientId" y "clientSecret".`);
   process.exit(1);
 }
 
@@ -80,8 +97,10 @@ fs.writeFileSync(path.join(SALIDA, 'usuario-inicial.json'), JSON.stringify({
 fs.writeFileSync(path.join(SALIDA, 'LEEME.txt'), `ACTUALIZACION DE LA APP DE PICKING  -  version ${version}
 =====================================================
 
-Que trae: ahora un pedido puede cerrarse aunque falte mercaderia, indicando
-por que falto y con la autorizacion de un supervisor.
+Que trae: la conexion con Contabilium ya viene configurada, no hay que
+escribir ningun email ni ninguna clave. Y un pedido puede cerrarse aunque
+falte mercaderia, indicando por que falto y con la autorizacion de un
+supervisor.
 
 Son 3 pasos. No hay que configurar nada.
 
@@ -109,6 +128,7 @@ Son 4 cosas y tienen que quedar las 4 SUELTAS, al lado del programa:
     buzon-sa.json
     buzon-sheet.txt
     usuario-inicial.json
+    contabilium.json
     assets  (una carpeta)
 
 OJO CON ESTO: cuando Windows pregunta donde extraer, propone crear una

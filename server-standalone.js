@@ -793,6 +793,42 @@ function cambiarRol(usuario, rol) {
 //
 // Solo CREA lo que falta: si el usuario ya existe no lo toca, así una
 // actualización nunca le pisa la contraseña a alguien que ya la cambió.
+// Las credenciales de Contabilium pueden venir en el paquete, igual que la
+// credencial del buzón, para que la instalación no tenga ningún paso de
+// configuración. Nadie del depósito tiene por qué tipear un email y una API
+// Key: es el paso más fácil de errar y el más difícil de diagnosticar.
+//
+// Se adoptan si el config no las tiene, o si las que tiene NO FUNCIONAN —
+// así una instalación que quedó con basura adentro (en el depósito quedó el
+// usuario de la app en el campo del email) se arregla sola al actualizar.
+async function adoptarCredencialesDelPaqueteSiHaceFalta() {
+  let paquete;
+  try {
+    paquete = JSON.parse(fs.readFileSync(path.join(APP_DIR, 'contabilium.json'), 'utf8'));
+  } catch {
+    return;
+  }
+  if (!paquete || !paquete.clientId || !paquete.clientSecret) return;
+
+  const cfg = leerConfig() || {};
+  if (cfg.clientId && cfg.clientSecret) {
+    const actuales = await probarCredenciales(cfg.clientId, cfg.clientSecret);
+    if (actuales.ok) return;
+    console.log(`  ⚠ Las credenciales guardadas no funcionan (${actuales.error})`);
+  }
+
+  const nuevas = await probarCredenciales(paquete.clientId, paquete.clientSecret);
+  if (!nuevas.ok) {
+    console.log(`  ⚠ Las credenciales del paquete tampoco funcionan: ${nuevas.error}`);
+    return;
+  }
+
+  guardarConfig({ ...cfg, clientId: paquete.clientId, clientSecret: paquete.clientSecret });
+  cachedToken = null;
+  tokenExpiresAt = 0;
+  console.log(`  ℹ Credenciales de Contabilium tomadas del paquete (${paquete.clientId}).`);
+}
+
 function crearUsuarioInicialSiHaceFalta() {
   let inicial;
   try {
@@ -873,6 +909,49 @@ function cerrarSesion(token) {
 // --- Token (cache en memoria) ---
 let cachedToken = null;
 let tokenExpiresAt = 0;
+
+// Pide un token con credenciales sueltas, sin tocar el config ni la caché.
+// Sirve para probarlas ANTES de guardarlas: guardar algo que no funciona y
+// enterarse recién al apretar "Actualizar" es cómo terminó el depósito con
+// el nombre de usuario de la app metido en el campo del email.
+async function probarCredenciales(clientId, clientSecret) {
+  const body = new URLSearchParams({
+    grant_type: 'client_credentials',
+    client_id: clientId,
+    client_secret: clientSecret
+  });
+  let resp;
+  try {
+    resp = await fetch(`${BASE_URL}/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': USER_AGENT
+      },
+      body
+    });
+  } catch (err) {
+    return { ok: false, error: `No se pudo contactar a Contabilium: ${err.message}` };
+  }
+  if (resp.ok) return { ok: true };
+
+  let motivo = '';
+  try {
+    const txt = (await resp.text()).trim();
+    if (/^\s*</.test(txt)) {
+      motivo = ' La respuesta vino de Cloudflare, no de la API.';
+    } else if (txt) {
+      try {
+        const j = JSON.parse(txt);
+        motivo = ` ${j.error_description || j.error || txt.slice(0, 160)}`;
+      } catch {
+        motivo = ` ${txt.slice(0, 160)}`;
+      }
+    }
+  } catch { /* da igual */ }
+
+  return { ok: false, error: `Contabilium rechazó estas credenciales (${resp.status}).${motivo}` };
+}
 
 async function getToken() {
   const cfg = leerConfig();
@@ -1849,6 +1928,21 @@ const server = http.createServer(async (req, res) => {
       if (!clientId || !clientSecret) {
         return sendJSON(res, 400, { error: 'Faltan datos' });
       }
+
+      // El campo pide el EMAIL de la cuenta de Contabilium. En el depósito
+      // alguien puso ahí el usuario de la app ("GABI") y la app lo guardó
+      // igual: recién fallaba al buscar órdenes, con un error que parecía de
+      // otra cosa.
+      if (!String(clientId).includes('@')) {
+        return sendJSON(res, 400, {
+          error: 'El primer campo es el EMAIL de la cuenta de Contabilium (lleva @), no el usuario con el que entrás a esta app.'
+        });
+      }
+
+      const prueba = await probarCredenciales(clientId, clientSecret);
+      if (!prueba.ok) {
+        return sendJSON(res, 400, { error: `${prueba.error} No se guardó nada.` });
+      }
       // OJO: hay que conservar el resto del config. Acá viven también los
       // usuarios, sus roles y el sheetId del buzón: guardar solo estos tres
       // campos borraba todo lo demás, y este es justo el botón que se toca
@@ -2256,6 +2350,10 @@ server.listen(PORT, HOST, () => {
   cargarClientesDesdeDiscoSiExiste();
   migrarRolesSiHaceFalta();
   crearUsuarioInicialSiHaceFalta();
+  // Necesita red, así que no bloquea el arranque.
+  adoptarCredencialesDelPaqueteSiHaceFalta().catch(err => {
+    console.log(`  (No se pudieron revisar las credenciales al arrancar: ${err.message})`);
+  });
 
   console.log('==================================================');
   console.log(' Lista de Picking - Contabilium');
