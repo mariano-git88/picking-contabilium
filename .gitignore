@@ -34,3 +34,6 @@ contabilium-credenciales.json
 # Capturas que se dejan en la carpeta para mostrar un problema
 assets/*.png
 !assets/logo_suprabond.png
+
+# Documentacion de terceros (La Nave, etc.): el repo es publico
+assets/*.pdf
