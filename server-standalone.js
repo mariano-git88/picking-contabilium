@@ -212,6 +212,7 @@ function buscarProducto(codigo, concepto) {
 const APP_DIR = process.pkg ? path.dirname(process.execPath) : __dirname;
 const CONFIG_PATH = path.join(APP_DIR, 'config.json');
 const ARMADOS_PATH = path.join(APP_DIR, 'armados.json');
+const ANULACIONES_PATH = path.join(APP_DIR, 'anulaciones.json');
 const CLIENTES_CACHE_PATH = path.join(APP_DIR, 'clientes_cache.json');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const LOGO_PATH = path.join(APP_DIR, 'assets', 'logo_suprabond.png');
@@ -289,13 +290,32 @@ function normalizarItemsArmado(items) {
   });
 }
 
-function registrarArmado({ orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente, usuarioArmado, verificado, items, autorizadoPor }) {
+// Peso de cada bulto, en kilos. Lo pidió Gabriel Parodi (21/10/2026): hoy se
+// anota a mano en la nota de pedido y se usa para controlar la factura del
+// transporte y rastrear faltantes. Devuelve null si algo no cierra, para que
+// el endpoint lo rechace en vez de guardar un peso a medias.
+const KILOS_MAX_POR_BULTO = 1000;
+function normalizarKilosBultos(kilosBultos, bultos) {
+  if (!Array.isArray(kilosBultos) || kilosBultos.length !== Number(bultos)) return null;
+  const kilos = kilosBultos.map(k => Number(String(k).replace(',', '.')));
+  if (kilos.some(k => !Number.isFinite(k) || k <= 0 || k > KILOS_MAX_POR_BULTO)) return null;
+  // Al gramo: la balanza del depósito no da más que eso, y así la suma no
+  // arrastra decimales de coma flotante ("12.499999").
+  return kilos.map(k => Math.round(k * 1000) / 1000);
+}
+
+function sumarKilos(kilosBultos) {
+  return Math.round(kilosBultos.reduce((s, k) => s + k, 0) * 1000) / 1000;
+}
+
+function registrarArmado({ orderId, numeroOrden, fechaOrden, bultos, kilosBultos, lineas, unidades, idCliente, usuarioArmado, verificado, items, autorizadoPor }) {
   orderId = String(orderId);
   const timestamp = new Date().toISOString();
   const existente = armados.findIndex(a => a.orderId === orderId);
   const detalle = normalizarItemsArmado(items);
   const registro = {
     orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente,
+    kilosBultos, kilos: sumarKilos(kilosBultos),
     usuarioArmado, timestamp, verificado: !!verificado,
     items: detalle,
     // Se despachó exactamente lo pedido. Desde la v1.3 puede ser false: el
@@ -324,10 +344,59 @@ function registrarImpresion(orderId, usuarioImpresion) {
   }
 }
 
-function eliminarArmado(orderId) {
+// --- Anulación de un armado ---
+//
+// Antes "Deshacer" borraba el armado de este disco y nada más: el facturador
+// ya lo tenía en el buzón y el pedido seguía en la cola de administración,
+// listo para facturarse. Ahora anular deja un evento `anulado` que viaja al
+// buzón igual que los armados (con reintentos) y saca el pedido de la cola
+// hasta que se lo vuelva a armar. Lo pidió Gabriel Parodi por la NP 12773.
+//
+// La anulación se encola SIEMPRE, aunque el armado parezca no haber llegado
+// al buzón: puede estar viajando en este mismo momento, y un `anulado` de
+// más es inofensivo (el facturador lo ignora si no hay armado).
+const MOTIVOS_ANULACION = [
+  { codigo: 'cliente_cancelo', etiqueta: 'El cliente canceló el pedido' },
+  { codigo: 'pedido_modificado', etiqueta: 'Se modificó el pedido: se vuelve a armar' },
+  { codigo: 'error_armado', etiqueta: 'Error de armado' },
+  { codigo: 'otro', etiqueta: 'Otro' }
+];
+
+let anulaciones = [];
+
+function cargarAnulacionesInicial() {
+  anulaciones = leerJsonSeguro(ANULACIONES_PATH, [], Array.isArray);
+}
+
+function guardarAnulacionesDisco() {
+  escribirJsonAtomico(ANULACIONES_PATH, anulaciones);
+}
+
+function anularArmado(orderId, { autorizadoPor, motivo, nota }) {
   orderId = String(orderId);
+  const armado = armados.find(a => a.orderId === orderId);
+  if (!armado) return null;
+  const etiqueta = (MOTIVOS_ANULACION.find(m => m.codigo === motivo) || {}).etiqueta || motivo;
+  const anulacion = {
+    orderId,
+    numeroOrden: armado.numeroOrden || '',
+    fechaOrden: armado.fechaOrden || '',
+    idCliente: armado.idCliente == null ? '' : String(armado.idCliente),
+    timestamp: new Date().toISOString(),
+    autorizadoPor,
+    motivo: etiqueta + (nota ? ` — ${nota}` : ''),
+    // Lo que se anuló, para poder reconstruirlo si hiciera falta.
+    armadoAnulado: { timestamp: armado.timestamp, bultos: armado.bultos, usuarioArmado: armado.usuarioArmado },
+    enviado: false
+  };
+  // Primero se guarda la anulación y después se borra el armado: si la PC se
+  // apaga en el medio, queda un armado de más en pantalla (se ve y se vuelve
+  // a anular), nunca un armado borrado sin su aviso al facturador.
+  anulaciones.push(anulacion);
+  guardarAnulacionesDisco();
   armados = armados.filter(a => a.orderId !== orderId);
   guardarArmadosDisco();
+  return anulacion;
 }
 
 // El timestamp se guarda en UTC (ISO), pero el depósito razona en hora de
@@ -396,7 +465,10 @@ const BUZON_COLUMNAS = [
   'timestamp', 'fecha_local', 'evento', 'id_orden', 'numero_orden',
   'fecha_orden', 'id_cliente', 'bultos', 'lineas', 'unidades', 'usuario',
   'completo', 'verificado', 'items_json', 'id_comprobante', 'numero_factura',
-  'cae', 'observacion'
+  'cae', 'observacion',
+  // v1.7.0. Al final a propósito: las filas viejas no las traen y el
+  // facturador lee por nombre de columna.
+  'kilos', 'kilos_bultos'
 ];
 
 let sincronizando = false;
@@ -520,11 +592,33 @@ async function asegurarTabBuzon(sheetId, token) {
     );
   }
 
-  const encabezado = await googleFetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${BUZON_TAB}!A1:R1`,
+  // La planilla pudo nacer con menos columnas que el encabezado actual.
+  // Escribir fuera de la grilla da 400, así que primero se agranda.
+  const grilla = await googleFetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.properties`,
     { method: 'GET' }, token
   );
-  if (!encabezado.values || !encabezado.values.length) {
+  const hoja = (grilla.sheets || []).find(s => s.properties && s.properties.title === BUZON_TAB);
+  const columnas = hoja && hoja.properties.gridProperties ? hoja.properties.gridProperties.columnCount : 0;
+  if (hoja && columnas < BUZON_COLUMNAS.length) {
+    await googleFetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}:batchUpdate`,
+      { method: 'POST', body: JSON.stringify({ requests: [{ appendDimension: {
+        sheetId: hoja.properties.sheetId, dimension: 'COLUMNS',
+        length: BUZON_COLUMNAS.length - columnas
+      } }] }) },
+      token
+    );
+  }
+
+  const encabezado = await googleFetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${BUZON_TAB}!A1:Z1`,
+    { method: 'GET' }, token
+  );
+  const actual = (encabezado.values && encabezado.values[0]) || [];
+  // Vacío, o de una versión anterior con menos columnas: se reescribe
+  // entero. Las columnas viejas no cambian de lugar, solo se suman al final.
+  if (actual.length < BUZON_COLUMNAS.length) {
     await googleFetch(
       `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${BUZON_TAB}!A1?valueInputOption=RAW`,
       { method: 'PUT', body: JSON.stringify({ values: [BUZON_COLUMNAS] }) },
@@ -576,8 +670,29 @@ function armadoAFilaBuzon(a) {
     // facturador la usa para la adenda al emitir). La aprovechamos para que
     // en la planilla se lea de un vistazo quién dejó salir el pedido
     // incompleto, sin tener que abrir el items_json.
-    observacion: a.autorizadoPor ? `Faltante autorizado por ${a.autorizadoPor}` : ''
+    observacion: a.autorizadoPor ? `Faltante autorizado por ${a.autorizadoPor}` : '',
+    // Con punto decimal y sin unidad, para que se pueda sumar en la planilla.
+    kilos: a.kilos == null ? '' : String(a.kilos),
+    kilos_bultos: Array.isArray(a.kilosBultos) ? a.kilosBultos.join(';') : ''
   };
+}
+
+function anulacionAFilaBuzon(n) {
+  return {
+    timestamp: n.timestamp,
+    fecha_local: fechaLocalISO(n.timestamp),
+    evento: 'anulado',
+    id_orden: n.orderId,
+    numero_orden: n.numeroOrden || '',
+    fecha_orden: n.fechaOrden || '',
+    id_cliente: n.idCliente || '',
+    usuario: n.autorizadoPor || '',
+    observacion: `Anulado: ${n.motivo}`
+  };
+}
+
+function anulacionesPendientesDeEnvio() {
+  return anulaciones.filter(n => n.enviado !== true);
 }
 
 function armadosPendientesDeEnvio() {
@@ -595,23 +710,35 @@ async function sincronizarArmados() {
   if (sincronizando) return { ok: true, enviados: 0, error: null };
 
   const pendientes = armadosPendientesDeEnvio().slice(0, SYNC_LOTE_MAX);
-  if (!pendientes.length) {
+  const anulPendientes = anulacionesPendientesDeEnvio().slice(0, SYNC_LOTE_MAX);
+  if (!pendientes.length && !anulPendientes.length) {
     sincronizacionUltimoError = null;
     return { ok: true, enviados: 0, error: null };
   }
 
   sincronizando = true;
   try {
-    await enviarFilasAlBuzon(sheetId, sa, pendientes.map(armadoAFilaBuzon));
+    // Una sola escritura para los dos tipos de evento. El orden entre ellos
+    // lo decide el timestamp de cada fila, no el orden de llegada.
+    await enviarFilasAlBuzon(sheetId, sa, [
+      ...pendientes.map(armadoAFilaBuzon),
+      ...anulPendientes.map(anulacionAFilaBuzon)
+    ]);
 
-    const idsEnviados = new Set(pendientes.map(p => p.orderId));
+    // Se marca por identidad del registro y no por orderId: si mientras se
+    // enviaba se anuló y se volvió a armar la misma orden, el armado nuevo
+    // todavía no viajó y tiene que quedar pendiente.
+    const armadosEnviados = new Set(pendientes);
     for (const a of armados) {
-      if (idsEnviados.has(a.orderId)) a.enviado = true;
+      if (armadosEnviados.has(a)) a.enviado = true;
     }
     guardarArmadosDisco();
+    for (const n of anulPendientes) n.enviado = true;
+    if (anulPendientes.length) guardarAnulacionesDisco();
     sincronizacionUltimoError = null;
-    console.log(`  ✔ Enviados al facturador: ${pendientes.length} armado(s).`);
-    return { ok: true, enviados: pendientes.length, error: null };
+    const total = pendientes.length + anulPendientes.length;
+    console.log(`  ✔ Enviados al facturador: ${pendientes.length} armado(s), ${anulPendientes.length} anulación(es).`);
+    return { ok: true, enviados: total, error: null };
   } catch (err) {
     sincronizacionUltimoError = err.message;
     console.log(`  ⚠ No se pudo enviar al facturador (${err.message}). Queda pendiente y se reintenta solo.`);
@@ -641,7 +768,7 @@ function estadoSincronizacion() {
     // puede diagnosticar, menos por teléfono con el depósito.
     carpeta: APP_DIR,
     hojaEnArchivo: !cfg_tieneSheetId(),
-    pendientes: armadosPendientesDeEnvio().length,
+    pendientes: armadosPendientesDeEnvio().length + anulacionesPendientesDeEnvio().length,
     ultimoError: sincronizacionUltimoError
   };
 }
@@ -1795,7 +1922,8 @@ const server = http.createServer(async (req, res) => {
       return sendJSON(res, 200, {
         hayUsuarios, autenticado: !!usuario, usuario, version: APP_VERSION,
         rol: usuario ? rolDe(usuario) : null,
-        motivosFaltante: MOTIVOS_FALTANTE
+        motivosFaltante: MOTIVOS_FALTANTE,
+        motivosAnulacion: MOTIVOS_ANULACION
       });
     }
 
@@ -2130,6 +2258,21 @@ const server = http.createServer(async (req, res) => {
       if (!orderId || !bultos) {
         return sendJSON(res, 400, { error: 'Faltan datos (orderId, bultos)' });
       }
+      const kilosBultos = normalizarKilosBultos(datos.kilosBultos, bultos);
+      if (!kilosBultos) {
+        return sendJSON(res, 400, {
+          error: `Falta el peso de cada bulto (${bultos}), en kilos y mayor a cero.`
+        });
+      }
+
+      // Una orden armada no se pisa con otro armado: primero se anula, así
+      // el facturador se entera. Antes la pantalla lo impedía pero el
+      // endpoint no.
+      if (armados.some(a => a.orderId === String(orderId))) {
+        return sendJSON(res, 409, {
+          error: 'Esta orden ya está armada. Para volver a armarla, primero anulá el armado.'
+        });
+      }
 
       // --- Faltantes: motivo por línea + autorización de un supervisor ---
       //
@@ -2215,7 +2358,7 @@ const server = http.createServer(async (req, res) => {
       }
 
       const registro = registrarArmado({
-        orderId, numeroOrden, fechaOrden, bultos, lineas, unidades, idCliente,
+        orderId, numeroOrden, fechaOrden, bultos, kilosBultos, lineas, unidades, idCliente,
         usuarioArmado: req.usuarioActual,
         verificado,
         items: datos.items,
@@ -2229,11 +2372,37 @@ const server = http.createServer(async (req, res) => {
       return sendJSON(res, 200, registro);
     }
 
-    if (pathname === '/api/armado' && req.method === 'DELETE') {
-      const orderId = parsed.searchParams.get('orderId');
+    if (pathname === '/api/armado/anular' && req.method === 'POST') {
+      const datos = JSON.parse((await readBody(req)) || '{}');
+      const orderId = datos.orderId ? String(datos.orderId) : '';
       if (!orderId) return sendJSON(res, 400, { error: 'Falta orderId' });
-      eliminarArmado(orderId);
-      return sendJSON(res, 200, { ok: true });
+      if (!MOTIVOS_ANULACION.some(m => m.codigo === datos.motivo)) {
+        return sendJSON(res, 400, { error: 'Elegí por qué se anula el armado.' });
+      }
+      const nota = datos.nota ? String(datos.nota).trim().slice(0, 200) : '';
+      if (datos.motivo === 'otro' && !nota) {
+        return sendJSON(res, 400, { error: 'Con "Otro" hay que escribir el motivo.' });
+      }
+
+      // Anular saca el pedido de la cola de facturación: lo autoriza un
+      // supervisor, igual que un pedido incompleto.
+      const aut = datos.autoriza || {};
+      const supervisor = autenticar(aut.usuario, aut.password);
+      if (!supervisor) {
+        return sendJSON(res, 401, { error: 'Usuario o contraseña del supervisor incorrectos.' });
+      }
+      if (supervisor.rol !== 'supervisor') {
+        return sendJSON(res, 403, {
+          error: `${supervisor.usuario} no es supervisor. Anular un armado lo saca de la lista de facturación, así que lo tiene que autorizar un supervisor.`
+        });
+      }
+
+      const anulacion = anularArmado(orderId, { autorizadoPor: supervisor.usuario, motivo: datos.motivo, nota });
+      if (!anulacion) {
+        return sendJSON(res, 404, { error: 'Esta orden no figura como armada en esta PC.' });
+      }
+      sincronizarArmados().catch(() => {});
+      return sendJSON(res, 200, { ok: true, anulacion });
     }
 
     if (pathname === '/api/armado' && req.method === 'GET') {
@@ -2309,6 +2478,9 @@ const server = http.createServer(async (req, res) => {
         'Líneas': a.lineas,
         'Unidades': a.unidades,
         'Bultos': a.bultos,
+        // Vacío en los armados anteriores a la v1.7.0, que no pedían el peso.
+        'Kilos': a.kilos == null ? '' : a.kilos,
+        'Kilos por bulto': Array.isArray(a.kilosBultos) ? a.kilosBultos.join(' / ') : '',
         'Armado por': a.usuarioArmado || '-',
         'Armado el': formatearFechaHoraLocal(a.timestamp),
         'Impreso por': a.usuarioImpresion || '-',
@@ -2347,6 +2519,7 @@ const HOST = (leerConfig() || {}).host || HOST_DEFECTO;
 server.listen(PORT, HOST, () => {
   cargarCatalogoInicial();
   cargarArmadosInicial();
+  cargarAnulacionesInicial();
   cargarClientesDesdeDiscoSiExiste();
   migrarRolesSiHaceFalta();
   crearUsuarioInicialSiHaceFalta();

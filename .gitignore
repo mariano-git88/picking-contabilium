@@ -4,6 +4,7 @@ node_modules/
 # Datos generados por la app (contienen credenciales/datos de clientes)
 config.json
 armados.json
+anulaciones.json
 catalogo.json
 clientes_cache.json
 buzon-sa.json

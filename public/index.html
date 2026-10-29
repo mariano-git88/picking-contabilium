@@ -217,6 +217,35 @@
   .bultos-box input {
     width: 90px;
   }
+  .kilos-bultos { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; width: 100%; }
+  .kilos-bultos .kilo { display: flex; flex-direction: column; font-size: 11px; color: var(--muted); }
+  .kilos-bultos input { width: 80px; }
+  .anular-panel {
+    border: 1px solid var(--warn);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .anular-panel select { padding: 6px; }
+  /* Alerta de código equivocado: la pantalla entera en rojo hasta el próximo
+     escaneo. El texto rojo de siempre pasaba desapercibido con la pistola en
+     la mano (lo pidió Maick). No toma el foco: el lector sigue escribiendo
+     en el casillero de escaneo y el próximo código la cierra sola. */
+  #alerta-scan {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(200, 30, 30, 0.93);
+    color: #fff;
+    display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px; padding: 40px; text-align: center;
+    cursor: pointer;
+  }
+  #alerta-scan.visible { display: flex; animation: alerta-parpadeo 0.25s 3; }
+  #alerta-scan .alerta-titulo { font-size: 64px; font-weight: 800; }
+  #alerta-scan .alerta-detalle { font-size: 26px; max-width: 900px; }
+  #alerta-scan .alerta-pie { font-size: 16px; opacity: 0.85; }
+  @keyframes alerta-parpadeo { 50% { background: rgba(255, 255, 255, 0.95); color: #c81e1e; } }
   .armado-info {
     background: rgba(52, 199, 123, 0.08);
     border: 1px solid var(--border);
@@ -385,6 +414,11 @@
 </style>
 </head>
 <body>
+  <div id="alerta-scan" onclick="ocultarAlertaScan()">
+    <div class="alerta-titulo">✖ CÓDIGO EQUIVOCADO</div>
+    <div class="alerta-detalle" id="alerta-scan-detalle"></div>
+    <div class="alerta-pie">Apartá ese producto. La alerta se cierra con el próximo escaneo o tocando la pantalla.</div>
+  </div>
 
 <div id="pantalla-login" style="max-width:420px; margin:80px auto 0;">
   <div class="card">
@@ -708,7 +742,16 @@
       <h3>Paso 3 — Confirmar los bultos</h3>
       <p>
         Cuando todas las líneas están completas, la app te pregunta en cuántos
-        bultos va el pedido. Escribí el número y tocá <b>Confirmar armado</b>.
+        bultos va el pedido. Escribí el número: aparece un casillero por bulto
+        para anotar <b>cuántos kilos pesa cada uno</b>. Completalos y tocá
+        <b>Confirmar armado</b>.
+      </p>
+      <p>
+        Si después de confirmado el pedido no va (el cliente lo canceló) o hay
+        que rehacerlo (el vendedor agregó productos), tocá <b>Anular
+        armado</b>: elegís el motivo y lo autoriza un supervisor. El pedido
+        sale de la lista de facturación y, si hay que despacharlo, se arma de
+        nuevo.
       </p>
       <p>
         En ese momento la app vuelve a consultar el pedido en Contabilium. Si
@@ -790,9 +833,40 @@
 
       <div class="novedad">
         <div class="novedad-titulo">
+          <span class="novedad-version">Versión 1.7</span>
+          <span class="novedad-fecha">29 de octubre de 2026</span>
+          <span class="novedad-actual">Esta versión</span>
+        </div>
+        <p>
+          Tres cosas que pidieron Gabriel y Maick.
+        </p>
+        <ul>
+          <li>
+            <b>El peso de cada bulto.</b> Al confirmar el armado, después de
+            poner la cantidad de bultos, aparece un casillero por bulto para
+            anotar los kilos. Ya no hace falta escribirlo en la nota de pedido:
+            queda guardado y le llega a administración para controlar la
+            factura del transporte.
+          </li>
+          <li>
+            <b>Anular un armado.</b> El botón <b>Deshacer</b> ahora se llama
+            <b>Anular armado</b>. Pide el motivo y la firma de un supervisor, y
+            <b>saca el pedido de la lista de facturación</b>. Antes lo borraba
+            solo de esta PC y administración lo seguía viendo listo para
+            facturar.
+          </li>
+          <li>
+            <b>Código equivocado: la pantalla se pone roja y suena.</b> Si
+            escaneás algo que no es del pedido, o que se pasa de lo pedido, no
+            se puede pasar por alto. Se cierra sola con el próximo escaneo.
+          </li>
+        </ul>
+      </div>
+
+      <div class="novedad">
+        <div class="novedad-titulo">
           <span class="novedad-version">Versión 1.4</span>
           <span class="novedad-fecha">1 de septiembre de 2026</span>
-          <span class="novedad-actual">Esta versión</span>
         </div>
         <p>
           Los productos que no tienen código de barra ya no te dejan trabado.
@@ -1016,6 +1090,7 @@
       const data = await resp.json();
       versionApp = data.version || null;
       if (Array.isArray(data.motivosFaltante)) MOTIVOS_FALTANTE = data.motivosFaltante;
+      if (Array.isArray(data.motivosAnulacion)) MOTIVOS_ANULACION = data.motivosAnulacion;
       if (!data.hayUsuarios) {
         $('login-normal').style.display = 'none';
         $('login-primero').style.display = 'block';
@@ -1105,6 +1180,7 @@
   // /api/auth/estado, para que agregar un motivo sea un cambio en un solo
   // lado. Se declara acá arriba porque inicializarAuth() la escribe.
   let MOTIVOS_FALTANTE = [];
+  let MOTIVOS_ANULACION = [];
   const CLAVE_NOVEDADES_VISTAS = 'picking_novedades_vistas';
 
   function hayNovedadesSinVer() {
@@ -1540,6 +1616,9 @@
         pickingEstado[idx] = {
           armado: true,
           bultos: o.armadoExistente.bultos,
+          kilos: o.armadoExistente.kilos,
+          completo: o.armadoExistente.completo,
+          autorizadoPor: o.armadoExistente.autorizadoPor,
           timestamp: o.armadoExistente.timestamp
         };
         escaneos[idx] = (o.items || []).map(it => it.cantidad || 0);
@@ -1763,14 +1842,16 @@
       const aviso = est.completo === false
         ? `<br /><span class="estado-exceso">Salió incompleto${est.autorizadoPor ? ` — autorizado por ${escapeHtml(est.autorizadoPor)}` : ''}. Lo factura administración.</span>`
         : '';
+      const kilos = est.kilos ? ` — ${String(est.kilos).replace('.', ',')} kg` : '';
       return `
         <div class="armado-info">
-          <span>✔ <b>Armado</b> — ${est.bultos} bulto(s) — ${formatearFechaHora(new Date(est.timestamp))}${aviso}</span>
+          <span>✔ <b>Armado</b> — ${est.bultos} bulto(s)${kilos} — ${formatearFechaHora(new Date(est.timestamp))}${aviso}</span>
           <div style="display:flex; gap:8px">
             <button class="btn-chico" onclick="imprimirEtiquetas(${idx})">Imprimir etiquetas</button>
-            <button class="secondary btn-chico" onclick="deshacerArmado(${idx})">Deshacer</button>
+            <button class="secondary btn-chico" onclick="abrirPanelAnular(${idx})">Anular armado</button>
           </div>
         </div>
+        ${panelAnular[idx] ? renderPanelAnular(idx) : ''}
       `;
     }
 
@@ -1789,8 +1870,9 @@
       return `
         <div class="bultos-box">
           <span>Pedido completo. ¿Cuántos bultos lo componen?</span>
-          <input type="number" min="1" step="1" id="bultos-input-${idx}" placeholder="Ej: 3" />
+          <input type="number" min="1" step="1" id="bultos-input-${idx}" placeholder="Ej: 3" oninput="renderKilosBultos(${idx})" />
           <button onclick="confirmarArmado(${idx})">Confirmar armado</button>
+          <div class="kilos-bultos" id="kilos-bultos-${idx}"></div>
         </div>
       `;
     }
@@ -1858,8 +1940,9 @@
         <div class="autorizacion">
           <div class="field">
             <label for="bultos-input-${idx}">Bultos</label>
-            <input type="number" min="1" step="1" id="bultos-input-${idx}" placeholder="Ej: 3" style="width:90px" />
+            <input type="number" min="1" step="1" id="bultos-input-${idx}" placeholder="Ej: 3" style="width:90px" oninput="renderKilosBultos(${idx})" />
           </div>
+          <div class="kilos-bultos" id="kilos-bultos-${idx}"></div>
           <div class="field">
             <label for="sup-usuario-${idx}">Supervisor</label>
             <input type="text" id="sup-usuario-${idx}" autocomplete="off" placeholder="Usuario" />
@@ -1915,6 +1998,11 @@
       setScanFeedback(idx, 'Ingresá una cantidad de bultos válida.', 'error');
       return;
     }
+    const kilosBultos = leerKilosBultos(idx, valor);
+    if (!kilosBultos) {
+      setScanFeedback(idx, 'Falta el peso de cada bulto, en kilos (por ejemplo 4,5).', 'error');
+      return;
+    }
 
     // --- Pedido incompleto: motivo por línea + firma del supervisor -------
     const faltan = itemsFaltantes(idx);
@@ -1936,7 +2024,8 @@
     }
 
     const orden = ultimaData[idx];
-    pickingEstado[idx] = { armado: true, bultos: valor, timestamp: new Date().toISOString() };
+    const kilosTotal = Math.round(kilosBultos.reduce((s, k) => s + k, 0) * 1000) / 1000;
+    pickingEstado[idx] = { armado: true, bultos: valor, kilos: kilosTotal, timestamp: new Date().toISOString() };
     actualizarBultosBox(idx);
     actualizarFilaPickingCompleta(idx);
     setScanFeedback(idx, '', '');
@@ -1950,6 +2039,7 @@
           numeroOrden: orden.numeroOrden,
           fechaOrden: orden.fecha,
           bultos: valor,
+          kilosBultos,
           lineas: orden.items ? orden.items.length : null,
           unidades: orden.cantidadProductos,
           idCliente: orden.idCliente,
@@ -1994,17 +2084,126 @@
     }
   }
 
-  async function deshacerArmado(idx) {
+  // --- Kilos por bulto ----------------------------------------------------
+  // Un casillero por bulto. Se dibujan al escribir la cantidad de bultos y
+  // conservan lo ya tipeado si el número cambia.
+  const KILOS_MAX_CASILLEROS = 60;
+  function renderKilosBultos(idx) {
+    const cont = document.getElementById(`kilos-bultos-${idx}`);
+    const input = document.getElementById(`bultos-input-${idx}`);
+    if (!cont || !input) return;
+    const n = Math.min(parseInt(input.value, 10) || 0, KILOS_MAX_CASILLEROS);
+    const previos = Array.from(cont.querySelectorAll('input')).map(i => i.value);
+    if (n < 1) { cont.innerHTML = ''; return; }
+    let html = '<span>Peso de cada bulto (kg):</span>';
+    for (let i = 0; i < n; i++) {
+      html += `<label class="kilo">Bulto ${i + 1}
+        <input type="text" inputmode="decimal" id="kilos-${idx}-${i}" placeholder="Ej: 4,5" value="${escapeHtml(previos[i] || '')}" /></label>`;
+    }
+    cont.innerHTML = html;
+  }
+
+  // Devuelve los kilos de cada bulto, o null si falta alguno o no es un
+  // número mayor a cero. Acepta coma o punto decimal.
+  function leerKilosBultos(idx, bultos) {
+    const kilos = [];
+    for (let i = 0; i < bultos; i++) {
+      const el = document.getElementById(`kilos-${idx}-${i}`);
+      const k = el ? Number(String(el.value).trim().replace(',', '.')) : NaN;
+      if (!Number.isFinite(k) || k <= 0 || k > 1000) return null;
+      kilos.push(k);
+    }
+    return kilos;
+  }
+
+  // --- Anular un armado ---------------------------------------------------
+  // Reemplaza al viejo "Deshacer", que borraba el armado de esta PC pero el
+  // pedido seguía en la lista de facturación. Ahora el facturador se entera
+  // y el pedido sale de su lista hasta que se lo vuelva a armar.
+  const panelAnular = {};
+
+  function abrirPanelAnular(idx) {
+    panelAnular[idx] = true;
+    actualizarBultosBox(idx);
+  }
+
+  function cerrarPanelAnular(idx) {
+    panelAnular[idx] = false;
+    actualizarBultosBox(idx);
+  }
+
+  function renderPanelAnular(idx) {
+    return `
+      <div class="anular-panel">
+        <h4 style="margin:0 0 6px">Anular el armado</h4>
+        <div style="color:var(--muted); margin-bottom:10px">
+          El pedido sale de la lista de facturación. Después se vuelve a leer la
+          orden y, si corresponde, se arma de nuevo. <b>No cancela la orden en
+          Contabilium</b>: si el cliente la canceló, eso se hace allá.
+        </div>
+        <div class="autorizacion">
+          <div class="field">
+            <label for="anular-motivo-${idx}">Motivo</label>
+            <select id="anular-motivo-${idx}">
+              <option value="">Elegí…</option>
+              ${MOTIVOS_ANULACION.map(m => `<option value="${m.codigo}">${escapeHtml(m.etiqueta)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label for="anular-nota-${idx}">Detalle</label>
+            <input type="text" id="anular-nota-${idx}" autocomplete="off" placeholder="Obligatorio si es Otro" />
+          </div>
+          <div class="field">
+            <label for="anular-usuario-${idx}">Supervisor</label>
+            <input type="text" id="anular-usuario-${idx}" autocomplete="off" placeholder="Usuario" />
+          </div>
+          <div class="field">
+            <label for="anular-password-${idx}">Contraseña</label>
+            <input type="password" id="anular-password-${idx}" autocomplete="off" placeholder="Contraseña" />
+          </div>
+        </div>
+        <div class="acciones-final">
+          <button onclick="anularArmado(${idx})">Anular armado</button>
+          <button class="secondary" onclick="cerrarPanelAnular(${idx})">Cancelar</button>
+        </div>
+      </div>
+    `;
+  }
+
+  async function anularArmado(idx) {
     const orden = ultimaData[idx];
+    const valor = id => ((document.getElementById(id) || {}).value || '').trim();
+    const motivo = valor(`anular-motivo-${idx}`);
+    const nota = valor(`anular-nota-${idx}`);
+    const usuario = valor(`anular-usuario-${idx}`);
+    const password = (document.getElementById(`anular-password-${idx}`) || {}).value || '';
+    if (!motivo) return setScanFeedback(idx, 'Elegí por qué se anula el armado.', 'error');
+    if (motivo === 'otro' && !nota) return setScanFeedback(idx, 'Con "Otro" hay que escribir el detalle.', 'error');
+    if (!usuario || !password) return setScanFeedback(idx, 'Anular lo autoriza un supervisor: falta el usuario y la contraseña.', 'error');
+
+    try {
+      const resp = await apiFetch('/api/armado/anular', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: orden.id, motivo, nota, autoriza: { usuario, password } })
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) return setScanFeedback(idx, data.error || 'No se pudo anular el armado.', 'error');
+    } catch (err) {
+      return setScanFeedback(idx, 'No se pudo anular el armado: ' + err.message, 'error');
+    }
+
+    panelAnular[idx] = false;
+    // El armado ya no existe en esta PC: la pantalla tiene que reflejarlo
+    // aunque releer la orden falle (por ejemplo, si ya está cancelada).
     pickingEstado[idx] = { armado: false, bultos: null, timestamp: null };
     actualizarBultosBox(idx);
     actualizarFilaPickingCompleta(idx);
-
-    try {
-      await apiFetch(`/api/armado?orderId=${encodeURIComponent(orden.id)}`, { method: 'DELETE' });
-    } catch (err) {
-      // Silencioso: si falla el borrado remoto, el estado local ya quedó revertido
-    }
+    cargarEstadoBuzon();
+    // Se relee la orden y el conteo arranca de cero: si el pedido cambió
+    // (el vendedor agregó productos), se arma contra la versión nueva.
+    await volverALeerOrden(idx);
+    setScanFeedback(idx, 'Armado anulado: el pedido salió de la lista de facturación. Si hay que despacharlo, armalo de nuevo.', 'ok');
   }
 
   async function imprimirEtiquetas(idx) {
@@ -2136,7 +2335,12 @@
 
   async function reiniciarEscaneo(idx) {
     const items = ultimaData[idx].items;
-    const estabaArmado = obtenerEstadoPicking(idx).armado;
+    // Un pedido armado ya está en la lista de facturación: reiniciarlo acá
+    // lo borraría de esta PC sin avisarle a nadie. Se anula, que sí avisa.
+    if (obtenerEstadoPicking(idx).armado) {
+      setScanFeedback(idx, 'Este pedido ya está armado. Para volver a contarlo, tocá "Anular armado".', 'error');
+      return;
+    }
     escaneos[idx] = items.map(() => 0);
     if (contadosAMano[idx]) contadosAMano[idx].clear();
     items.forEach((it, i) => {
@@ -2147,12 +2351,6 @@
     actualizarBultosBox(idx);
     actualizarFilaPickingCompleta(idx);
     setScanFeedback(idx, '', '');
-
-    if (estabaArmado) {
-      try {
-        await apiFetch(`/api/armado?orderId=${encodeURIComponent(ultimaData[idx].id)}`, { method: 'DELETE' });
-      } catch (err) { /* silencioso */ }
-    }
   }
 
   function setScanFeedback(idx, msg, tipo) {
@@ -2173,6 +2371,14 @@
   function procesarScan(idx, codigo) {
     codigo = (codigo || '').trim();
     if (!codigo) return;
+    ocultarAlertaScan();
+
+    // Una orden ya armada no se sigue escaneando: antes el conteo subía en
+    // pantalla aunque no se guardara en ningún lado.
+    if (obtenerEstadoPicking(idx).armado) {
+      mostrarAlertaScan('Este pedido ya está armado. Si hay que rehacerlo, anulá el armado primero.', 'PEDIDO YA ARMADO');
+      return;
+    }
 
     const items = ultimaData[idx].items;
 
@@ -2190,6 +2396,7 @@
 
     if (itemIndex === -1) {
       setScanFeedback(idx, `Código "${codigo}" no corresponde a ningún producto de esta orden.`, 'error');
+      mostrarAlertaScan(`El código ${codigo} no es de ningún producto de este pedido.`);
       return;
     }
 
@@ -2199,7 +2406,7 @@
     const totalPropuesto = totalActual + unidades;
 
     if (totalPropuesto > esperado) {
-      alert(`Supera la cantidad solicitada.\n\n"${nombre}": ya escaneaste ${totalActual} de ${esperado} esperados. Este escaneo (+${unidades}) lo superaría.`);
+      mostrarAlertaScan(`"${nombre}": ya escaneaste ${totalActual} de ${esperado}. Este escaneo (+${unidades}) se pasa de lo pedido y NO se contó.`, 'SE PASA DE LO PEDIDO');
       setScanFeedback(idx, `⚠ Escaneo rechazado: "${nombre}" superaría lo esperado (${totalActual} de ${esperado}).`, 'error');
       return;
     }
@@ -2210,6 +2417,42 @@
     setScanFeedback(idx, `${tipoMatch} reconocido: +${unidades} unidad(es) de "${nombre}"`, 'ok');
     actualizarResumenPicking(idx);
     actualizarBultosBox(idx);
+  }
+
+  // --- Alerta de escaneo -------------------------------------------------
+  // Pantalla roja + sonido. El sonido se genera acá (sin archivos) y, si el
+  // navegador no lo permite, la alerta visual sale igual.
+  let audioCtx = null;
+  function sonarAlerta() {
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      [0, 0.22, 0.44].forEach(t => {
+        const osc = audioCtx.createOscillator();
+        const gan = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.value = 880;
+        gan.gain.value = 0.25;
+        osc.connect(gan).connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + t);
+        osc.stop(audioCtx.currentTime + t + 0.15);
+      });
+    } catch (e) { /* sin sonido: queda la alerta visual */ }
+  }
+
+  function mostrarAlertaScan(detalle, titulo) {
+    const el = document.getElementById('alerta-scan');
+    if (!el) return;
+    el.querySelector('.alerta-titulo').textContent = '✖ ' + (titulo || 'CÓDIGO EQUIVOCADO');
+    document.getElementById('alerta-scan-detalle').textContent = detalle;
+    el.classList.remove('visible');
+    void el.offsetWidth; // reinicia el parpadeo si ya estaba visible
+    el.classList.add('visible');
+    sonarAlerta();
+  }
+
+  function ocultarAlertaScan() {
+    const el = document.getElementById('alerta-scan');
+    if (el) el.classList.remove('visible');
   }
 
   let ordenExpandidaIdx = null;
@@ -2281,20 +2524,21 @@
   function exportarCSV() {
     if (!ultimaData) return;
 
-    const rows = [['N° Orden', 'Fecha', 'Líneas', 'Unidades', 'Código', 'Producto', 'Cantidad por producto', 'Pedido', 'Bultos', 'Fecha/Hora Armado']];
+    const rows = [['N° Orden', 'Fecha', 'Líneas', 'Unidades', 'Código', 'Producto', 'Cantidad por producto', 'Pedido', 'Bultos', 'Kilos', 'Fecha/Hora Armado']];
 
     ultimaData.forEach((o, idx) => {
       const est = obtenerEstadoPicking(idx);
       const estadoPicking = est.armado ? 'Armado' : 'Pendiente';
       const bultos = est.armado ? est.bultos : '';
+      const kilos = est.armado && est.kilos ? String(est.kilos).replace('.', ',') : '';
       const fechaArmado = est.armado ? formatearFechaHora(new Date(est.timestamp)) : '';
       const lineas = o.items ? o.items.length : '';
 
       if (!o.items.length) {
-        rows.push([o.numeroOrden, o.fecha, lineas, o.cantidadProductos, '', '', '', estadoPicking, bultos, fechaArmado]);
+        rows.push([o.numeroOrden, o.fecha, lineas, o.cantidadProductos, '', '', '', estadoPicking, bultos, kilos, fechaArmado]);
       } else {
         o.items.forEach(it => {
-          rows.push([o.numeroOrden, o.fecha, lineas, o.cantidadProductos, it.codigo ?? '', it.concepto ?? '', it.cantidad ?? '', estadoPicking, bultos, fechaArmado]);
+          rows.push([o.numeroOrden, o.fecha, lineas, o.cantidadProductos, it.codigo ?? '', it.concepto ?? '', it.cantidad ?? '', estadoPicking, bultos, kilos, fechaArmado]);
         });
       }
     });
