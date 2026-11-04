@@ -38,3 +38,4 @@ assets/*.png
 
 # Documentacion de terceros (La Nave, etc.): el repo es publico
 assets/*.pdf
+assets/*.xlsx
