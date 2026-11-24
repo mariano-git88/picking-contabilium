@@ -2287,7 +2287,10 @@
     // Se relee la orden y el conteo arranca de cero: si el pedido cambió
     // (el vendedor agregó productos), se arma contra la versión nueva.
     await volverALeerOrden(idx);
-    if (avisoLaNaveAnulacion && avisoLaNaveAnulacion.fallidos && avisoLaNaveAnulacion.fallidos.length) {
+    const sinVerificar = (avisoLaNaveAnulacion && avisoLaNaveAnulacion.sinVerificar) || [];
+    if (sinVerificar.length) {
+      setScanFeedback(idx, 'Armado anulado, pero NO se pudo confirmar con La Nave que el envío quedó anulado (no respondió). La app lo vuelve a intentar antes de despachar de nuevo esta orden; si no se va a volver a despachar, avisale a logística para que lo revise con La Nave.', 'error');
+    } else if (avisoLaNaveAnulacion && avisoLaNaveAnulacion.fallidos && avisoLaNaveAnulacion.fallidos.length) {
       const cuales = avisoLaNaveAnulacion.fallidos.map(f => `remito ${f.remito || '?'}: ${f.error}`).join(' | ');
       setScanFeedback(idx, `Armado anulado, pero La Nave NO anuló el envío (${cuales}). Si ya lo retiraron, avisale a logística para que lo frene con La Nave.`, 'error');
     } else {
@@ -2329,7 +2332,15 @@
       return `<button class="btn-chico" onclick="imprimirEtiquetasLaNave(${idx})">Reimprimir etiquetas La Nave</button>`;
     }
     if (ln) {
-      return `<button class="btn-chico" onclick="despacharLaNave(${idx})">Terminar despacho La Nave</button>`;
+      // A medias: se puede terminar, o —si La Nave todavía no tiene ningún
+      // envío— descartar y empezar de nuevo (por ejemplo, después de
+      // corregir el cliente) o mandarlo por flota propia.
+      const algunoHecho = ln.envios.some(e => e.estado === 'despachado');
+      return `
+        <button class="btn-chico" onclick="despacharLaNave(${idx})">Terminar despacho La Nave</button>
+        ${algunoHecho ? '' : `<button class="secondary btn-chico" onclick="descartarDespachoLaNave(${idx})">Descartar y volver a empezar</button>
+        <button class="secondary btn-chico" id="btn-etiqueta-propia-${idx}" onclick="imprimirEtiquetas(${idx})">Flota propia u otro transporte</button>`}
+      `;
     }
     return `
       <button class="btn-chico" onclick="abrirPanelLaNave(${idx})">🚚 Enviar con La Nave</button>
@@ -2407,7 +2418,7 @@
           <thead><tr><th>Envío</th><th>Bultos</th><th>Kilos declarados</th><th>Precio</th></tr></thead>
           <tbody>${filas}</tbody>
         </table>
-        <div>Total: <b>${pesos(p.total)}</b> + IVA (el precio ya incluye la tasa postal).</div>
+        ${p.ok ? `<div>Total: <b>${pesos(p.total)}</b> + IVA (el precio ya incluye la tasa postal).</div>` : ''}
         ${p.envios.length > 1 ? `<div class="aviso" style="margin-top:6px">Son ${p.envios.length} envíos (uno por rango de peso). Cada etiqueta dice el número de bulto y su peso: pegá cada una en el bulto que corresponde.</div>` : ''}
         ${p.error ? `<div class="error" style="margin-top:6px">${escapeHtml(p.error)}</div>` : ''}
         <div class="acciones-final">
@@ -2444,6 +2455,28 @@
     panelLaNave[idx] = null;
     actualizarBultosBox(idx);
     await imprimirEtiquetasLaNave(idx);
+  }
+
+  async function descartarDespachoLaNave(idx) {
+    const orden = ultimaData[idx];
+    const est = obtenerEstadoPicking(idx);
+    setScanFeedback(idx, 'Confirmando con La Nave que no quedó ningún envío...', '');
+    try {
+      const resp = await apiFetch('/api/lanave/descartar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: orden.id })
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (data.envio) est.laNave = data.envio;
+      if (!resp.ok) throw new Error(data.error || 'No se pudo descartar.');
+      est.laNave = null;
+      actualizarBultosBox(idx);
+      setScanFeedback(idx, 'Despacho descartado: elegí de nuevo por dónde sale el pedido.', 'ok');
+    } catch (err) {
+      actualizarBultosBox(idx);
+      setScanFeedback(idx, 'La Nave: ' + err.message, 'error');
+    }
   }
 
   async function imprimirEtiquetasLaNave(idx) {

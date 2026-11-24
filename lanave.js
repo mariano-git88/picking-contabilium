@@ -116,18 +116,20 @@ function normalizarLocalidad(s) {
   return sinTildes(s).toUpperCase().replace(/["']/g, '').replace(/\s+/g, ' ').trim();
 }
 
+// La etiqueta se busca en CUALQUIER parte del texto, no solo al principio de
+// un renglón: el campo de Contabilium casi nunca tiene saltos de línea (59 de
+// 1.023, y siempre al final), así que "Entregas: L a V 8 a 17 hs. Localidad:
+// SHANGRILA" es lo esperable. Un falso positivo no es peligroso —La Nave lo
+// rechaza al cotizar (error 18) y se ve—; no encontrarla sí, porque se
+// manda la Ciudad en silencio.
 function localidadDeObservaciones(observaciones) {
-  const lineas = String(observaciones || '').split(/\r?\n|\|/);
-  for (const l of lineas) {
-    // Tolerante: "Localidad: X", "LOCALIDAD:X", "localidad - X". Lo que
-    // sigue a un punto y coma o a un " / " ya es otro dato.
-    const m = sinTildes(l).match(/^\s*localidad\s*[:\-]\s*(.+)$/i);
-    if (m) {
-      const valor = normalizarLocalidad(m[1].split(/;|\s\/\s/)[0]);
-      if (valor) return valor;
-    }
-  }
-  return null;
+  const texto = sinTildes(observaciones);
+  const m = texto.match(/(?:^|[^A-Za-z])localidad\s*[:\-]\s*([^\r\n;|]+)/i);
+  if (!m) return null;
+  // El valor termina donde empieza otro dato: un " / ", o otra etiqueta
+  // del tipo "Entregas:" / "Tel:".
+  const valor = normalizarLocalidad(m[1].split(/\s\/\s|\s+[A-Za-z]+\s*:/)[0].replace(/[.,\s]+$/, ''));
+  return valor || null;
 }
 
 function esMontevideo(texto) {
@@ -356,8 +358,15 @@ function crearCliente({ cliente, pwd, ambiente }) {
         claveExterna: json.claveExterna
       };
     },
+    // `sinRespuesta` distingue "La Nave dijo que no" de "no hubo respuesta":
+    // lo segundo no dice nada sobre si el envío quedó vivo.
     async anular(agencia, remito) {
-      const { json } = await post('anularEnvio', { agenciaOrigen: agencia || '001', remito });
+      let json;
+      try {
+        ({ json } = await post('anularEnvio', { agenciaOrigen: agencia || '001', remito }));
+      } catch (err) {
+        return { ok: false, sinRespuesta: true, error: err.message };
+      }
       if (json && json.status === 'OK') return { ok: true, mensaje: json.status_message || '' };
       return { ok: false, error: tapar((json && (json.status_message || json.errorDescripcion)) || 'La Nave no pudo anular el envío.') };
     }

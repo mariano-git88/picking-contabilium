@@ -1898,12 +1898,19 @@ function clienteLaNave() {
   return c ? laNave.crearCliente(c) : null;
 }
 
-// El despacho vigente de una orden: el último que no se anuló.
+// Estados de un despacho: en_curso → despachado → anulado. Y dos salidas
+// laterales: `descartado` (se tiró un plan que nunca llegó a La Nave) y
+// `anulacion_pendiente` (se anuló el armado pero no se pudo VERIFICAR en La
+// Nave que no quedara un envío vivo: se reintenta antes de despachar de nuevo
+// esa orden, para no dejar un envío huérfano al lado del nuevo).
+const ESTADOS_CERRADOS = new Set(['anulado', 'descartado', 'anulacion_pendiente']);
+
+// El despacho vigente de una orden.
 function envioLaNaveActivo(orderId) {
   orderId = String(orderId);
   for (let i = enviosLaNave.length - 1; i >= 0; i--) {
     const r = enviosLaNave[i];
-    if (r.orderId === orderId && r.estado !== 'anulado') return r;
+    if (r.orderId === orderId && !ESTADOS_CERRADOS.has(r.estado)) return r;
   }
   return null;
 }
@@ -1987,6 +1994,8 @@ async function despacharLaNave(orderId, usuario) {
   if (reg && reg.estado === 'despachado') return { status: 200, reg };
 
   if (!reg) {
+    const pendiente = await resolverAnulacionesPendientes(orderId, cli);
+    if (pendiente) return { status: 409, error: pendiente };
     const { plan, error } = await planEnvioLaNave(armado);
     if (error) return { status: 409, error };
     const intento = enviosLaNave.filter(r => r.orderId === orderId).length + 1;
@@ -2062,40 +2071,106 @@ async function despacharLaNave(orderId, usuario) {
   return { status: 200, reg };
 }
 
-// Anula en La Nave los envíos de una orden. Se llama ANTES de anular el
-// armado. Nunca impide anular el armado (el facturador lo necesita), pero
-// devuelve lo que La Nave no pudo anular para mostrarlo.
+// Anula en La Nave los envíos de un despacho. Nunca impide anular el armado
+// (el facturador lo necesita), pero devuelve lo que no se pudo anular para
+// mostrarlo. Dos casos distintos, y no hay que confundirlos:
+//   - `fallidos`: La Nave CONTESTÓ que no (por ejemplo, el envío ya salió).
+//     Es definitivo: queda anotado y se avisa.
+//   - `sinVerificar`: no se pudo hablar con La Nave, o un envío que acá
+//     figura sin remito no se pudo consultar. Puede haber un envío vivo que
+//     no conocemos: el despacho queda en `anulacion_pendiente` y se resuelve
+//     antes de volver a despachar esa orden.
+async function anularRegistroLaNave(reg, cli) {
+  const resultado = { remitos: [], fallidos: [], sinVerificar: [] };
+  for (const e of reg.envios) {
+    if (e.estado === 'anulado') continue;
+    let remito = e.remito;
+    let agencia = e.agencia;
+    if (!remito) {
+      // Sin remito acá no quiere decir que no exista allá: es justo el caso
+      // de una respuesta que se perdió.
+      if (!cli) { resultado.sinVerificar.push({ clave: e.clave, error: 'La conexión con La Nave no está configurada.' }); continue; }
+      let c;
+      try { c = await cli.consultar(e.clave); } catch (err) { c = { ok: false, error: err.message }; }
+      if (!c.ok) { resultado.sinVerificar.push({ clave: e.clave, error: c.error }); continue; }
+      if (!c.existe || c.estadoCodigo === 'AN') { e.estado = 'anulado'; continue; }
+      remito = c.remito;
+      agencia = c.agencia;
+      e.remito = remito;
+      e.agencia = agencia;
+    }
+    if (!cli) { resultado.sinVerificar.push({ clave: e.clave, remito, error: 'La conexión con La Nave no está configurada.' }); continue; }
+    let r;
+    try { r = await cli.anular(agencia, remito); } catch (err) { r = { ok: false, sinRespuesta: true, error: err.message }; }
+    if (r.ok) { e.estado = 'anulado'; resultado.remitos.push(remito); continue; }
+    // Un "no" de La Nave puede ser "ya salió" o cualquier otra falla
+    // (contraseña, su sistema). Se mira el estado real del envío antes de
+    // darlo por definitivo.
+    let c;
+    try { c = await cli.consultar(e.clave); } catch (err) { c = { ok: false, error: err.message }; }
+    if (c.ok && (!c.existe || c.estadoCodigo === 'AN')) { e.estado = 'anulado'; resultado.remitos.push(remito); continue; }
+    if (c.ok && c.existe) {
+      e.estado = 'no_anulado';
+      resultado.fallidos.push({ remito, error: `${r.error} (en La Nave figura: ${c.estado || c.estadoCodigo})` });
+      continue;
+    }
+    resultado.sinVerificar.push({ clave: e.clave, remito, error: r.error });
+  }
+  reg.estado = resultado.sinVerificar.length ? 'anulacion_pendiente' : 'anulado';
+  reg.anulado = new Date().toISOString();
+  reg.anulacionFallida = resultado.fallidos;
+  reg.anulacionSinVerificar = resultado.sinVerificar;
+  guardarEnviosLaNaveDisco();
+  return resultado;
+}
+
 async function anularEnviosLaNave(orderId) {
   const reg = envioLaNaveActivo(orderId);
   if (!reg) return null;
-  const cli = clienteLaNave();
-  const resultado = { remitos: [], fallidos: [] };
-  for (const e of reg.envios) {
-    // Uno que quedó a medias puede existir en La Nave aunque acá diga
-    // pendiente: se consulta por la clave antes de darlo por inexistente.
-    let remito = e.remito;
-    let agencia = e.agencia;
-    if (!remito && cli) {
-      try {
-        const c = await cli.consultar(e.clave);
-        if (c.ok && c.existe && c.estadoCodigo !== 'AN') { remito = c.remito; agencia = c.agencia; }
-      } catch { /* sin red: se informa abajo si había remito */ }
-    }
-    if (!remito) { e.estado = 'anulado'; continue; }
-    if (!cli) { resultado.fallidos.push({ remito, error: 'La conexión con La Nave no está configurada.' }); continue; }
-    try {
-      const r = await cli.anular(agencia, remito);
-      if (r.ok) { e.estado = 'anulado'; resultado.remitos.push(remito); }
-      else resultado.fallidos.push({ remito, error: r.error });
-    } catch (err) {
-      resultado.fallidos.push({ remito, error: err.message });
+  return anularRegistroLaNave(reg, clienteLaNave());
+}
+
+// Antes de despachar de nuevo una orden: termina las anulaciones que
+// quedaron sin verificar. Devuelve un mensaje si todavía no se puede.
+async function resolverAnulacionesPendientes(orderId, cli) {
+  const pendientes = enviosLaNave.filter(r => r.orderId === String(orderId) && r.estado === 'anulacion_pendiente');
+  for (const reg of pendientes) {
+    const r = await anularRegistroLaNave(reg, cli);
+    if (r.sinVerificar.length) {
+      const cuales = r.sinVerificar.map(x => x.remito ? `remito ${x.remito}` : `clave ${x.clave}`).join(', ');
+      return `No se pudo confirmar con La Nave que el despacho anterior de esta orden quedó anulado (${cuales}). Para no dejar un envío duplicado, volvé a intentar en un rato.`;
     }
   }
-  reg.estado = 'anulado';
-  reg.anulado = new Date().toISOString();
-  reg.anulacionFallida = resultado.fallidos;
+  return null;
+}
+
+// Descarta un despacho que quedó a medias SIN ningún envío hecho (por
+// ejemplo, La Nave rechazó la localidad y se corrigió el cliente): libera la
+// orden para volver a empezar con datos frescos, o para mandarla por flota
+// propia. Si La Nave ya tiene algún envío de este despacho, no se descarta:
+// hay que terminarlo o anular el armado.
+async function descartarDespachoLaNave(orderId) {
+  const reg = envioLaNaveActivo(orderId);
+  if (!reg || reg.estado !== 'en_curso') return { status: 404, error: 'No hay un despacho a medias para descartar.' };
+  if (reg.envios.some(e => e.estado === 'despachado')) {
+    return { status: 409, error: 'Parte de este pedido ya está despachado en La Nave: tocá "Terminar despacho", o anulá el armado para anular también lo despachado.' };
+  }
+  const cli = clienteLaNave();
+  if (!cli) return { status: 400, error: 'La conexión con La Nave no está configurada en esta PC.' };
+  for (const e of reg.envios) {
+    let c;
+    try { c = await cli.consultar(e.clave); } catch (err) { c = { ok: false, error: err.message }; }
+    if (!c.ok) return { status: 502, error: `No se pudo confirmar con La Nave que el envío "${e.nombre}" no existe (${c.error}). Volvé a intentar en un rato.` };
+    if (c.existe && c.estadoCodigo !== 'AN') {
+      Object.assign(e, { estado: 'despachado', remito: c.remito, agencia: c.agencia, codigoBarra: c.codigoBarra, etiquetas: [], recuperado: true, error: null });
+      guardarEnviosLaNaveDisco();
+      return { status: 409, error: `La Nave ya tiene el envío "${e.nombre}" (remito ${c.remito}): no se puede descartar. Tocá "Terminar despacho", o anulá el armado.` };
+    }
+  }
+  reg.estado = 'descartado';
+  reg.descartado = new Date().toISOString();
   guardarEnviosLaNaveDisco();
-  return resultado;
+  return { status: 200 };
 }
 
 // --- Etiqueta de La Nave en ZPL ---
@@ -2787,7 +2862,7 @@ const server = http.createServer(async (req, res) => {
       try {
         laNaveAnulacion = await anularEnviosLaNave(orderId);
       } catch (err) {
-        laNaveAnulacion = { remitos: [], fallidos: [{ remito: null, error: err.message }] };
+        laNaveAnulacion = { remitos: [], fallidos: [], sinVerificar: [{ clave: null, error: err.message }] };
       }
 
       const anulacion = anularArmado(orderId, { autorizadoPor: supervisor.usuario, motivo: datos.motivo, nota });
@@ -2924,6 +2999,20 @@ const server = http.createServer(async (req, res) => {
         const r = await despacharLaNave(id, req.usuarioActual);
         if (r.error) return sendJSON(res, r.status, { error: r.error, envio: resumenEnvioLaNave(r.reg) });
         return sendJSON(res, 200, { ok: true, envio: resumenEnvioLaNave(r.reg) });
+      } finally {
+        despachosEnCurso.delete(id);
+      }
+    }
+
+    if (pathname === '/api/lanave/descartar' && req.method === 'POST') {
+      const { orderId } = JSON.parse((await readBody(req)) || '{}');
+      const id = String(orderId || '');
+      if (despachosEnCurso.has(id)) return sendJSON(res, 409, { error: 'Esta orden se está despachando en este momento.' });
+      despachosEnCurso.add(id);
+      try {
+        const r = await descartarDespachoLaNave(id);
+        if (r.error) return sendJSON(res, r.status, { error: r.error, envio: resumenEnvioLaNave(envioLaNaveActivo(id)) });
+        return sendJSON(res, 200, { ok: true });
       } finally {
         despachosEnCurso.delete(id);
       }

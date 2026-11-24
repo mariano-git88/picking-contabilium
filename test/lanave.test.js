@@ -60,8 +60,14 @@ test('la línea de localidad se lee aunque esté escrita distinto', () => {
   assert.equal(ln.localidadDeObservaciones('  localidad - Santa Ana ; tocar timbre'), 'SANTA ANA');
   assert.equal(ln.localidadDeObservaciones('Entregas: L a V | Localidad: La Tuna'), 'LA TUNA');
   assert.equal(ln.localidadDeObservaciones('Entregas: L a V 8 a 12'), null);
-  // "Localidad" en el medio de una frase no es la línea
-  assert.equal(ln.localidadDeObservaciones('Ojo con la localidad: preguntar'), null);
+  // En Contabilium el campo es casi siempre UN renglón: la etiqueta puede
+  // venir después de los horarios, o antes de otro dato.
+  assert.equal(ln.localidadDeObservaciones('Entregas: L a V 08:00 a 17:00 hs. Localidad: SHANGRILA'), 'SHANGRILA');
+  assert.equal(ln.localidadDeObservaciones('Entregas: L a V 8 a 17 hs.\t\t\nLocalidad: Colinas de Solymar.'), 'COLINAS DE SOLYMAR');
+  assert.equal(ln.localidadDeObservaciones('Localidad: El Pinar Entregas: L a V 8 a 12'), 'EL PINAR');
+  assert.equal(ln.localidadDeObservaciones('Localidad: Sta. Lucía / tocar timbre'), 'STA. LUCIA');
+  // "Sublocalidad:" no es la etiqueta
+  assert.equal(ln.localidadDeObservaciones('Sublocalidad: X'), null);
 });
 
 test('sin línea en Observaciones se usa la Ciudad, sin tildes y en mayúsculas', () => {
