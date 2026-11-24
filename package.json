@@ -1,6 +1,6 @@
 {
   "name": "contabilium-picking",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "App web local de picking, control y etiquetado de ordenes de venta de Contabilium",
   "main": "server-standalone.js",
   "bin": "server-standalone.js",
@@ -10,7 +10,8 @@
     "build": "pkg . --output dist/PickingContabilium.exe",
     "paquete": "npm run verificar && node pkg/armar-paquete.js",
     "verificar": "node pkg/verificar-exe.js",
-    "catalogo": "node pkg/regenerar-catalogo.js"
+    "catalogo": "node pkg/regenerar-catalogo.js",
+    "test": "node --test"
   },
   "dependencies": {
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"

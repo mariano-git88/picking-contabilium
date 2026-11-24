@@ -5,6 +5,7 @@ node_modules/
 config.json
 armados.json
 anulaciones.json
+envios_lanave.json
 catalogo.json
 clientes_cache.json
 buzon-sa.json
@@ -42,3 +43,4 @@ assets/*.xlsx
 
 # Credenciales de La Nave (testing y produccion)
 lanave-credenciales.json
+lanave.json

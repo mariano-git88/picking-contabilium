@@ -5,6 +5,7 @@ const os = require('os');
 const { URL } = require('url');
 const { exec, spawn } = require('child_process');
 const XLSX = require('xlsx');
+const laNave = require('./lanave.js');
 
 // La versión sale de package.json (pkg lo empaqueta junto con el resto). El
 // front la usa para marcar con un punto verde cuando hay novedades sin leer:
@@ -1852,6 +1853,379 @@ async function resolverClienteParaEtiqueta(registro) {
   }
 }
 
+// ==========================================================================
+// --- La Nave CargoPostal (despacho al interior) ---
+// ==========================================================================
+//
+// Gabriel (25/11/2026): al controlar y embalar hay DOS caminos, y el
+// operario elige: (1) envío con La Nave, con su etiqueta, o (2) flota propia
+// u otro transporte, con la etiqueta de siempre. Montevideo va siempre por el
+// camino 2. La lógica pura (rangos, claves, localidad, EPL) vive en lanave.js.
+//
+// El despacho es un paso APARTE del armado, a propósito: el armado tiene que
+// registrarse y viajar al facturador aunque La Nave esté caída.
+//
+// Credenciales: `lanave.json` viaja en el paquete (igual que contabilium.json);
+// en la máquina que arma el paquete se llama `lanave-credenciales.json`. Sin
+// ese archivo la opción de La Nave no aparece. Formato:
+//   { "ambiente": "testing" | "produccion", "cliente": "2497", "pwd": "…" }
+const ENVIOS_LANAVE_PATH = path.join(APP_DIR, 'envios_lanave.json');
+const LANAVE_CRED_RUTAS = [path.join(APP_DIR, 'lanave.json'), path.join(APP_DIR, 'lanave-credenciales.json')];
+
+let enviosLaNave = [];
+const despachosEnCurso = new Set();
+
+function cargarEnviosLaNaveInicial() {
+  enviosLaNave = leerJsonSeguro(ENVIOS_LANAVE_PATH, [], Array.isArray);
+}
+
+function guardarEnviosLaNaveDisco() {
+  escribirJsonAtomico(ENVIOS_LANAVE_PATH, enviosLaNave);
+}
+
+function credencialesLaNave() {
+  for (const ruta of LANAVE_CRED_RUTAS) {
+    try {
+      const c = JSON.parse(fs.readFileSync(ruta, 'utf8'));
+      if (c && c.cliente && c.pwd) return c;
+    } catch { /* no está o no se lee: probamos la siguiente */ }
+  }
+  return null;
+}
+
+function clienteLaNave() {
+  const c = credencialesLaNave();
+  return c ? laNave.crearCliente(c) : null;
+}
+
+// El despacho vigente de una orden: el último que no se anuló.
+function envioLaNaveActivo(orderId) {
+  orderId = String(orderId);
+  for (let i = enviosLaNave.length - 1; i >= 0; i--) {
+    const r = enviosLaNave[i];
+    if (r.orderId === orderId && r.estado !== 'anulado') return r;
+  }
+  return null;
+}
+
+// Lo que necesita la pantalla, sin las etiquetas (son largas).
+function resumenEnvioLaNave(reg) {
+  if (!reg) return null;
+  return {
+    estado: reg.estado,
+    prueba: !!reg.prueba,
+    localidad: reg.localidad,
+    creado: reg.creado,
+    envios: reg.envios.map(e => ({
+      producto: e.producto, nombre: e.nombre, bultos: e.bultos, kilos: e.kilos,
+      indicesBultos: e.indicesBultos, clave: e.clave, estado: e.estado,
+      remito: e.remito || null, agencia: e.agencia || null, precio: e.precio == null ? null : e.precio,
+      localidadLaNave: e.localidadLaNave || '', error: e.error || null,
+      etiquetaReconstruida: e.estado === 'despachado' && !(e.etiquetas && e.etiquetas.length)
+    }))
+  };
+}
+
+// Relee UN cliente de Contabilium, sin pasar por la caché: si Dayana acaba
+// de corregir la ciudad, la caché todavía tiene la vieja (obtenerCliente no
+// refresca a un cliente que ya está). Actualiza la caché de paso.
+async function obtenerClienteFresco(idCliente) {
+  const id = String(idCliente || '');
+  if (!/^\d+$/.test(id)) return null;
+  try {
+    const c = await authedFetch(`${BASE_URL}/api/clientes/${id}`);
+    if (c && c.Id) {
+      clientesPorId.set(String(c.Id), c);
+      return c;
+    }
+  } catch (err) {
+    console.log(`  ⚠ No se pudo releer el cliente ${id} en Contabilium (${err.message}); se prueba como proveedor.`);
+  }
+  return obtenerProveedor(id);
+}
+
+// Arma el plan de envíos de un armado: cliente fresco, localidad y bultos
+// agrupados por rango. No llama a La Nave. Devuelve { plan } o { error }.
+async function planEnvioLaNave(armado) {
+  const cliente = await obtenerClienteFresco(armado.idCliente);
+  const loc = laNave.localidadDelCliente(cliente);
+  if (loc.problema) return { error: loc.problema, montevideo: !!loc.montevideo };
+
+  const agrupado = laNave.agruparBultos(armado.kilosBultos);
+  if (agrupado.error) return { error: agrupado.error };
+
+  const dest = laNave.destinatarioDelCliente(cliente);
+  if (!dest.destinatario) return { error: 'El cliente no tiene nombre cargado en Contabilium.' };
+  if (!dest.direccion) return { error: 'El cliente no tiene dirección cargada en Contabilium.' };
+
+  return {
+    plan: {
+      localidad: loc.localidad,
+      localidadOrigen: loc.origen,
+      ...dest,
+      envios: agrupado.envios
+    }
+  };
+}
+
+// Despacha (o termina de despachar) los envíos de una orden. Se puede llamar
+// todas las veces que haga falta: lo ya despachado no se repite.
+//
+// Antes de cada envío se CONSULTA su clave. Si La Nave ya lo tiene vivo (la
+// respuesta anterior se perdió en el camino), se adopta en vez de volver a
+// crearlo. No se decide por el código de error: el de clave repetida es el
+// genérico 2, el mismo que cualquier otra falla.
+async function despacharLaNave(orderId, usuario) {
+  orderId = String(orderId);
+  const armado = armados.find(a => a.orderId === orderId);
+  if (!armado) return { status: 404, error: 'Esta orden no figura como armada en esta PC. Confirmá el armado antes de despachar.' };
+  const cred = credencialesLaNave();
+  if (!cred) return { status: 400, error: 'La conexión con La Nave no está configurada en esta PC.' };
+  const cli = laNave.crearCliente(cred);
+
+  let reg = envioLaNaveActivo(orderId);
+  if (reg && reg.estado === 'despachado') return { status: 200, reg };
+
+  if (!reg) {
+    const { plan, error } = await planEnvioLaNave(armado);
+    if (error) return { status: 409, error };
+    const intento = enviosLaNave.filter(r => r.orderId === orderId).length + 1;
+    reg = {
+      orderId,
+      numeroOrden: armado.numeroOrden || '',
+      idCliente: armado.idCliente == null ? '' : String(armado.idCliente),
+      intento,
+      prueba: cli.prueba,
+      estado: 'en_curso',
+      creado: new Date().toISOString(),
+      usuario,
+      // El armado del que salió: si se anula y se vuelve a armar, es otro.
+      armadoTimestamp: armado.timestamp,
+      localidad: plan.localidad,
+      localidadOrigen: plan.localidadOrigen,
+      destinatario: plan.destinatario,
+      direccion: plan.direccion,
+      telefono: plan.telefono,
+      envios: plan.envios.map(e => ({
+        ...e,
+        clave: laNave.claveExterna(armado.numeroOrden || orderId, e.producto, intento),
+        estado: 'pendiente'
+      }))
+    };
+    // Se guarda ANTES de llamar a La Nave: si la PC se apaga en el medio, las
+    // claves ya están anotadas y el reintento las encuentra.
+    enviosLaNave.push(reg);
+    guardarEnviosLaNaveDisco();
+  }
+
+  for (const e of reg.envios) {
+    if (e.estado === 'despachado') continue;
+
+    const previo = await cli.consultar(e.clave);
+    if (!previo.ok) {
+      e.error = `No se pudo consultar el envío en La Nave: ${previo.error}`;
+      guardarEnviosLaNaveDisco();
+      return { status: 502, error: e.error, reg };
+    }
+    if (previo.existe && previo.estadoCodigo !== 'AN') {
+      Object.assign(e, {
+        estado: 'despachado', remito: previo.remito, agencia: previo.agencia,
+        codigoBarra: previo.codigoBarra, etiquetas: [], recuperado: true, error: null,
+        despachado: new Date().toISOString()
+      });
+      guardarEnviosLaNaveDisco();
+      continue;
+    }
+
+    const r = await cli.despachar({
+      clave: e.clave, producto: e.producto, bultos: e.bultos, kilos: e.kilos,
+      destinatario: reg.destinatario, direccion: reg.direccion, localidad: reg.localidad, telefono: reg.telefono
+    });
+    if (!r.ok) {
+      e.error = r.error;
+      guardarEnviosLaNaveDisco();
+      return { status: 409, error: `La Nave no aceptó el envío "${e.nombre}": ${r.error}`, reg };
+    }
+    Object.assign(e, {
+      estado: 'despachado', remito: r.remito, agencia: r.agencia, precio: r.precio,
+      localidadLaNave: r.localidadLaNave, codigoBarra: r.codigoBarra,
+      // La etiqueta se guarda desarmada AHORA: la consulta posterior no la
+      // devuelve, y trae códigos de clasificación que no están en otro lado.
+      etiquetas: (r.etiquetas || []).map(laNave.parsearEtiquetaEPL),
+      fechaHora: r.fechaHora, error: null, despachado: new Date().toISOString()
+    });
+    guardarEnviosLaNaveDisco();
+  }
+
+  reg.estado = 'despachado';
+  guardarEnviosLaNaveDisco();
+  return { status: 200, reg };
+}
+
+// Anula en La Nave los envíos de una orden. Se llama ANTES de anular el
+// armado. Nunca impide anular el armado (el facturador lo necesita), pero
+// devuelve lo que La Nave no pudo anular para mostrarlo.
+async function anularEnviosLaNave(orderId) {
+  const reg = envioLaNaveActivo(orderId);
+  if (!reg) return null;
+  const cli = clienteLaNave();
+  const resultado = { remitos: [], fallidos: [] };
+  for (const e of reg.envios) {
+    // Uno que quedó a medias puede existir en La Nave aunque acá diga
+    // pendiente: se consulta por la clave antes de darlo por inexistente.
+    let remito = e.remito;
+    let agencia = e.agencia;
+    if (!remito && cli) {
+      try {
+        const c = await cli.consultar(e.clave);
+        if (c.ok && c.existe && c.estadoCodigo !== 'AN') { remito = c.remito; agencia = c.agencia; }
+      } catch { /* sin red: se informa abajo si había remito */ }
+    }
+    if (!remito) { e.estado = 'anulado'; continue; }
+    if (!cli) { resultado.fallidos.push({ remito, error: 'La conexión con La Nave no está configurada.' }); continue; }
+    try {
+      const r = await cli.anular(agencia, remito);
+      if (r.ok) { e.estado = 'anulado'; resultado.remitos.push(remito); }
+      else resultado.fallidos.push({ remito, error: r.error });
+    } catch (err) {
+      resultado.fallidos.push({ remito, error: err.message });
+    }
+  }
+  reg.estado = 'anulado';
+  reg.anulado = new Date().toISOString();
+  reg.anulacionFallida = resultado.fallidos;
+  guardarEnviosLaNaveDisco();
+  return resultado;
+}
+
+// --- Etiqueta de La Nave en ZPL ---
+//
+// La Nave manda una etiqueta EPL chica (≈ 6,7 x 3,8 cm) y el depósito imprime
+// en rollos de 10 x 15 con ZPL directo. Armamos nuestra propia etiqueta de
+// 10 x 15: arriba, la de La Nave tal cual (mismos textos, posiciones y
+// código de barras, agrandados); abajo, lo nuestro: orden, número de bulto
+// y su peso, para que cada etiqueta vaya al bulto que corresponde.
+//
+// El código de barras: el EPL usa el tipo "2" (Interleaved 2 of 5), aunque el
+// mail de La Nave decía CODE128. Se respeta lo que dice la etiqueta. Antes de
+// usarlo en serio, La Nave tiene que escanear una etiqueta nuestra.
+const LN_ESCALA = 1.45;
+const LN_ORIGEN_X = 50; // el EPL arranca en x=65: corremos todo a la izquierda
+const LN_ARRIBA = 20;
+const EPL_FUENTES = { 1: [8, 12], 2: [10, 16], 3: [12, 20], 4: [14, 24], 5: [32, 48] };
+
+function lnX(x) { return Math.max(0, Math.round((x - LN_ORIGEN_X) * LN_ESCALA)); }
+function lnY(y) { return Math.round(y * LN_ESCALA) + LN_ARRIBA; }
+
+function zplBarrasI25(x, y, dato, angosta, alto) {
+  return `^FO${x},${y}^BY${angosta},3.0,${alto}^B2N,${alto},N,N,N^FD${zplEscape(dato)}^FS`;
+}
+
+function zplBarrasDesdeEPL(b) {
+  const angosta = Math.max(2, Math.round(b.angosta * LN_ESCALA));
+  const alto = Math.round(b.alto * LN_ESCALA);
+  if (b.tipo === '2' || b.tipo === '2C') return zplBarrasI25(lnX(b.x), lnY(b.y), b.dato, angosta, alto);
+  // Cualquier otro tipo: Code 128, que es lo que dijo La Nave por mail.
+  return `^FO${lnX(b.x)},${lnY(b.y)}^BY${angosta},3.0,${alto}^BCN,${alto},N,N,N^FD${zplEscape(b.dato)}^FS`;
+}
+
+function zplTextoDesdeEPL(t) {
+  if (!t.texto) return '';
+  const [w, h] = EPL_FUENTES[t.fuente] || EPL_FUENTES[2];
+  const alto = Math.round(h * t.multV * LN_ESCALA);
+  const ancho = Math.round(w * t.multH * LN_ESCALA);
+  return `^FO${lnX(t.x)},${lnY(t.y)}^A0N,${alto},${ancho}^FD${zplEscape(t.texto)}^FS`;
+}
+
+function zplTexto(x, y, alto, texto, { ancho = 760, lineas = 1, justif = 'L' } = {}) {
+  if (!texto) return '';
+  return `^FO${x},${y}^A0N,${alto},${alto}^FB${ancho},${lineas},4,${justif}^FD${zplEscape(texto)}^FS`;
+}
+
+// Parte de arriba cuando la etiqueta de La Nave se perdió (el envío se
+// recuperó por consulta): lo mínimo para que lo puedan escanear.
+function zplLaNaveReconstruida({ codigoBarra, envio, reg, k }) {
+  return [
+    zplTexto(20, 20, 30, 'LaNave-CargoPostal'),
+    zplTexto(20, 60, 30, reg.destinatario),
+    zplTexto(20, 95, 26, reg.direccion, { lineas: 2 }),
+    zplBarrasI25(80, 160, codigoBarra, 3, 70),
+    zplTexto(20, 245, 28, `Remito ${envio.agencia || '001'} ${envio.remito} - ${envio.localidadLaNave || reg.localidad}`),
+    zplTexto(20, 285, 26, `${envio.producto} ${String(envio.nombre || '').toUpperCase()} - ${envio.clave} - ${k + 1}/${envio.bultos}`),
+    zplTexto(20, 325, 24, 'Etiqueta reconstruida: faltan los codigos de clasificacion de La Nave.')
+  ].join('\n');
+}
+
+function generarZplLaNave({ reg, envio, k, cliente, totalBultos }) {
+  const etiqueta = envio.etiquetas && envio.etiquetas[k];
+  const codigo = (envio.codigoBarra || [])[k] || '';
+  const bulto = envio.indicesBultos[k];
+  const kilos = envio.kilosBultos[k];
+  const partes = ['^XA', '^CI28', `^PW${FISICO_ANCHO}`, `^LL${FISICO_ALTO}`, '^LH0,0'];
+
+  if (etiqueta && (etiqueta.textos.length || etiqueta.barras.length)) {
+    for (const r of etiqueta.recuadros) {
+      const ancho = Math.round((r.x2 - r.x1) * LN_ESCALA);
+      const alto = Math.round((r.y2 - r.y1) * LN_ESCALA);
+      partes.push(`^FO${lnX(r.x1)},${lnY(r.y1)}^GB${ancho},${alto},${Math.max(2, Math.round(r.grosor * LN_ESCALA))}^FS`);
+    }
+    for (const t of etiqueta.textos) partes.push(zplTextoDesdeEPL(t));
+    for (const b of etiqueta.barras) partes.push(zplBarrasDesdeEPL(b));
+  } else {
+    partes.push(zplLaNaveReconstruida({ codigoBarra: codigo, envio, reg, k }));
+  }
+
+  // --- Lo nuestro, debajo de la línea ---
+  // La parte de La Nave termina en y≈515 (el EPL llega a y=326 ×1,45 + 20).
+  const Y0 = 530;
+  const { direccion, observaciones, contacto } = datosEtiquetaPlano(cliente);
+  const { principal } = datosDestinatarioSeparados(cliente);
+  partes.push(
+    `^FO20,${Y0}^GB760,4,4^FS`,
+    zplTexto(20, Y0 + 15, 36, 'GRUPO SUPRABOND URUGUAY SAS'),
+    zplTexto(20, Y0 + 60, 46, `O/V N°: ${reg.numeroOrden}`),
+    zplTexto(20, Y0 + 115, 54, `Bulto ${bulto} de ${totalBultos} - ${String(kilos).replace('.', ',')} kg`),
+    zplTexto(20, Y0 + 180, 28, `${envio.nombre} - ${k + 1}/${envio.bultos} de este envio`),
+    `^FO20,${Y0 + 220}^GB760,2,2^FS`,
+    zplTexto(20, Y0 + 232, 34, principal, { lineas: 2 }),
+    zplTexto(20, Y0 + 310, 28, 'Direccion: ' + direccion, { lineas: 2 }),
+    zplTexto(20, Y0 + 375, 26, observaciones ? 'Obs.: ' + observaciones : '', { lineas: 2 }),
+    zplTexto(20, Y0 + 440, 26, 'Contacto: ' + contacto)
+  );
+
+  if (reg.prueba) {
+    // Que nunca salga del depósito una etiqueta del ambiente de prueba.
+    partes.push(`^FO20,${FISICO_ALTO - 110}^GB760,90,90^FS`, `^FO20,${FISICO_ALTO - 92}^FR^A0N,60,60^FB760,1,0,C^FDPRUEBA - NO DESPACHAR^FS`);
+  }
+  partes.push('^XZ');
+  return partes.filter(Boolean).join('\n');
+}
+
+// Etiquetas en el orden de los bultos del armado (1, 2, 3…), no por envío:
+// así el operario las pega en el mismo orden en que pesó.
+function etiquetasLaNaveEnOrden(reg) {
+  const lista = [];
+  for (const envio of reg.envios) {
+    envio.indicesBultos.forEach((bulto, k) => lista.push({ envio, k, bulto }));
+  }
+  return lista.sort((a, b) => a.bulto - b.bulto);
+}
+
+async function imprimirEtiquetasLaNave(reg, nombreImpresora) {
+  if (!fs.existsSync(TEMP_DIR)) fs.mkdirSync(TEMP_DIR, { recursive: true });
+  const armado = armados.find(a => a.orderId === reg.orderId);
+  const totalBultos = armado ? armado.bultos : reg.envios.reduce((s, e) => s + e.bultos, 0);
+  const cliente = await resolverClienteParaEtiqueta({ idCliente: reg.idCliente, numeroOrden: reg.numeroOrden });
+  const diagnostico = [];
+  const etiquetas = etiquetasLaNaveEnOrden(reg);
+  for (const { envio, k, bulto } of etiquetas) {
+    const zpl = generarZplLaNave({ reg, envio, k, cliente, totalBultos });
+    const salida = await enviarZplAImpresora(zpl, nombreImpresora);
+    if (salida) diagnostico.push(`Bulto ${bulto}: ${salida}`);
+  }
+  return { impresas: etiquetas.length, diagnostico };
+}
+
 // --- Helpers HTTP ---
 function sendJSON(res, status, obj) {
   const body = JSON.stringify(obj);
@@ -2196,7 +2570,8 @@ const server = http.createServer(async (req, res) => {
             estado: orden.Estado,
             cantidadProductos,
             items,
-            armadoExistente
+            armadoExistente,
+            laNave: resumenEnvioLaNave(envioLaNaveActivo(orden.ID))
           });
         } catch (err) {
           picking.push({
@@ -2246,7 +2621,8 @@ const server = http.createServer(async (req, res) => {
         armable: estado === 'Pendiente' && !yaFacturada,
         cantidadProductos: items.reduce((sum, it) => sum + (it.cantidad || 0), 0),
         items,
-        armadoExistente: armados.find(a => a.orderId === String(id)) || null
+        armadoExistente: armados.find(a => a.orderId === String(id)) || null,
+        laNave: resumenEnvioLaNave(envioLaNaveActivo(id))
       });
     }
 
@@ -2397,12 +2773,33 @@ const server = http.createServer(async (req, res) => {
         });
       }
 
+      if (!armados.some(a => a.orderId === orderId)) {
+        return sendJSON(res, 404, { error: 'Esta orden no figura como armada en esta PC.' });
+      }
+      if (despachosEnCurso.has(orderId)) {
+        return sendJSON(res, 409, { error: 'Se está despachando esta orden por La Nave en este momento. Esperá a que termine y volvé a anular.' });
+      }
+
+      // Primero La Nave, después el armado: anularArmado borra el registro.
+      // Si La Nave no puede (el envío ya salió), el armado se anula igual —
+      // el facturador lo necesita— pero se avisa en pantalla.
+      let laNaveAnulacion = null;
+      try {
+        laNaveAnulacion = await anularEnviosLaNave(orderId);
+      } catch (err) {
+        laNaveAnulacion = { remitos: [], fallidos: [{ remito: null, error: err.message }] };
+      }
+
       const anulacion = anularArmado(orderId, { autorizadoPor: supervisor.usuario, motivo: datos.motivo, nota });
       if (!anulacion) {
         return sendJSON(res, 404, { error: 'Esta orden no figura como armada en esta PC.' });
       }
+      if (laNaveAnulacion) {
+        anulacion.laNave = laNaveAnulacion;
+        guardarAnulacionesDisco();
+      }
       sincronizarArmados().catch(() => {});
-      return sendJSON(res, 200, { ok: true, anulacion });
+      return sendJSON(res, 200, { ok: true, anulacion, laNave: laNaveAnulacion });
     }
 
     if (pathname === '/api/armado' && req.method === 'GET') {
@@ -2466,6 +2863,94 @@ const server = http.createServer(async (req, res) => {
       }
     }
 
+    // --- La Nave ---
+    if (pathname === '/api/lanave/estado' && req.method === 'GET') {
+      const c = credencialesLaNave();
+      return sendJSON(res, 200, { habilitado: !!c, prueba: c ? c.ambiente !== 'produccion' : null, kilosMaxBulto: laNave.KILOS_MAX_BULTO });
+    }
+
+    // Antes de despachar: arma el plan y lo COTIZA (generarRemito "N", no
+    // crea nada). Con eso se ve el precio, cómo entiende La Nave la localidad
+    // y sus avisos ("no mercadería pesada", "retira de agencia").
+    if (pathname === '/api/lanave/preparar' && req.method === 'POST') {
+      const { orderId } = JSON.parse((await readBody(req)) || '{}');
+      const armado = armados.find(a => a.orderId === String(orderId || ''));
+      if (!armado) return sendJSON(res, 404, { error: 'Esta orden no figura como armada en esta PC.' });
+      const activo = envioLaNaveActivo(armado.orderId);
+      if (activo) return sendJSON(res, 200, { yaExiste: true, envio: resumenEnvioLaNave(activo) });
+      const cli = clienteLaNave();
+      if (!cli) return sendJSON(res, 400, { error: 'La conexión con La Nave no está configurada en esta PC.' });
+
+      const { plan, error, montevideo } = await planEnvioLaNave(armado);
+      if (error) return sendJSON(res, 200, { ok: false, error, montevideo: !!montevideo });
+
+      const envios = [];
+      for (const e of plan.envios) {
+        const c = await cli.cotizar({
+          producto: e.producto, bultos: e.bultos, kilos: e.kilos,
+          destinatario: plan.destinatario, direccion: plan.direccion, localidad: plan.localidad, telefono: plan.telefono
+        });
+        envios.push({ ...e, precio: c.ok ? c.precio : null, localidadLaNave: c.ok ? c.localidadLaNave : '', error: c.ok ? null : c.error, codigoError: c.ok ? null : c.codigo });
+      }
+      const conError = envios.filter(e => e.error);
+      let errorCotizacion = null;
+      if (conError.length) {
+        errorCotizacion = conError.some(e => e.codigoError === 18)
+          ? `La Nave no reconoce la localidad "${plan.localidad}". Corregila en la ficha del cliente en Contabilium (Ciudad, o una línea "Localidad: …" en Observaciones) y volvé a tocar "Enviar con La Nave".`
+          : conError.map(e => `${e.nombre}: ${e.error}`).join(' | ');
+      }
+      return sendJSON(res, 200, {
+        ok: !errorCotizacion,
+        error: errorCotizacion,
+        prueba: cli.prueba,
+        localidad: plan.localidad,
+        localidadOrigen: plan.localidadOrigen,
+        destinatario: plan.destinatario,
+        direccion: plan.direccion,
+        envios: envios.map(e => ({ producto: e.producto, nombre: e.nombre, bultos: e.bultos, kilos: e.kilos, kilosBultos: e.kilosBultos, indicesBultos: e.indicesBultos, precio: e.precio, localidadLaNave: e.localidadLaNave, error: e.error })),
+        // El precio de La Nave incluye la tasa postal (10%, salvo bultos de
+        // más de 20 kg) pero no el IVA (Gabriel, 25/11/2026).
+        total: envios.reduce((s, e) => s + (e.precio || 0), 0)
+      });
+    }
+
+    if (pathname === '/api/lanave/despachar' && req.method === 'POST') {
+      const { orderId } = JSON.parse((await readBody(req)) || '{}');
+      const id = String(orderId || '');
+      if (!id) return sendJSON(res, 400, { error: 'Falta orderId' });
+      if (despachosEnCurso.has(id)) return sendJSON(res, 409, { error: 'Esta orden ya se está despachando. Esperá unos segundos.' });
+      despachosEnCurso.add(id);
+      try {
+        const r = await despacharLaNave(id, req.usuarioActual);
+        if (r.error) return sendJSON(res, r.status, { error: r.error, envio: resumenEnvioLaNave(r.reg) });
+        return sendJSON(res, 200, { ok: true, envio: resumenEnvioLaNave(r.reg) });
+      } finally {
+        despachosEnCurso.delete(id);
+      }
+    }
+
+    // Reimprimir no vuelve a llamar a La Nave: sale de lo guardado.
+    if (pathname === '/api/lanave/imprimir' && req.method === 'POST') {
+      const { orderId } = JSON.parse((await readBody(req)) || '{}');
+      const reg = envioLaNaveActivo(String(orderId || ''));
+      if (!reg || reg.estado !== 'despachado') {
+        return sendJSON(res, 404, { error: 'Esta orden no tiene un envío de La Nave despachado.' });
+      }
+      const cfg = leerConfig();
+      const nombreImpresora = cfg && cfg.printerName;
+      if (!nombreImpresora) {
+        return sendJSON(res, 400, { error: 'Todavía no configuraste el nombre de la impresora Zebra. Configurala arriba, en el recuadro de la impresora.' });
+      }
+      try {
+        const r = await imprimirEtiquetasLaNave(reg, nombreImpresora);
+        registrarImpresion(reg.orderId, req.usuarioActual);
+        return sendJSON(res, 200, { ok: true, ...r });
+      } catch (err) {
+        console.log(`  ⚠ Error al imprimir etiquetas de La Nave de la orden ${reg.numeroOrden}: ${err.message}`);
+        return sendJSON(res, 500, { error: `No se pudo imprimir: ${err.message}` });
+      }
+    }
+
     if (pathname === '/api/armado/reporte' && req.method === 'GET') {
       const numeroOrden = parsed.searchParams.get('numeroOrden');
       const fechaDesde = parsed.searchParams.get('fechaDesde');
@@ -2520,6 +3005,7 @@ server.listen(PORT, HOST, () => {
   cargarCatalogoInicial();
   cargarArmadosInicial();
   cargarAnulacionesInicial();
+  cargarEnviosLaNaveInicial();
   cargarClientesDesdeDiscoSiExiste();
   migrarRolesSiHaceFalta();
   crearUsuarioInicialSiHaceFalta();
@@ -2533,6 +3019,10 @@ server.listen(PORT, HOST, () => {
   console.log(` Abrí tu navegador en: http://localhost:${PORT}`);
   console.log(` Catálogo cargado: ${catalogoInfo.cantidad} productos (${catalogoInfo.origen})`);
   console.log(` Pedidos armados en el historial: ${armados.length}`);
+  const credLN = credencialesLaNave();
+  console.log(credLN
+    ? ` La Nave: conectada${credLN.ambiente === 'produccion' ? '' : ' (AMBIENTE DE PRUEBA: no genera envíos reales)'}`
+    : ' La Nave: sin configurar (falta lanave.json): solo etiqueta propia');
   const supervisores = leerUsuarios().filter(u => u.rol === 'supervisor').map(u => u.usuario);
   if (supervisores.length) {
     console.log(` Supervisores (autorizan pedidos incompletos): ${supervisores.join(', ')}`);

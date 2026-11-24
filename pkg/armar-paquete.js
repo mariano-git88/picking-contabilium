@@ -61,6 +61,28 @@ if (!cred.clientId || !cred.clientSecret) {
   process.exit(1);
 }
 
+// Credenciales de La Nave: van en el paquete solo si son las de PRODUCCIÓN.
+// Las del ambiente de prueba imprimen etiquetas que dicen "PRUEBA - NO
+// DESPACHAR" y no generan envíos reales: mandarlas al depósito por descuido
+// dejaría al operario despachando en falso. Para un paquete de prueba a
+// propósito: LANAVE_PRUEBA=1 npm run paquete
+const LN_LOCAL = path.join(RAIZ, 'lanave-credenciales.json');
+let laNaveIncluida = false;
+if (fs.existsSync(LN_LOCAL)) {
+  const ln = JSON.parse(fs.readFileSync(LN_LOCAL, 'utf8'));
+  if (!ln.cliente || !ln.pwd) {
+    console.error(`${LN_LOCAL} tiene que traer "cliente" y "pwd".`);
+    process.exit(1);
+  }
+  if (ln.ambiente === 'produccion' || process.env.LANAVE_PRUEBA === '1') {
+    ARCHIVOS.push([LN_LOCAL, 'lanave.json']);
+    laNaveIncluida = true;
+    if (ln.ambiente !== 'produccion') console.log('ATENCION: el paquete lleva las credenciales de PRUEBA de La Nave.');
+  } else {
+    console.log('La Nave: las credenciales son del ambiente de prueba, NO van al paquete (la opcion no aparece en el deposito).');
+  }
+}
+
 const faltan = ARCHIVOS.filter(([origen]) => !fs.existsSync(origen)).map(([o]) => o);
 if (faltan.length) {
   console.error('Faltan archivos para armar el paquete:\n  ' + faltan.join('\n  '));
@@ -129,7 +151,7 @@ Son 4 cosas y tienen que quedar las 4 SUELTAS, al lado del programa:
     buzon-sheet.txt
     usuario-inicial.json
     contabilium.json
-    assets  (una carpeta)
+${laNaveIncluida ? '    lanave.json\n' : ''}    assets  (una carpeta)
 
 OJO CON ESTO: cuando Windows pregunta donde extraer, propone crear una
 carpeta nueva con el nombre del ZIP. Si se acepta esa propuesta, los

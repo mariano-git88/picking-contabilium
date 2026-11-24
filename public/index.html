@@ -228,6 +228,20 @@
     font-size: 13px;
   }
   .anular-panel select { padding: 6px; }
+  /* La Nave */
+  .lanave-panel {
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .lanave-panel table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+  .lanave-panel th, .lanave-panel td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--border); }
+  .lanave-panel .aviso { color: var(--warn); font-weight: 600; }
+  .lanave-panel .error { color: #e5484d; font-weight: 600; }
+  .lanave-prueba { display: inline-block; background: #e5484d; color: #fff; font-weight: 700; border-radius: 6px; padding: 1px 8px; margin-left: 6px; font-size: 12px; }
+  .transporte-botones { display: flex; gap: 8px; flex-wrap: wrap; }
   /* Alerta de código equivocado: la pantalla entera en rojo hasta el próximo
      escaneo. El texto rojo de siempre pasaba desapercibido con la pistola en
      la mano (lo pidió Maick). No toma el foco: el lector sigue escribiendo
@@ -833,9 +847,52 @@
 
       <div class="novedad">
         <div class="novedad-titulo">
+          <span class="novedad-version">Versión 1.8</span>
+          <span class="novedad-fecha">25 de noviembre de 2026</span>
+          <span class="novedad-actual">Esta versión</span>
+        </div>
+        <p>
+          Despacho por <b>La Nave</b> desde la app, como lo pidió Gabriel.
+        </p>
+        <ul>
+          <li>
+            <b>Dos botones al terminar el armado.</b>
+            <b>🚚 Enviar con La Nave</b> despacha el pedido en el sistema de La
+            Nave e imprime SU etiqueta, una por bulto.
+            <b>Flota propia u otro transporte</b> (R&amp;R, DAC, camión propio)
+            imprime la etiqueta de siempre. Montevideo va siempre por el segundo.
+          </li>
+          <li>
+            <b>Antes de despachar, la app muestra cómo va a salir:</b> cuántos
+            envíos (La Nave cobra por rango de peso, así que un pedido con
+            bultos de distinto peso son varios envíos), el precio, y cómo
+            entiende La Nave la localidad, con sus avisos ("no mercadería
+            pesada", "retira de agencia").
+          </li>
+          <li>
+            <b>Cada etiqueta dice el número de bulto y su peso.</b> Salen en el
+            orden en que pesaste: pegá cada una en su bulto.
+          </li>
+          <li>
+            <b>Si el cliente no tiene la ciudad cargada,</b> la app lo dice y no
+            despacha. Se corrige en Contabilium (la ciudad, o una línea
+            <code>Localidad: …</code> en las Observaciones del cliente) y se
+            vuelve a intentar: la app relee al cliente en el momento.
+          </li>
+          <li>
+            <b>Aviso de bultos de más de 25 kg.</b> No se pueden manipular ni
+            mandar por La Nave: hay que dividirlos.
+          </li>
+          <li>
+            <b>Anular un armado también anula el envío en La Nave,</b> si
+            todavía no salió. Si ya salió, la app avisa.
+          </li>
+        </ul>
+      </div>
+      <div class="novedad">
+        <div class="novedad-titulo">
           <span class="novedad-version">Versión 1.7</span>
           <span class="novedad-fecha">29 de octubre de 2026</span>
-          <span class="novedad-actual">Esta versión</span>
         </div>
         <p>
           Tres cosas que pidieron Gabriel y Maick.
@@ -1181,6 +1238,15 @@
   // lado. Se declara acá arriba porque inicializarAuth() la escribe.
   let MOTIVOS_FALTANTE = [];
   let MOTIVOS_ANULACION = [];
+  // La Nave: { habilitado, prueba, kilosMaxBulto }. Si no está configurada en
+  // esta PC, el armado muestra solo la etiqueta de siempre.
+  let estadoLaNave = { habilitado: false, prueba: null, kilosMaxBulto: 25 };
+  async function cargarEstadoLaNave() {
+    try {
+      const resp = await apiFetch('/api/lanave/estado');
+      if (resp.ok) estadoLaNave = await resp.json();
+    } catch { /* sin La Nave: queda deshabilitada */ }
+  }
   const CLAVE_NOVEDADES_VISTAS = 'picking_novedades_vistas';
 
   function hayNovedadesSinVer() {
@@ -1371,6 +1437,7 @@
         $('buzonSheetInput').value = data.sheetId || '';
         cargarEstadoCatalogo();
         cargarEstadoBuzon();
+        cargarEstadoLaNave();
       } else {
         $('setup-card').style.display = 'block';
         $('main-card').style.display = 'none';
@@ -1619,7 +1686,8 @@
           kilos: o.armadoExistente.kilos,
           completo: o.armadoExistente.completo,
           autorizadoPor: o.armadoExistente.autorizadoPor,
-          timestamp: o.armadoExistente.timestamp
+          timestamp: o.armadoExistente.timestamp,
+          laNave: o.laNave || null
         };
         escaneos[idx] = (o.items || []).map(it => it.cantidad || 0);
       }
@@ -1845,12 +1913,13 @@
       const kilos = est.kilos ? ` — ${String(est.kilos).replace('.', ',')} kg` : '';
       return `
         <div class="armado-info">
-          <span>✔ <b>Armado</b> — ${est.bultos} bulto(s)${kilos} — ${formatearFechaHora(new Date(est.timestamp))}${aviso}</span>
-          <div style="display:flex; gap:8px">
-            <button class="btn-chico" onclick="imprimirEtiquetas(${idx})">Imprimir etiquetas</button>
+          <span>✔ <b>Armado</b> — ${est.bultos} bulto(s)${kilos} — ${formatearFechaHora(new Date(est.timestamp))}${aviso}${renderLineaLaNave(est)}</span>
+          <div class="transporte-botones">
+            ${renderBotonesTransporte(idx, est)}
             <button class="secondary btn-chico" onclick="abrirPanelAnular(${idx})">Anular armado</button>
           </div>
         </div>
+        ${panelLaNave[idx] ? renderPanelLaNave(idx) : ''}
         ${panelAnular[idx] ? renderPanelAnular(idx) : ''}
       `;
     }
@@ -2002,6 +2071,18 @@
     if (!kilosBultos) {
       setScanFeedback(idx, 'Falta el peso de cada bulto, en kilos (por ejemplo 4,5).', 'error');
       return;
+    }
+    // Normativa ergonómica: ningún bulto de más de 25 kg (Gabriel,
+    // 25/11/2026). No se bloquea —puede salir con flota propia— pero se avisa
+    // fuerte: por La Nave directamente no se puede despachar.
+    const maxKg = estadoLaNave.kilosMaxBulto || 25;
+    const pesados = kilosBultos.map((k, i) => ({ k, i })).filter(x => x.k > maxKg);
+    if (pesados.length) {
+      const cuales = pesados.map(x => `bulto ${x.i + 1}: ${String(x.k).replace('.', ',')} kg`).join(', ');
+      if (!confirm(`ATENCIÓN: hay bultos de más de ${maxKg} kg (${cuales}).\n\nNo se pueden manipular ni mandar por La Nave. Lo correcto es dividirlos.\n\n¿Confirmás el armado igual?`)) {
+        setScanFeedback(idx, `Dividí los bultos de más de ${maxKg} kg y volvé a cargar los pesos.`, 'error');
+        return;
+      }
     }
 
     // --- Pedido incompleto: motivo por línea + firma del supervisor -------
@@ -2172,6 +2253,7 @@
 
   async function anularArmado(idx) {
     const orden = ultimaData[idx];
+    let avisoLaNaveAnulacion = null;
     const valor = id => ((document.getElementById(id) || {}).value || '').trim();
     const motivo = valor(`anular-motivo-${idx}`);
     const nota = valor(`anular-nota-${idx}`);
@@ -2187,8 +2269,10 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderId: orden.id, motivo, nota, autoriza: { usuario, password } })
       });
+      panelLaNave[idx] = null;
       const data = await resp.json().catch(() => ({}));
       if (!resp.ok) return setScanFeedback(idx, data.error || 'No se pudo anular el armado.', 'error');
+      avisoLaNaveAnulacion = data.laNave || null;
     } catch (err) {
       return setScanFeedback(idx, 'No se pudo anular el armado: ' + err.message, 'error');
     }
@@ -2203,12 +2287,186 @@
     // Se relee la orden y el conteo arranca de cero: si el pedido cambió
     // (el vendedor agregó productos), se arma contra la versión nueva.
     await volverALeerOrden(idx);
-    setScanFeedback(idx, 'Armado anulado: el pedido salió de la lista de facturación. Si hay que despacharlo, armalo de nuevo.', 'ok');
+    if (avisoLaNaveAnulacion && avisoLaNaveAnulacion.fallidos && avisoLaNaveAnulacion.fallidos.length) {
+      const cuales = avisoLaNaveAnulacion.fallidos.map(f => `remito ${f.remito || '?'}: ${f.error}`).join(' | ');
+      setScanFeedback(idx, `Armado anulado, pero La Nave NO anuló el envío (${cuales}). Si ya lo retiraron, avisale a logística para que lo frene con La Nave.`, 'error');
+    } else {
+      const remitos = avisoLaNaveAnulacion && avisoLaNaveAnulacion.remitos && avisoLaNaveAnulacion.remitos.length
+        ? ` También se anuló en La Nave (remito ${avisoLaNaveAnulacion.remitos.join(', ')}).` : '';
+      setScanFeedback(idx, 'Armado anulado: el pedido salió de la lista de facturación.' + remitos + ' Si hay que despacharlo, armalo de nuevo.', 'ok');
+    }
+  }
+
+  // --- Transporte: La Nave o flota propia --------------------------------
+  // Gabriel (25/11/2026): al terminar de embalar se elige por dónde sale.
+  //   1) La Nave: se despacha por su sistema y sale SU etiqueta (con su
+  //      código de barras), una por bulto.
+  //   2) Flota propia u otro transporte (R&R, DAC…): la etiqueta de siempre.
+  // Montevideo va siempre por el 2; el servidor lo frena igual.
+  const panelLaNave = {};
+
+  function pesos(n) {
+    return '$ ' + Number(n || 0).toLocaleString('es-UY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function renderLineaLaNave(est) {
+    const ln = est.laNave;
+    if (!ln) return '';
+    const prueba = ln.prueba ? '<span class="lanave-prueba">PRUEBA</span>' : '';
+    if (ln.estado === 'despachado') {
+      const remitos = ln.envios.map(e => e.remito).filter(Boolean).join(', ');
+      return `<br />🚚 <b>Despachado por La Nave</b>${prueba} — remito(s) ${escapeHtml(remitos)} — ${escapeHtml(ln.localidad || '')}`;
+    }
+    return `<br /><span class="estado-exceso">🚚 Despacho por La Nave a medias: tocá "Terminar despacho".</span>${prueba}`;
+  }
+
+  function renderBotonesTransporte(idx, est) {
+    if (!estadoLaNave.habilitado) {
+      return `<button class="btn-chico" id="btn-etiqueta-propia-${idx}" onclick="imprimirEtiquetas(${idx})">Imprimir etiquetas</button>`;
+    }
+    const ln = est.laNave;
+    if (ln && ln.estado === 'despachado') {
+      return `<button class="btn-chico" onclick="imprimirEtiquetasLaNave(${idx})">Reimprimir etiquetas La Nave</button>`;
+    }
+    if (ln) {
+      return `<button class="btn-chico" onclick="despacharLaNave(${idx})">Terminar despacho La Nave</button>`;
+    }
+    return `
+      <button class="btn-chico" onclick="abrirPanelLaNave(${idx})">🚚 Enviar con La Nave</button>
+      <button class="secondary btn-chico" id="btn-etiqueta-propia-${idx}" onclick="imprimirEtiquetas(${idx})">Flota propia u otro transporte</button>
+    `;
+  }
+
+  async function abrirPanelLaNave(idx) {
+    const orden = ultimaData[idx];
+    panelLaNave[idx] = { cargando: true };
+    actualizarBultosBox(idx);
+    try {
+      const resp = await apiFetch('/api/lanave/preparar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: orden.id })
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) throw new Error(data.error || 'No se pudo preparar el envío.');
+      if (data.yaExiste) {
+        obtenerEstadoPicking(idx).laNave = data.envio;
+        panelLaNave[idx] = null;
+      } else {
+        panelLaNave[idx] = data;
+      }
+    } catch (err) {
+      panelLaNave[idx] = { ok: false, error: err.message };
+    }
+    actualizarBultosBox(idx);
+  }
+
+  function cerrarPanelLaNave(idx) {
+    panelLaNave[idx] = null;
+    actualizarBultosBox(idx);
+  }
+
+  function renderPanelLaNave(idx) {
+    const p = panelLaNave[idx];
+    if (p.cargando) {
+      return `<div class="lanave-panel">Consultando a La Nave (se relee el cliente en Contabilium y se cotiza)…</div>`;
+    }
+    if (p.despachando) {
+      return `<div class="lanave-panel">Despachando en La Nave… no cierres la ventana.</div>`;
+    }
+    const prueba = p.prueba ? '<span class="lanave-prueba">AMBIENTE DE PRUEBA: no genera envíos reales</span>' : '';
+    if (!p.ok && !(p.envios && p.envios.length)) {
+      return `
+        <div class="lanave-panel">
+          <h4 style="margin:0 0 6px">Enviar con La Nave ${prueba}</h4>
+          <div class="error">${escapeHtml(p.error || 'No se puede despachar por La Nave.')}</div>
+          <div style="color:var(--muted); margin-top:6px">${p.montevideo
+            ? 'Usá <b>Flota propia u otro transporte</b>.'
+            : 'Cuando esté corregido en Contabilium, tocá <b>Volver a intentar</b>: el cliente se relee en el momento. Si el pedido no puede esperar, usá <b>Flota propia u otro transporte</b>.'}</div>
+          <div class="acciones-final">
+            ${p.montevideo ? '' : `<button onclick="abrirPanelLaNave(${idx})">Volver a intentar</button>`}
+            <button class="secondary" onclick="cerrarPanelLaNave(${idx})">Cerrar</button>
+          </div>
+        </div>`;
+    }
+    const filas = p.envios.map(e => `
+      <tr>
+        <td>${escapeHtml(e.nombre)}</td>
+        <td>${e.indicesBultos.map((b, k) => `n° ${b} (${String(e.kilosBultos[k]).replace('.', ',')} kg)`).join(', ')}</td>
+        <td>${e.kilos} kg</td>
+        <td>${e.precio == null ? `<span class="error">${escapeHtml(e.error || 'sin precio')}</span>` : pesos(e.precio)}</td>
+      </tr>`).join('');
+    const avisoLocalidad = p.envios.map(e => e.localidadLaNave).find(Boolean) || '';
+    return `
+      <div class="lanave-panel">
+        <h4 style="margin:0 0 6px">Enviar con La Nave ${prueba}</h4>
+        <div><b>${escapeHtml(p.destinatario)}</b> — ${escapeHtml(p.direccion)}</div>
+        <div>Localidad: <b>${escapeHtml(p.localidad)}</b>${p.localidadOrigen === 'observaciones' ? ' (de las Observaciones del cliente)' : ''}
+          ${avisoLocalidad ? ` → La Nave la entiende como <span class="aviso">${escapeHtml(avisoLocalidad)}</span>` : ''}</div>
+        <table>
+          <thead><tr><th>Envío</th><th>Bultos</th><th>Kilos declarados</th><th>Precio</th></tr></thead>
+          <tbody>${filas}</tbody>
+        </table>
+        <div>Total: <b>${pesos(p.total)}</b> + IVA (el precio ya incluye la tasa postal).</div>
+        ${p.envios.length > 1 ? `<div class="aviso" style="margin-top:6px">Son ${p.envios.length} envíos (uno por rango de peso). Cada etiqueta dice el número de bulto y su peso: pegá cada una en el bulto que corresponde.</div>` : ''}
+        ${p.error ? `<div class="error" style="margin-top:6px">${escapeHtml(p.error)}</div>` : ''}
+        <div class="acciones-final">
+          ${p.ok ? `<button onclick="despacharLaNave(${idx})">Despachar e imprimir etiquetas</button>` : `<button onclick="abrirPanelLaNave(${idx})">Volver a intentar</button>`}
+          <button class="secondary" onclick="cerrarPanelLaNave(${idx})">Cancelar</button>
+        </div>
+      </div>`;
+  }
+
+  async function despacharLaNave(idx) {
+    const orden = ultimaData[idx];
+    const est = obtenerEstadoPicking(idx);
+    const anterior = panelLaNave[idx];
+    panelLaNave[idx] = { despachando: true };
+    actualizarBultosBox(idx);
+    let data = {};
+    try {
+      const resp = await apiFetch('/api/lanave/despachar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: orden.id })
+      });
+      data = await resp.json().catch(() => ({}));
+      if (data.envio) est.laNave = data.envio;
+      if (!resp.ok) throw new Error(data.error || 'No se pudo despachar.');
+    } catch (err) {
+      // Lo que ya se despachó queda guardado: el botón pasa a "Terminar
+      // despacho" y el reintento no duplica nada.
+      panelLaNave[idx] = est.laNave ? null : (anterior || null);
+      actualizarBultosBox(idx);
+      setScanFeedback(idx, 'La Nave: ' + err.message, 'error');
+      return;
+    }
+    panelLaNave[idx] = null;
+    actualizarBultosBox(idx);
+    await imprimirEtiquetasLaNave(idx);
+  }
+
+  async function imprimirEtiquetasLaNave(idx) {
+    const orden = ultimaData[idx];
+    setScanFeedback(idx, 'Enviando las etiquetas de La Nave a la impresora...', '');
+    try {
+      const resp = await apiFetch('/api/lanave/imprimir', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: orden.id })
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) throw new Error(data.error || 'Error al imprimir');
+      setScanFeedback(idx, `Despachado por La Nave: ${data.impresas} etiqueta(s) enviadas a la impresora, en el orden de los bultos.`, 'ok');
+      setStatus(`La Nave: etiquetas de la orden ${orden.numeroOrden} enviadas a imprimir.`);
+    } catch (err) {
+      setScanFeedback(idx, 'El envío quedó despachado en La Nave, pero falló la impresión: ' + err.message + '. Tocá "Reimprimir etiquetas La Nave".', 'error');
+    }
   }
 
   async function imprimirEtiquetas(idx) {
     const orden = ultimaData[idx];
-    const boton = document.querySelector(`#bultos-box-container-${idx} button.btn-chico`);
+    const boton = document.getElementById(`btn-etiqueta-propia-${idx}`);
     if (boton) { boton.disabled = true; boton.textContent = 'Imprimiendo...'; }
     setScanFeedback(idx, 'Enviando etiquetas a la impresora...', '');
 
@@ -2226,7 +2484,7 @@
       colapsarDetalle(idx);
     } catch (err) {
       setScanFeedback(idx, 'Error al imprimir: ' + err.message, 'error');
-      if (boton) { boton.disabled = false; boton.textContent = 'Imprimir etiquetas'; }
+      if (boton) actualizarBultosBox(idx);
     }
   }
 

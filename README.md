@@ -218,7 +218,8 @@ Al publicar una versión nueva:
 ## Archivos que NO se versionan (ver .gitignore)
 La app genera estos archivos junto al ejecutable en tiempo de ejecución,
 y contienen datos sensibles (credenciales, usuarios, datos de clientes):
-`config.json`, `armados.json`, `catalogo.json`, `clientes_cache.json`.
+`config.json`, `armados.json`, `anulaciones.json`, `envios_lanave.json`,
+`catalogo.json`, `clientes_cache.json`, `lanave.json`.
 
 Cada uno se escribe de forma atómica (primero un `.tmp`, después se reemplaza)
 y conserva la versión anterior en un `.bak`. Si al arrancar un archivo no se
@@ -251,9 +252,48 @@ con cada armado nuevo. Reenviar de más es inofensivo (el buzón es un log de
 eventos y el facturador se queda con uno por orden); perder un envío no lo es,
 así que la pantalla muestra cuántos quedan sin enviar.
 
+## Despacho por La Nave (desde la v1.8)
+Al terminar el armado hay dos botones: **Enviar con La Nave** (despacha en el
+sistema de La Nave CargoPostal e imprime su etiqueta) y **Flota propia u otro
+transporte** (la etiqueta de siempre). Lo decidió Gabriel Parodi (25/11/2026):
+en el interior no todo va por La Nave (Grandes Superficies va con R&R o flota
+propia, y algunas localidades con DAC). Montevideo nunca va por La Nave.
+
+La lógica pura está en `lanave.js` y tiene pruebas (`npm test`). Lo que no
+está en la documentación de La Nave y se aprendió probando está comentado
+arriba de ese archivo. Lo principal:
+
+- **Un envío por rango de peso**, no por pedido: 241 hasta 5 kg, 242 hasta 10,
+  243 hasta 15, 244 hasta 20 y 280 hasta 25. Ningún bulto de más de 25 kg.
+  La Nave no controla nada de eso: el precio sale del código.
+- **Clave externa** `<orden>-<producto>-<intento>`. Antes de cada envío se
+  consulta la clave: si La Nave ya lo tiene, se adopta y no se duplica. El
+  plan se guarda en `envios_lanave.json` **antes** de llamar a La Nave.
+- **Localidad:** manda una línea `Localidad: X` en las Observaciones del
+  cliente; si no está, la Ciudad. El cliente se relee de Contabilium en el
+  momento (`GET /api/clientes/{id}`), sin pasar por la caché.
+- **Etiqueta propia en ZPL, 10 x 15:** arriba la de La Nave (sus textos y su
+  código de barras, sacados del EPL que devuelven y guardados al despachar);
+  abajo la orden, el número de bulto y su peso. En el ambiente de prueba sale
+  con una franja **PRUEBA - NO DESPACHAR**.
+- **Anular el armado** anula primero los envíos en La Nave. Si La Nave no
+  puede (ya salió), el armado se anula igual y la pantalla avisa.
+
+**Credenciales:** `lanave-credenciales.json` en la máquina que arma el
+paquete (`{ "ambiente": "testing" | "produccion", "cliente": "2497", "pwd": "…" }`),
+y viaja como `lanave.json`. **Solo entran al paquete si son de producción**
+(`LANAVE_PRUEBA=1 npm run paquete` para forzar las de prueba). Sin ese
+archivo, la opción de La Nave no aparece. La contraseña va en el cuerpo de
+cada pedido a La Nave: nunca se escribe en la consola.
+
+**Antes de usarlo en serio:** La Nave tiene que escanear una etiqueta nuestra.
+El EPL que mandan usa Interleaved 2 of 5 (aunque por mail dijeron Code 128) y
+la etiqueta lo reproduce así.
+
 ## Respaldo
 Lo que hay que respaldar es **`armados.json`** (el historial de pedidos
-armados). El reporte en Excel de la pantalla "Consultar armados" sirve como
+armados), junto con `anulaciones.json` y `envios_lanave.json` (los remitos de
+La Nave de cada orden). El reporte en Excel de la pantalla "Consultar armados" sirve como
 respaldo legible.
 
 **`config.json` no va al respaldo en la nube**: adentro está la API Key de
